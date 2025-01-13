@@ -61,7 +61,9 @@ function App() {
                                 <Box sx={{ flexGrow: 1 }}></Box>
                                 {user && (
                                     <>
-                                        <Typography>{user.name}</Typography>
+                                        <Button color="inherit" component={Link} to={`/users/${user.id}`}>
+                                            {user.name}
+                                        </Button>
                                         <Button onClick={logout}>Logout</Button>
                                     </>
                                 )}
