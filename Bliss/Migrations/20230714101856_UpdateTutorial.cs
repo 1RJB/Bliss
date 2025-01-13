@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bliss.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateTutorial : Migration
+    public partial class UpdateProduct : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
-                table: "Tutorials",
+                table: "Products",
                 type: "datetime",
                 nullable: false,
                 oldClrType: typeof(DateTime),
@@ -21,7 +21,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Title",
-                table: "Tutorials",
+                table: "Products",
                 type: "varchar(100)",
                 maxLength: 100,
                 nullable: false,
@@ -30,7 +30,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Tutorials",
+                table: "Products",
                 type: "varchar(500)",
                 maxLength: 500,
                 nullable: false,
@@ -39,7 +39,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Tutorials",
+                table: "Products",
                 type: "datetime",
                 nullable: false,
                 oldClrType: typeof(DateTime),
@@ -51,7 +51,7 @@ namespace Bliss.Migrations
         {
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
-                table: "Tutorials",
+                table: "Products",
                 type: "datetime(6)",
                 nullable: false,
                 oldClrType: typeof(DateTime),
@@ -59,7 +59,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Title",
-                table: "Tutorials",
+                table: "Products",
                 type: "longtext",
                 nullable: false,
                 oldClrType: typeof(string),
@@ -68,7 +68,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Tutorials",
+                table: "Products",
                 type: "longtext",
                 nullable: false,
                 oldClrType: typeof(string),
@@ -77,7 +77,7 @@ namespace Bliss.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Tutorials",
+                table: "Products",
                 type: "datetime(6)",
                 nullable: false,
                 oldClrType: typeof(DateTime),

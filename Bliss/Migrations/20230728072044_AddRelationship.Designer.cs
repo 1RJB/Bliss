@@ -22,7 +22,7 @@ namespace Bliss.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Bliss.Models.Tutorial", b =>
+            modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ namespace Bliss.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tutorials");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>
@@ -86,10 +86,10 @@ namespace Bliss.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Bliss.Models.Tutorial", b =>
+            modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
                     b.HasOne("Bliss.Models.User", "User")
-                        .WithMany("Tutorials")
+                        .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -99,7 +99,7 @@ namespace Bliss.Migrations
 
             modelBuilder.Entity("Bliss.Models.User", b =>
                 {
-                    b.Navigation("Tutorials");
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

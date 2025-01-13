@@ -12,7 +12,7 @@ namespace Bliss.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "ImageFile",
-                table: "Tutorials",
+                table: "Products",
                 type: "varchar(20)",
                 maxLength: 20,
                 nullable: true);
@@ -23,7 +23,7 @@ namespace Bliss.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "ImageFile",
-                table: "Tutorials");
+                table: "Products");
         }
     }
 }
