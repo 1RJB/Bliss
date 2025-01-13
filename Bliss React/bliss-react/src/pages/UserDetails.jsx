@@ -66,6 +66,12 @@ function UserDetails() {
             <Button variant="outlined" color="secondary" component={Link} to="/users" sx={{ mt: 2, ml: 2 }}>
                 Back to Users List
             </Button>
+            <Button variant="outlined" component={Link} to="/change-password" sx={{ mt: 2, ml: 2 }}>
+                Change Password
+            </Button>
+            <Button variant="outlined" component={Link} to="/activity-logs" sx={{ mt: 2, ml: 2 }}>
+                Activity Logs
+            </Button>
             {user?.id === user.id && (
                 <Button variant="outlined" color="error" onClick={handleDelete} sx={{ mt: 2, ml: 2 }}>
                     Delete Account
