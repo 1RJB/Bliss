@@ -2,7 +2,7 @@
 
 namespace Bliss.Models
 {
-    public class AddTutorialRequest
+    public class AddProductRequest
     {
         [Required, MinLength(3), MaxLength(100)]
         public string Title { get; set; } = string.Empty;

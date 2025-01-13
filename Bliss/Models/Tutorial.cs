@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Bliss.Models
 {
-    public class Tutorial
+    public class Product
     {
         public int Id { get; set; }
 
