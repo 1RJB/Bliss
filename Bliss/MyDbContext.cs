@@ -19,5 +19,7 @@ namespace Bliss
         public required DbSet<Product> Products { get; set; }
 
         public required DbSet<User> Users { get; set; }
+
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
     }
 }

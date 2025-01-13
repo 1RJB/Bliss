@@ -2,6 +2,7 @@
 using Bliss.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -126,6 +127,169 @@ namespace Bliss.Controllers
                 _logger.LogError(ex, "Error when user auth");
                 return StatusCode(500);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        {
+            var users = await _context.Users.ToListAsync();
+            var userDTOs = _mapper.Map<List<UserDTO>>(users);
+            return Ok(userDTOs);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var userDTO = _mapper.Map<UserDTO>(user);
+            return Ok(userDTO);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
+        {
+            if (id != request.Id)
+            {
+                return BadRequest("User ID mismatch.");
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Authorization: Ensure the user is updating their own account
+            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user.Id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            // Update user properties
+            user.Name = request.Name.Trim();
+            user.Email = request.Email.Trim().ToLower();
+            user.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Authorization: Ensure the user is deleting their own account
+            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user.Id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPut("{id}/changePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(int id, ChangePasswordRequest request)
+        {
+            if (id != request.Id)
+            {
+                return BadRequest("User ID mismatch.");
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Authorization: Ensure the user is changing their own password
+            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user.Id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            // Verify current password
+            bool verified = BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.Password);
+            if (!verified)
+            {
+                return BadRequest("Current password is incorrect.");
+            }
+
+            // Hash new password
+            string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.Password = newHashedPassword;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("{id}/activityLogs")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<ActivityLogDTO>>> GetUserActivityLogs(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Authorization: Ensure the user is accessing their own logs
+            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user.Id != userIdFromToken)
+            {
+                return Forbid();
+            }
+
+            var activityLogs = await _context.ActivityLogs
+                .Where(log => log.UserId == id)
+                .ToListAsync();
+
+            var activityLogDTOs = _mapper.Map<List<ActivityLogDTO>>(activityLogs);
+
+            return Ok(activityLogDTOs);
         }
 
         private string CreateToken(User user)

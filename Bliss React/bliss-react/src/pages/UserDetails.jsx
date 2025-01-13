@@ -1,0 +1,78 @@
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import http from '../http';
+import { Typography, Button, CircularProgress, Alert } from '@mui/material';
+import { useContext } from 'react';
+import UserContext from '../contexts/UserContext';
+
+function UserDetails() {
+    const { id } = useParams();
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const { user: currentUser, setUser } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            http.delete(`/User/${id}`)
+                .then(() => {
+                    if (currentUser.id === parseInt(id)) {
+                        // If user is deleting their own account, log them out
+                        localStorage.clear();
+                        setUser(null);
+                        navigate('/register');
+                    } else {
+                        navigate('/users');
+                    }
+                })
+                .catch(() => {
+                    alert('Failed to delete user.');
+                });
+        }
+    };
+
+    useEffect(() => {
+        http.get(`/User/${id}`)
+            .then(res => {
+                setUser(res.data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setError('Failed to load user details.');
+                setLoading(false);
+            });
+    }, [id]);
+
+    if (loading) return <CircularProgress />;
+    if (error) return <Alert severity="error">{error}</Alert>;
+    if (!user) return null;
+
+    return (
+        <div>
+            <Typography variant="h4" gutterBottom>
+                User Details
+            </Typography>
+            <Typography variant="body1">
+                <strong>Name:</strong> {user.name}
+            </Typography>
+            <Typography variant="body1">
+                <strong>Email:</strong> {user.email}
+            </Typography>
+            <Button variant="contained" component={Link} to={`/edituser/${user.id}`} sx={{ mt: 2 }}>
+                Edit User
+            </Button>
+            <Button variant="outlined" color="secondary" component={Link} to="/users" sx={{ mt: 2, ml: 2 }}>
+                Back to Users List
+            </Button>
+            {currentUser?.id === user.id && (
+                <Button variant="outlined" color="error" onClick={handleDelete} sx={{ mt: 2, ml: 2 }}>
+                    Delete Account
+                </Button>
+            )}
+        </div>
+    );
+}
+
+export default UserDetails;

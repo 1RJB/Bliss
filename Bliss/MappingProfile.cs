@@ -10,6 +10,7 @@ namespace Bliss
             CreateMap<Product, ProductDTO>();
             CreateMap<User, UserDTO>();
             CreateMap<User, UserBasicDTO>();
+            CreateMap<ActivityLog, ActivityLog>();
         }
     }
 }
