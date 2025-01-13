@@ -4,20 +4,21 @@ import http from '../http';
 import { Typography, Button, CircularProgress, Alert } from '@mui/material';
 import { useContext } from 'react';
 import UserContext from '../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function UserDetails() {
     const { id } = useParams();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const { user: currentUser, setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             http.delete(`/User/${id}`)
                 .then(() => {
-                    if (currentUser.id === parseInt(id)) {
+                    if (user.id === parseInt(id)) {
                         // If user is deleting their own account, log them out
                         localStorage.clear();
                         setUser(null);
@@ -65,7 +66,7 @@ function UserDetails() {
             <Button variant="outlined" color="secondary" component={Link} to="/users" sx={{ mt: 2, ml: 2 }}>
                 Back to Users List
             </Button>
-            {currentUser?.id === user.id && (
+            {user?.id === user.id && (
                 <Button variant="outlined" color="error" onClick={handleDelete} sx={{ mt: 2, ml: 2 }}>
                     Delete Account
                 </Button>
