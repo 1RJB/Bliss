@@ -26,6 +26,6 @@ namespace Bliss.Models
 
         // Navigation property to represent the one-to-many relationship
         [JsonIgnore]
-        public List<Tutorial>? Tutorials { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }

@@ -9,156 +9,156 @@ namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TutorialController(MyDbContext context, IMapper mapper,
-        ILogger<TutorialController> logger) : ControllerBase
+    public class ProductController(MyDbContext context, IMapper mapper,
+        ILogger<ProductController> logger) : ControllerBase
     {
         private readonly MyDbContext _context = context;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<TutorialController> _logger = logger;
+        private readonly ILogger<ProductController> _logger = logger;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TutorialDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ProductDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search)
         {
             try
             {
-                IQueryable<Tutorial> result = _context.Tutorials.Include(t => t.User);
+                IQueryable<Product> result = _context.Products.Include(t => t.User);
                 if (search != null)
                 {
                     result = result.Where(x => x.Title.Contains(search)
                         || x.Description.Contains(search));
                 }
                 var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-                IEnumerable<TutorialDTO> data = list.Select(_mapper.Map<TutorialDTO>);
+                IEnumerable<ProductDTO> data = list.Select(_mapper.Map<ProductDTO>);
                 return Ok(data);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error when get all tutorials");
+                _logger.LogError(ex, "Error when get all products");
                 return StatusCode(500);
             }
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(TutorialDTO), StatusCodes.Status200OK)]
-        public IActionResult GetTutorial(int id)
+        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        public IActionResult GetProduct(int id)
         {
             try
             {
-                Tutorial? tutorial = _context.Tutorials.Include(t => t.User)
+                Product? product = _context.Products.Include(t => t.User)
                 .SingleOrDefault(t => t.Id == id);
-                if (tutorial == null)
+                if (product == null)
                 {
                     return NotFound();
                 }
-                TutorialDTO data = _mapper.Map<TutorialDTO>(tutorial);
+                ProductDTO data = _mapper.Map<ProductDTO>(product);
                 return Ok(data);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error when get tutorial by id");
+                _logger.LogError(ex, "Error when get product by id");
                 return StatusCode(500);
             }
         }
 
         [HttpPost, Authorize]
-        [ProducesResponseType(typeof(TutorialDTO), StatusCodes.Status200OK)]
-        public IActionResult AddTutorial(AddTutorialRequest tutorial)
+        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        public IActionResult AddProduct(AddProductRequest product)
         {
             try
             {
                 int userId = GetUserId();
                 var now = DateTime.Now;
-                var myTutorial = new Tutorial()
+                var myProduct = new Product()
                 {
-                    Title = tutorial.Title.Trim(),
-                    Description = tutorial.Description.Trim(),
-                    ImageFile = tutorial.ImageFile,
+                    Title = product.Title.Trim(),
+                    Description = product.Description.Trim(),
+                    ImageFile = product.ImageFile,
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
                 };
 
-                _context.Tutorials.Add(myTutorial);
+                _context.Products.Add(myProduct);
                 _context.SaveChanges();
 
-                Tutorial? newTutorial = _context.Tutorials.Include(t => t.User)
-                    .FirstOrDefault(t => t.Id == myTutorial.Id);
-                TutorialDTO tutorialDTO = _mapper.Map<TutorialDTO>(newTutorial);
-                return Ok(tutorialDTO);
+                Product? newProduct = _context.Products.Include(t => t.User)
+                    .FirstOrDefault(t => t.Id == myProduct.Id);
+                ProductDTO productDTO = _mapper.Map<ProductDTO>(newProduct);
+                return Ok(productDTO);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error when add tutorial");
+                _logger.LogError(ex, "Error when add product");
                 return StatusCode(500);
             }
         }
 
         [HttpPut("{id}"), Authorize]
-        public IActionResult UpdateTutorial(int id, UpdateTutorialRequest tutorial)
+        public IActionResult UpdateProduct(int id, UpdateProductRequest product)
         {
             try
             {
-                var myTutorial = _context.Tutorials.Find(id);
-                if (myTutorial == null)
+                var myProduct = _context.Products.Find(id);
+                if (myProduct == null)
                 {
                     return NotFound();
                 }
 
                 int userId = GetUserId();
-                if (myTutorial.UserId != userId)
+                if (myProduct.UserId != userId)
                 {
                     return Forbid();
                 }
 
-                if (tutorial.Title != null)
+                if (product.Title != null)
                 {
-                    myTutorial.Title = tutorial.Title.Trim();
+                    myProduct.Title = product.Title.Trim();
                 }
-                if (tutorial.Description != null)
+                if (product.Description != null)
                 {
-                    myTutorial.Description = tutorial.Description.Trim();
+                    myProduct.Description = product.Description.Trim();
                 }
-                if (tutorial.ImageFile != null)
+                if (product.ImageFile != null)
                 {
-                    myTutorial.ImageFile = tutorial.ImageFile;
+                    myProduct.ImageFile = product.ImageFile;
                 }
-                myTutorial.UpdatedAt = DateTime.Now;
+                myProduct.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
                 return Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error when update tutorial");
+                _logger.LogError(ex, "Error when update product");
                 return StatusCode(500);
             }
         }
 
         [HttpDelete("{id}"), Authorize]
-        public IActionResult DeleteTutorial(int id)
+        public IActionResult DeleteProduct(int id)
         {
             try
             {
-                var myTutorial = _context.Tutorials.Find(id);
-                if (myTutorial == null)
+                var myProduct = _context.Products.Find(id);
+                if (myProduct == null)
                 {
                     return NotFound();
                 }
 
                 int userId = GetUserId();
-                if (myTutorial.UserId != userId)
+                if (myProduct.UserId != userId)
                 {
                     return Forbid();
                 }
 
-                _context.Tutorials.Remove(myTutorial);
+                _context.Products.Remove(myProduct);
                 _context.SaveChanges();
                 return Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error when delete tutorial");
+                _logger.LogError(ex, "Error when delete product");
                 return StatusCode(500);
             }
         }
