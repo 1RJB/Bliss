@@ -16,7 +16,7 @@ namespace Bliss.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Tutorials",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -28,7 +28,7 @@ namespace Bliss.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tutorials", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
         }
@@ -37,7 +37,7 @@ namespace Bliss.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tutorials");
+                name: "Products");
         }
     }
 }

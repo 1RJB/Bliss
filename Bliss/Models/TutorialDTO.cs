@@ -1,6 +1,6 @@
 ﻿namespace Bliss.Models
 {
-    public class TutorialDTO
+    public class ProductDTO
     {
         public int Id { get; set; }
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230714101856_UpdateTutorial")]
-    partial class UpdateTutorial
+    [Migration("20230714101856_UpdateProduct")]
+    partial class UpdateProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace Bliss.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Bliss.Models.Tutorial", b =>
+            modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,7 +46,7 @@ namespace Bliss.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tutorials");
+                    b.ToTable("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@ namespace Bliss
     {
         public MappingProfile()
         {
-            CreateMap<Tutorial, TutorialDTO>();
+            CreateMap<Product, ProductDTO>();
             CreateMap<User, UserDTO>();
             CreateMap<User, UserBasicDTO>();
         }
