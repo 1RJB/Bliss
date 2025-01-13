@@ -1,0 +1,217 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\bodyshop_assign1_2.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\bodyshop_assign1_2.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\mydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\mydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\controllers\\filecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\controllers\\filecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Product.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\Product.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\Product.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\Product.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Models\\Product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T04:29:23.987Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\UserController.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T10:26:24.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BodyShop_Assign1_2.http",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "RelativeToolTip": "BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "ViewState": "AgIAACUAAAAAAAAAAAAkwCIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-01-11T07:27:42.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Program.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Program.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Program.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T11:17:26.688Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\appsettings.Development.json",
+              "RelativeToolTip": "BodyShop_Assign1_2\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-13T02:55:25.387Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\User.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\User.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Models\\User.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T02:49:43.666Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAcwGcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T02:50:04.252Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MyDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\MyDbContext.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\MyDbContext.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\MyDbContext.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\MyDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T03:34:11.426Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RegisterRequest.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\RegisterRequest.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\RegisterRequest.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\RegisterRequest.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Models\\RegisterRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T10:37:48.472Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\appsettings.json",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\appsettings.json",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\appsettings.json",
+              "RelativeToolTip": "BodyShop_Assign1_2\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-13T02:25:06.931Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FileController.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\FileController.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Controllers\\FileController.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\FileController.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Controllers\\FileController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T02:37:33.267Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "LoginRequest.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\LoginRequest.cs",
+              "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\LoginRequest.cs",
+              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\LoginRequest.cs",
+              "RelativeToolTip": "BodyShop_Assign1_2\\Models\\LoginRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T10:54:14.615Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

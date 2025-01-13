@@ -1,0 +1,1052 @@
+{
+  "Version": 1,
+  "Hash": "Tp+lsInT7AGvZKCkDopRN6ymaECjZew+ayEivTDwLzo=",
+  "Source": "BodyShop_Assign1_2",
+  "BasePath": "_content/BodyShop_Assign1_2",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "BodyShop_Assign1_2\\wwwroot",
+      "Source": "BodyShop_Assign1_2",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\a2nERYG5k0.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/a2nERYG5k0#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\a2nERYG5k0.webp"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\L5eUNefDqW.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/L5eUNefDqW#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\L5eUNefDqW.webp"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\mWGd_H_niD.jpg",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/mWGd_H_niD#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ajnrntpq9e",
+      "Integrity": "5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\mWGd_H_niD.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nCaVKBj5oN.jpg",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/nCaVKBj5oN#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ajnrntpq9e",
+      "Integrity": "5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\nCaVKBj5oN.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nnp1nqfWRX.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/nnp1nqfWRX#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\nnp1nqfWRX.webp"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\RcKI71_AS0.jpg",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/RcKI71_AS0#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ajnrntpq9e",
+      "Integrity": "5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\RcKI71_AS0.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\Sh4Qf_m4rc.jpg",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/Sh4Qf_m4rc#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ajnrntpq9e",
+      "Integrity": "5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\Sh4Qf_m4rc.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\tKdfNU6S1p.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/tKdfNU6S1p#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\tKdfNU6S1p.webp"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\wPCc8abPX1.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/wPCc8abPX1#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\wPCc8abPX1.webp"
+    },
+    {
+      "Identity": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\ZAwY160Lni.webp",
+      "SourceId": "BodyShop_Assign1_2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\",
+      "BasePath": "_content/BodyShop_Assign1_2",
+      "RelativePath": "uploads/ZAwY160Lni#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "21kn0r3f2z",
+      "Integrity": "JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\ZAwY160Lni.webp"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "uploads/a2nERYG5k0.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\a2nERYG5k0.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:53:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/a2nERYG5k0.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/a2nERYG5k0.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\a2nERYG5k0.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:53:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/L5eUNefDqW.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\L5eUNefDqW.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:46:58 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/L5eUNefDqW.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/L5eUNefDqW.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\L5eUNefDqW.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:46:58 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/mWGd_H_niD.ajnrntpq9e.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\mWGd_H_niD.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:07:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ajnrntpq9e"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/mWGd_H_niD.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/mWGd_H_niD.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\mWGd_H_niD.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:07:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/nCaVKBj5oN.ajnrntpq9e.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nCaVKBj5oN.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:50:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ajnrntpq9e"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/nCaVKBj5oN.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/nCaVKBj5oN.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nCaVKBj5oN.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:50:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/nnp1nqfWRX.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nnp1nqfWRX.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 03:32:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/nnp1nqfWRX.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/nnp1nqfWRX.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nnp1nqfWRX.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 03:32:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/RcKI71_AS0.ajnrntpq9e.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\RcKI71_AS0.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:21:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ajnrntpq9e"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/RcKI71_AS0.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/RcKI71_AS0.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\RcKI71_AS0.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:21:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/Sh4Qf_m4rc.ajnrntpq9e.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\Sh4Qf_m4rc.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:34:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ajnrntpq9e"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/Sh4Qf_m4rc.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/Sh4Qf_m4rc.jpg",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\Sh4Qf_m4rc.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "434343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:34:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5srxE6d0sNA3ufgnovmG+uIhTCWhYkrLD/sVd4VzTGc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/tKdfNU6S1p.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\tKdfNU6S1p.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 03:33:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/tKdfNU6S1p.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/tKdfNU6S1p.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\tKdfNU6S1p.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 03:33:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/wPCc8abPX1.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\wPCc8abPX1.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:03:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/wPCc8abPX1.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/wPCc8abPX1.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\wPCc8abPX1.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 05:03:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/ZAwY160Lni.21kn0r3f2z.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\ZAwY160Lni.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:48:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "21kn0r3f2z"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/ZAwY160Lni.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/ZAwY160Lni.webp",
+      "AssetFile": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\ZAwY160Lni.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "205202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 13 Jan 2025 04:48:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JgGRU1QmnF1IbN/8FwflIJi2y4mPoWmsLi2i4oaOhnU="
+        }
+      ]
+    }
+  ]
+}

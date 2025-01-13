@@ -1,0 +1,65 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\L5eUNefDqW.webp",
+      "PackagePath": "staticwebassets\\uploads\\L5eUNefDqW.webp"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\RcKI71_AS0.jpg",
+      "PackagePath": "staticwebassets\\uploads\\RcKI71_AS0.jpg"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\Sh4Qf_m4rc.jpg",
+      "PackagePath": "staticwebassets\\uploads\\Sh4Qf_m4rc.jpg"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\ZAwY160Lni.webp",
+      "PackagePath": "staticwebassets\\uploads\\ZAwY160Lni.webp"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\a2nERYG5k0.webp",
+      "PackagePath": "staticwebassets\\uploads\\a2nERYG5k0.webp"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\mWGd_H_niD.jpg",
+      "PackagePath": "staticwebassets\\uploads\\mWGd_H_niD.jpg"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nCaVKBj5oN.jpg",
+      "PackagePath": "staticwebassets\\uploads\\nCaVKBj5oN.jpg"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\nnp1nqfWRX.webp",
+      "PackagePath": "staticwebassets\\uploads\\nnp1nqfWRX.webp"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\tKdfNU6S1p.webp",
+      "PackagePath": "staticwebassets\\uploads\\tKdfNU6S1p.webp"
+    },
+    {
+      "Id": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\wwwroot\\uploads\\wPCc8abPX1.webp",
+      "PackagePath": "staticwebassets\\uploads\\wPCc8abPX1.webp"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.BodyShop_Assign1_2.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.BodyShop_Assign1_2.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.BodyShop_Assign1_2.props",
+      "PackagePath": "build\\BodyShop_Assign1_2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.BodyShop_Assign1_2.props",
+      "PackagePath": "buildMultiTargeting\\BodyShop_Assign1_2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.BodyShop_Assign1_2.props",
+      "PackagePath": "buildTransitive\\BodyShop_Assign1_2.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

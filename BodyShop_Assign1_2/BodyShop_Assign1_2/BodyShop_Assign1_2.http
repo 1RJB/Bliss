@@ -1,0 +1,72 @@
+@BodyShop_Assign1_2_HostAddress = https://localhost:7240
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJTYWltb24gWWFwIiwiZW1haWwiOiJ0ZXN0MkBnbWFpbC5jb20iLCJuYmYiOjE3MzY3MzcwNjksImV4cCI6MTczOTMyOTA2OSwiaWF0IjoxNzM2NzM3MDY5fQ.1yILvznYWnlMvCMQf9KscPDdySFwtURP_7b0dZRM-KY
+
+GET {{BodyShop_Assign1_2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{BodyShop_Assign1_2_HostAddress}}/product
+
+###
+
+POST {{BodyShop_Assign1_2_HostAddress}}/product
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name" : "Testing token",
+  "description": "Happy  :) ",
+  "price" : 2
+}
+
+###
+
+
+@id=0
+GET {{BodyShop_Assign1_2_HostAddress}}/product/2
+
+###
+
+PUT {{BodyShop_Assign1_2_HostAddress}}/product/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name" : "Testing 3 ",
+  "description": "cold day ",
+  "price" : 34
+}
+
+###
+
+DELETE {{BodyShop_Assign1_2_HostAddress}}/product/1
+
+###
+
+POST {{BodyShop_Assign1_2_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+  "name" : "Ryan",
+  "email" : "test3@gmail.com",
+  "password" : "password123"
+}
+
+###
+
+
+POST {{BodyShop_Assign1_2_HostAddress}}/user/login
+Content-Type: application/json
+
+{
+    "email" : "test2@gmail.com",
+    "password" : "password123"
+}
+
+###
+
+GET {{BodyShop_Assign1_2_HostAddress}}/user/auth
+Authorization: Bearer {{token}}
+
+###
