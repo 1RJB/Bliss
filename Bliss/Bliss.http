@@ -1,11 +1,11 @@
 ﻿@Bliss_HostAddress = https://localhost:7004
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJMaSBIYWl5dW4iLCJlbWFpbCI6ImxpX2hhaXl1bkBueXAuZWR1LnNnIiwibmJmIjoxNzI1OTU4OTIwLCJleHAiOjE3Mjg1NTA5MjAsImlhdCI6MTcyNTk1ODkyMH0.0_GTNoUUk2TqCSPd4MiapZPKBi_FkPCVG2toARYryxE
 
-GET {{Bliss_HostAddress}}/tutorial?search=
+GET {{Bliss_HostAddress}}/product?search=
 
 ###
 
-GET {{Bliss_HostAddress}}/tutorial/6
+GET {{Bliss_HostAddress}}/product/6
 
 ###
 
@@ -34,7 +34,7 @@ GET {{Bliss_HostAddress}}/user/auth
 Authorization: Bearer {{token}}
 
 ###
-POST {{Bliss_HostAddress}}/tutorial
+POST {{Bliss_HostAddress}}/product
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -45,7 +45,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-PUT {{Bliss_HostAddress}}/tutorial/6
+PUT {{Bliss_HostAddress}}/product/6
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -56,7 +56,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{Bliss_HostAddress}}/tutorial/2
+DELETE {{Bliss_HostAddress}}/product/2
 Authorization: Bearer {{token}}
 
 ###

@@ -12,19 +12,19 @@ namespace Bliss.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "UserId",
-                table: "Tutorials",
+                table: "Products",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tutorials_UserId",
-                table: "Tutorials",
+                name: "IX_Products_UserId",
+                table: "Products",
                 column: "UserId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Tutorials_Users_UserId",
-                table: "Tutorials",
+                name: "FK_Products_Users_UserId",
+                table: "Products",
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
@@ -35,16 +35,16 @@ namespace Bliss.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Tutorials_Users_UserId",
-                table: "Tutorials");
+                name: "FK_Products_Users_UserId",
+                table: "Products");
 
             migrationBuilder.DropIndex(
-                name: "IX_Tutorials_UserId",
-                table: "Tutorials");
+                name: "IX_Products_UserId",
+                table: "Products");
 
             migrationBuilder.DropColumn(
                 name: "UserId",
-                table: "Tutorials");
+                table: "Products");
         }
     }
 }
