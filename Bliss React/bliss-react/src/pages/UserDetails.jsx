@@ -7,7 +7,6 @@ import UserContext from '../contexts/UserContext';
 
 function UserDetails() {
     const { id } = useParams();
-    const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
