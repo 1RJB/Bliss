@@ -23,6 +23,11 @@ namespace Bliss.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+        public bool IsVerified { get; set; } = false;
+        [MaxLength(6)]
+        public string? OtpCode { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? OtpExpiration { get; set; }
 
         // Navigation property to represent the one-to-many relationship
         [JsonIgnore]
