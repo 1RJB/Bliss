@@ -55,11 +55,9 @@ function App() {
                                 <Link to="/products">
                                     <Typography>Products</Typography>
                                 </Link>
-                                {user && (
-                                    <Link to="/users">
-                                        <Typography>Users</Typography>
-                                    </Link>
-                                )}
+                                <Link to="/users">
+                                    <Typography>Users</Typography>
+                                </Link>
                                 <Box sx={{ flexGrow: 1 }}></Box>
                                 {user && (
                                     <>
