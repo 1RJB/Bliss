@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -11,6 +12,7 @@ import UserContext from '../contexts/UserContext';
 function Login() {
     const navigate = useNavigate();
     const { setUser } = useContext(UserContext);
+    const [captchaToken, setCaptchaToken] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -28,9 +30,13 @@ function Login() {
                 .required('Password is required')
         }),
         onSubmit: (data) => {
+            if (!captchaToken) {
+                toast.error('Please complete CAPTCHA');
+                return;
+            }
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post("/user/login", data)
+            http.post("/user/login", { ...data, captchaToken })
                 .then((res) => {
                     localStorage.setItem("accessToken", res.data.accessToken);
                     setUser(res.data.user);
@@ -41,6 +47,10 @@ function Login() {
                 });
         }
     });
+
+    const handleCaptchaChange = (token) => {
+        setCaptchaToken(token);
+    };
 
     return (
         <Box sx={{
@@ -78,6 +88,10 @@ function Login() {
                     type="submit">
                     Login
                 </Button>
+                <HCaptcha
+                    sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
+                    onVerify={handleCaptchaChange}
+                />
             </Box>
 
             <ToastContainer />
