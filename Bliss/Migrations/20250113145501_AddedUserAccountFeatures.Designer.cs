@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250114040758_AddUserAccountFeatures")]
-    partial class AddUserAccountFeatures
+    [Migration("20250113145501_AddedUserAccountFeatures")]
+    partial class AddedUserAccountFeatures
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,20 +95,10 @@ namespace Bliss.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
-
-                    b.Property<string>("OtpCode")
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<DateTime?>("OtpExpiration")
-                        .HasColumnType("datetime");
 
                     b.Property<string>("Password")
                         .IsRequired()

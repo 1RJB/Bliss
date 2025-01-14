@@ -21,7 +21,7 @@ namespace Bliss.Controllers
         private readonly ILogger<UserController> _logger = logger;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public IActionResult Register(RegisterRequest request)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Bliss.Controllers
                 request.Password = request.Password.Trim();
 
                 // Check email
-                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
                 if (foundUser != null)
                 {
                     string message = "Email already exists.";
@@ -47,7 +47,7 @@ namespace Bliss.Controllers
                     Email = request.Email,
                     Password = passwordHash,
                     CreatedAt = now,
-                    UpdatedAt = now,
+                    UpdatedAt = now
                 };
 
                 // Add user
@@ -57,7 +57,7 @@ namespace Bliss.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during user registration");
+                _logger.LogError(ex, "Error when user register");
                 return StatusCode(500);
             }
         }
@@ -74,21 +74,16 @@ namespace Bliss.Controllers
 
                 // Check email and password
                 string message = "Email or password is not correct.";
-                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
                 if (foundUser == null)
                 {
-                    LogActivity(request.Email, "Login attempt failed: User not found");
                     return BadRequest(new { message });
                 }
                 bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
                 if (!verified)
                 {
-                    LogActivity(request.Email, "Login attempt failed: Incorrect password");
                     return BadRequest(new { message });
                 }
-
-                // Log successful login
-                LogActivity(foundUser.Email, "User logged in");
 
                 // Return user info
                 UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
@@ -98,27 +93,10 @@ namespace Bliss.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during user login");
+                _logger.LogError(ex, "Error when user login");
                 return StatusCode(500);
             }
         }
-
-        private void LogActivity(string email, string action)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
-            if (user != null)
-            {
-                var activityLog = new ActivityLog
-                {
-                    UserId = user.Id,
-                    Action = action,
-                    Timestamp = DateTime.UtcNow
-                };
-                _context.ActivityLogs.Add(activityLog);
-                _context.SaveChanges();
-            }
-        }
-
 
         [HttpGet("auth"), Authorize]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
@@ -292,42 +270,26 @@ namespace Bliss.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ActivityLogDTO>>> GetUserActivityLogs(int id)
         {
-            try
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
-                var user = await _context.Users.FindAsync(id);
-                if (user == null)
-                {
-                    _logger.LogWarning("User with ID {UserId} not found.", id);
-                    return NotFound();
-                }
-
-                // Authorization: Ensure the user is accessing their own logs
-                var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                if (user.Id != userIdFromToken)
-                {
-                    _logger.LogWarning("User with ID {UserId} attempted to access logs of user with ID {TargetUserId}.", userIdFromToken, id);
-                    return Forbid();
-                }
-
-                var activityLogs = await _context.ActivityLogs
-                    .Where(log => log.UserId == id)
-                    .ToListAsync();
-
-                if (activityLogs == null || !activityLogs.Any())
-                {
-                    _logger.LogWarning("No activity logs found for user with ID {UserId}.", id);
-                    return NotFound();
-                }
-
-                var activityLogDTOs = _mapper.Map<List<ActivityLogDTO>>(activityLogs);
-
-                return Ok(activityLogDTOs);
+                return NotFound();
             }
-            catch (Exception ex)
+
+            // Authorization: Ensure the user is accessing their own logs
+            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user.Id != userIdFromToken)
             {
-                _logger.LogError(ex, "Error retrieving activity logs for user with ID {UserId}.", id);
-                return StatusCode(500, "Internal server error");
+                return Forbid();
             }
+
+            var activityLogs = await _context.ActivityLogs
+                .Where(log => log.UserId == id)
+                .ToListAsync();
+
+            var activityLogDTOs = _mapper.Map<List<ActivityLogDTO>>(activityLogs);
+
+            return Ok(activityLogDTOs);
         }
 
         private string CreateToken(User user)
