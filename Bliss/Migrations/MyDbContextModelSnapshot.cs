@@ -42,6 +42,28 @@ namespace Bliss.Migrations
                     b.ToTable("ActivityLogs");
                 });
 
+            modelBuilder.Entity("Bliss.Models.OtpRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Otp")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OtpRecords");
+                });
+
             modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
                     b.Property<int>("Id")
