@@ -10,6 +10,7 @@ import axios from 'axios';
 function Register() {
     const [otpSent, setOtpSent] = useState(false);
     const [otpVerified, setOtpVerified] = useState(false);
+    const [otpDisabled, setOtpDisabled] = useState(false);
 
     const sendOtp = async (email) => {
         try {
@@ -28,6 +29,7 @@ function Register() {
             const response = await axios.post(`https://localhost:7004/user/verify-otp?email=${email}&otp=${otp}`);
             toast.success('OTP verified successfully.');
             setOtpVerified(true);
+            setOtpDisabled(false); // Set otpDisabled to false after successfully verifying OTP
         } catch (error) {
             toast.error(error.response.data.message);
         }
@@ -77,7 +79,7 @@ function Register() {
                 .then((res) => {
                     toast.success('Registration successful!')
                     console.log(res.data);
-                    navigate("https://localhost:7004/login");
+                    navigate("/login");
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
@@ -147,6 +149,7 @@ function Register() {
                     onBlur={formik.handleBlur}
                     error={formik.touched.otp && Boolean(formik.errors.otp)}
                     helperText={formik.touched.otp && formik.errors.otp}
+                    disabled={otpDisabled}
                 />
                 {!otpSent && (
                     <Button
