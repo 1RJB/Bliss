@@ -25,7 +25,7 @@ function Register() {
 
     const verifyOtp = async (email, otp) => {
         try {
-            await http.post('/user/verify-otp', { email, otp });
+            const response = await axios.post(`https://localhost:7004/user/verify-otp?email=${email}&otp=${otp}`);
             toast.success('OTP verified successfully.');
             setOtpVerified(true);
         } catch (error) {
@@ -73,11 +73,11 @@ function Register() {
             data.name = data.name.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post("/user/register", data)
+            http.post("https://localhost:7004/user/register", data)
                 .then((res) => {
                     toast.success('Registration successful!')
                     console.log(res.data);
-                    navigate("/login");
+                    navigate("https://localhost:7004/login");
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
