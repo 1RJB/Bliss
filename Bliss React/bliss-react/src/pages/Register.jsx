@@ -20,7 +20,7 @@ function Register() {
             toast.success('OTP sent successfully.');
         } catch (error) {
             console.error('Error sending OTP:', error);
-            toast.error('Failed to send OTP.');
+            toast.error(error.response.data.message);
         }
     };
 
