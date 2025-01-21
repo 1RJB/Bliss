@@ -21,5 +21,7 @@ namespace Bliss
         public required DbSet<User> Users { get; set; }
 
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+
+        public DbSet<OtpRecord> OtpRecords { get; set; }
     }
 }
