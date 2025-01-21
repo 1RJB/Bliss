@@ -373,6 +373,7 @@ namespace Bliss.Controllers
                 var smtpClient = new SmtpClient(_smtpSettings.Server)
                 {
                     Port = _smtpSettings.Port,
+                    UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(_smtpSettings.SenderEmail, _smtpSettings.SenderPassword),
                     EnableSsl = _smtpSettings.EnableSsl,
                 };
