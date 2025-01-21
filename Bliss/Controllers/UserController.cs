@@ -46,7 +46,6 @@ namespace Bliss.Controllers
                 request.Name = request.Name.Trim();
                 request.Email = request.Email.Trim().ToLower();
                 request.Password = request.Password.Trim();
-                request.Otp = request.Otp.Trim();
 
                 // Check if the email already exists
                 var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
@@ -54,19 +53,6 @@ namespace Bliss.Controllers
                 {
                     return BadRequest(new { message = "Email already exists." });
                 }
-
-                // Verify OTP
-                var otpRecord = await _context.OtpRecords
-                    .FirstOrDefaultAsync(x => x.Email == request.Email && x.Otp == request.Otp);
-
-                if (otpRecord == null || otpRecord.ExpiresAt < DateTime.UtcNow)
-                {
-                    return BadRequest(new { message = "Invalid or expired OTP." });
-                }
-
-                // OTP is valid, remove it from the database
-                _context.OtpRecords.Remove(otpRecord);
-                await _context.SaveChangesAsync();
 
                 // Create user object
                 var now = DateTime.UtcNow;
