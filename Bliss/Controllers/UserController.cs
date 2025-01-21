@@ -15,27 +15,18 @@ namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(
+        MyDbContext context,
+        IConfiguration configuration,
+        IMapper mapper,
+        ILogger<UserController> logger,
+        IOptions<SmtpSettings> smtpSettings) : ControllerBase
     {
-        private readonly MyDbContext _context;
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        private readonly ILogger<UserController> _logger;
-        private readonly SmtpSettings _smtpSettings;
-
-        public UserController(
-            MyDbContext context,
-            IConfiguration configuration,
-            IMapper mapper,
-            ILogger<UserController> logger,
-            IOptions<SmtpSettings> smtpSettings)
-        {
-            _context = context;
-            _configuration = configuration;
-            _mapper = mapper;
-            _logger = logger;
-            _smtpSettings = smtpSettings.Value;
-        }
+        private readonly MyDbContext _context = context;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IMapper _mapper = mapper;
+        private readonly ILogger<UserController> _logger = logger;
+        private readonly SmtpSettings _smtpSettings = smtpSettings.Value;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
@@ -394,6 +385,13 @@ namespace Bliss.Controllers
         {
             try
             {
+                // Check if the email already exists
+                var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email.ToLower().Trim());
+                if (foundUser != null)
+                {
+                    return BadRequest(new { message = "Email already exists." });
+                }
+
                 var otpRecord = await _context.OtpRecords
                     .FirstOrDefaultAsync(x => x.Email == email.ToLower().Trim() && x.Otp == otp);
 
