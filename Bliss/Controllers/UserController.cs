@@ -5,23 +5,40 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController(MyDbContext context, IConfiguration configuration, IMapper mapper,
-        ILogger<UserController> logger) : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly MyDbContext _context = context;
-        private readonly IConfiguration _configuration = configuration;
-        private readonly IMapper _mapper = mapper;
-        private readonly ILogger<UserController> _logger = logger;
+        private readonly MyDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserController> _logger;
+        private readonly SmtpSettings _smtpSettings;
+
+        public UserController(
+            MyDbContext context,
+            IConfiguration configuration,
+            IMapper mapper,
+            ILogger<UserController> logger,
+            IOptions<SmtpSettings> smtpSettings)
+        {
+            _context = context;
+            _configuration = configuration;
+            _mapper = mapper;
+            _logger = logger;
+            _smtpSettings = smtpSettings.Value;
+        }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
             try
             {
@@ -29,17 +46,30 @@ namespace Bliss.Controllers
                 request.Name = request.Name.Trim();
                 request.Email = request.Email.Trim().ToLower();
                 request.Password = request.Password.Trim();
+                request.Otp = request.Otp.Trim();
 
-                // Check email
-                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+                // Check if the email already exists
+                var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
                 if (foundUser != null)
                 {
-                    string message = "Email already exists.";
-                    return BadRequest(new { message });
+                    return BadRequest(new { message = "Email already exists." });
                 }
 
+                // Verify OTP
+                var otpRecord = await _context.OtpRecords
+                    .FirstOrDefaultAsync(x => x.Email == request.Email && x.Otp == request.Otp);
+
+                if (otpRecord == null || otpRecord.ExpiresAt < DateTime.UtcNow)
+                {
+                    return BadRequest(new { message = "Invalid or expired OTP." });
+                }
+
+                // OTP is valid, remove it from the database
+                _context.OtpRecords.Remove(otpRecord);
+                await _context.SaveChangesAsync();
+
                 // Create user object
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
                 var user = new User()
                 {
@@ -52,7 +82,8 @@ namespace Bliss.Controllers
 
                 // Add user
                 _context.Users.Add(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+
                 return Ok();
             }
             catch (Exception ex)
@@ -61,6 +92,7 @@ namespace Bliss.Controllers
                 return StatusCode(500);
             }
         }
+
 
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
@@ -165,7 +197,12 @@ namespace Bliss.Controllers
             }
 
             // Authorization: Ensure the user is updating their own account
-            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            var userIdFromToken = int.Parse(userIdClaim);
             if (user.Id != userIdFromToken)
             {
                 return Forbid();
@@ -200,7 +237,12 @@ namespace Bliss.Controllers
             }
 
             // Authorization: Ensure the user is deleting their own account
-            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            var userIdFromToken = int.Parse(userIdClaim);
             if (user.Id != userIdFromToken)
             {
                 return Forbid();
@@ -235,7 +277,12 @@ namespace Bliss.Controllers
             }
 
             // Authorization: Ensure the user is changing their own password
-            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            var userIdFromToken = int.Parse(userIdClaim);
             if (user.Id != userIdFromToken)
             {
                 return Forbid();
@@ -277,7 +324,12 @@ namespace Bliss.Controllers
             }
 
             // Authorization: Ensure the user is accessing their own logs
-            var userIdFromToken = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            var userIdFromToken = int.Parse(userIdClaim);
             if (user.Id != userIdFromToken)
             {
                 return Forbid();
@@ -290,6 +342,90 @@ namespace Bliss.Controllers
             var activityLogDTOs = _mapper.Map<List<ActivityLogDTO>>(activityLogs);
 
             return Ok(activityLogDTOs);
+        }
+
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromQuery] string email)
+        {
+            try
+            {
+                // Validate email
+                var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email.ToLower().Trim());
+                if (foundUser != null)
+                {
+                    return BadRequest(new { message = "Email already exists." });
+                }
+
+                // Generate OTP
+                var otp = new Random().Next(100000, 999999).ToString();
+
+                // Store OTP in cache or database (example using DbContext)
+                var otpRecord = new OtpRecord
+                {
+                    Email = email.ToLower().Trim(),
+                    Otp = otp,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(5)
+                };
+                _context.OtpRecords.Add(otpRecord);
+                await _context.SaveChangesAsync();
+
+                // Send email (SMTP setup required)
+                var smtpClient = new SmtpClient(_smtpSettings.Server)
+                {
+                    Port = _smtpSettings.Port,
+                    Credentials = new NetworkCredential(_smtpSettings.SenderEmail, _smtpSettings.SenderPassword),
+                    EnableSsl = _smtpSettings.EnableSsl,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_smtpSettings.SenderEmail ?? throw new ArgumentNullException(nameof(_smtpSettings.SenderEmail))),
+                    Subject = "Bliss Registration OTP Code",
+                    Body = $"Your OTP code is: {otp}. It expires in 5 minutes.",
+                    IsBodyHtml = true,
+                };
+                mailMessage.To.Add(email);
+
+                await smtpClient.SendMailAsync(mailMessage);
+
+                return Ok(new { message = "OTP sent successfully." });
+            }
+            catch (SmtpException smtpEx)
+            {
+                _logger.LogError(smtpEx, "SMTP error when sending OTP.");
+                return StatusCode(500, "SMTP error when sending OTP.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when sending OTP.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp(string email, string otp)
+        {
+            try
+            {
+                var otpRecord = await _context.OtpRecords
+                    .FirstOrDefaultAsync(x => x.Email == email.ToLower().Trim() && x.Otp == otp);
+
+                if (otpRecord == null || otpRecord.ExpiresAt < DateTime.UtcNow)
+                {
+                    return BadRequest(new { message = "Invalid or expired OTP." });
+                }
+
+                // OTP is valid, remove it from the database or cache
+                _context.OtpRecords.Remove(otpRecord);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "OTP verified successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when verifying OTP.");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         private string CreateToken(User user)
