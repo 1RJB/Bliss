@@ -61,6 +61,9 @@ namespace Bliss.Controllers
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
+                // Log activity
+                await LogActivity(user.Id, "User registered");
+
                 return Ok();
             }
             catch (Exception ex)
@@ -70,10 +73,9 @@ namespace Bliss.Controllers
             }
         }
 
-
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        public IActionResult Login(LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
             try
             {
@@ -93,6 +95,9 @@ namespace Bliss.Controllers
                 {
                     return BadRequest(new { message });
                 }
+
+                // Log activity
+                await LogActivity(foundUser.Id, "User logged in");
 
                 // Return user info
                 UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
@@ -194,6 +199,10 @@ namespace Bliss.Controllers
             {
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
+
+                // Log activity
+                await LogActivity(user.Id, "User updated");
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -229,6 +238,10 @@ namespace Bliss.Controllers
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+
+                // Log activity
+                await LogActivity(user.Id, "User deleted");
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -281,6 +294,10 @@ namespace Bliss.Controllers
             {
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
+
+                // Log activity
+                await LogActivity(user.Id, "Password changed");
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -441,6 +458,18 @@ namespace Bliss.Controllers
             string token = tokenHandler.WriteToken(securityToken);
 
             return token;
+        }
+
+        private async Task LogActivity(int userId, string action)
+        {
+            var activityLog = new ActivityLog
+            {
+                UserId = userId,
+                Action = action,
+                Timestamp = DateTime.UtcNow
+            };
+            _context.ActivityLogs.Add(activityLog);
+            await _context.SaveChangesAsync();
         }
     }
 }
