@@ -20,13 +20,15 @@ namespace Bliss.Controllers
         IConfiguration configuration,
         IMapper mapper,
         ILogger<UserController> logger,
-        IOptions<SmtpSettings> smtpSettings) : ControllerBase
+        IOptions<SmtpSettings> smtpSettings,
+        IPGeolocationService ipGeolocationService) : ControllerBase
     {
         private readonly MyDbContext _context = context;
         private readonly IConfiguration _configuration = configuration;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<UserController> _logger = logger;
         private readonly SmtpSettings _smtpSettings = smtpSettings.Value;
+        private readonly IPGeolocationService _ipGeolocationService = ipGeolocationService;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
@@ -62,7 +64,7 @@ namespace Bliss.Controllers
                 await _context.SaveChangesAsync();
 
                 // Log activity
-                await LogActivity(user.Id, "User registered");
+                await LogActivity(user.Id, "User registered", HttpContext.Connection.RemoteIpAddress.ToString());
 
                 return Ok();
             }
@@ -97,7 +99,7 @@ namespace Bliss.Controllers
                 }
 
                 // Log activity
-                await LogActivity(foundUser.Id, "User logged in");
+                await LogActivity(foundUser.Id, "User logged in", HttpContext.Connection.RemoteIpAddress.ToString());
 
                 // Return user info
                 UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
@@ -201,7 +203,7 @@ namespace Bliss.Controllers
                 await _context.SaveChangesAsync();
 
                 // Log activity
-                await LogActivity(user.Id, "User updated");
+                await LogActivity(user.Id, "User updated", HttpContext.Connection.RemoteIpAddress.ToString());
 
                 return NoContent();
             }
@@ -240,7 +242,7 @@ namespace Bliss.Controllers
                 await _context.SaveChangesAsync();
 
                 // Log activity
-                await LogActivity(user.Id, "User deleted");
+                await LogActivity(user.Id, "User deleted", HttpContext.Connection.RemoteIpAddress.ToString());
 
                 return NoContent();
             }
@@ -296,7 +298,7 @@ namespace Bliss.Controllers
                 await _context.SaveChangesAsync();
 
                 // Log activity
-                await LogActivity(user.Id, "Password changed");
+                await LogActivity(user.Id, "Password changed", HttpContext.Connection.RemoteIpAddress.ToString());
 
                 return NoContent();
             }
@@ -460,14 +462,21 @@ namespace Bliss.Controllers
             return token;
         }
 
-        private async Task LogActivity(int userId, string action)
+        private async Task LogActivity(int userId, string action, string ipAddress)
         {
+            var geolocation = await _ipGeolocationService.GetGeolocation(ipAddress);
+
             var activityLog = new ActivityLog
             {
                 UserId = userId,
                 Action = action,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow,
+                IpAddress = ipAddress,
+                Location = $"{geolocation.City}, {geolocation.Country}",
+                Latitude = geolocation.Latitude,
+                Longitude = geolocation.Longitude
             };
+
             _context.ActivityLogs.Add(activityLog);
             await _context.SaveChangesAsync();
         }
