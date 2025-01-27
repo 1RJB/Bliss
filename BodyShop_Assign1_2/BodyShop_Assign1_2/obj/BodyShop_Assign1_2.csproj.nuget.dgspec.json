@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj": {}
+    "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj": {}
   },
   "projects": {
-    "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj": {
+    "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
+        "projectUniqueName": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
         "projectName": "BodyShop_Assign1_2",
-        "projectPath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
+        "projectPath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
         "packagesPath": "C:\\Users\\eliza\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\obj\\",
+        "outputPath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

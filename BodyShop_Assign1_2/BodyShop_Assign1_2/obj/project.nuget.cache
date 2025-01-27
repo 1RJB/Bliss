@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6cra2twaNGM=",
+  "dgSpecHash": "rSSURhjDCtU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
+  "projectFilePath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\eliza\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\eliza\\.nuget\\packages\\bouncycastle.cryptography\\2.3.1\\bouncycastle.cryptography.2.3.1.nupkg.sha512",
