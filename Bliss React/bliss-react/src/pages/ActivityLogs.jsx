@@ -38,7 +38,17 @@ function ActivityLogs() {
             <List>
                 {logs.map(log => (
                     <ListItem key={log.id}>
-                        <ListItemText primary={log.action} secondary={new Date(log.timestamp).toLocaleString()} />
+                        <ListItemText primary={log.action} secondary={new Date(log.timestamp).toLocaleString()}  />
+                        <iframe
+                            width="300"
+                            height="200"
+                            style={{border:0}}
+                            src={`https://www.google.com/maps?q=${log.latitude},${log.longitude}&hl=es;z=14&output=embed`}
+                            allowFullScreen>
+                        </iframe>
+                        <Typography variant="body2" color="textSecondary">
+                            {log.location}
+                        </Typography>
                     </ListItem>
                 ))}
             </List>
