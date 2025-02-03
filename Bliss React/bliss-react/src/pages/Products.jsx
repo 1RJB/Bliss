@@ -23,9 +23,15 @@ function Products() {
     const [productList, setProductList] = useState([]);
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState({ type: '', price: [0, 500] });
+    const [currency, setCurrency] = useState("SGD");
+    const [convertedPrices, setConvertedPrices] = useState({});
     const { user } = useContext(UserContext);
 
-    // Fetch products from the backend with filters applied
+    useEffect(() => {
+        getProducts();
+    }, [filters, search]); // Auto-fetch when filters change
+
+    // Fetch Products
     const getProducts = () => {
         const { type, price } = filters;
         const query = `/product?search=${search}&type=${type}&priceMin=${price[0]}&priceMax=${price[1]}`;
@@ -33,15 +39,35 @@ function Products() {
         http.get(query)
             .then((res) => {
                 setProductList(res.data);
+                convertPrices(res.data, currency);
             })
             .catch((err) => {
                 console.error("Error fetching products:", err);
             });
     };
 
-    useEffect(() => {
-        getProducts();
-    }, [filters, search]); // ✅ Auto-fetch when filters change
+    // Convert Prices
+    const convertPrices = async (products, toCurrency) => {
+        let updatedPrices = {};
+        for (let product of products) {
+            try {
+                const res = await http.get(`/currency/convert`, {
+                    params: { amount: product.price, from: "SGD", to: toCurrency }
+                });
+                updatedPrices[product.id] = res.data.converted.toFixed(2);
+            } catch (error) {
+                console.error("Error converting currency:", error);
+            }
+        }
+        setConvertedPrices(updatedPrices);
+    };
+    
+
+    // Handle Currency Change
+    const handleCurrencyChange = (event) => {
+        setCurrency(event.target.value);
+        convertPrices(productList, event.target.value);
+    };
 
     const onSearchKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -64,7 +90,21 @@ function Products() {
                 <Typography variant="h6">Filters</Typography>
                 <Divider sx={{ my: 2 }} />
 
-                {/* ✅ Replace Checkboxes with a Dropdown */}
+                {/* Currency Selector */}
+                <Typography variant="body1">Currency</Typography>
+                <Select
+                    value={currency}
+                    onChange={handleCurrencyChange}
+                    displayEmpty
+                    fullWidth
+                    sx={{ my: 2 }}
+                >
+                    <MenuItem value="SGD">SGD</MenuItem>
+                    <MenuItem value="USD">USD</MenuItem>
+                    <MenuItem value="EUR">EUR</MenuItem>
+                    <MenuItem value="MYR">MYR</MenuItem>
+                </Select>
+
                 <Typography variant="body1">Product Type</Typography>
                 <Select
                     value={filters.type}
@@ -150,12 +190,13 @@ function Products() {
                                         {product.description}
                                     </Typography>
                                     <Typography variant="h6" color="primary">
-                                        ${product.price}
+                                        {convertedPrices[product.id] 
+                                            ? `${convertedPrices[product.id]} ${currency}` 
+                                            : `${product.price} SGD`}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold', mt: 1 }}>
-                                        Type: {product.type} {/* ✅ Show Product Type */}
+                                        Type: {product.type} {/* Show Product Type */}
                                     </Typography>
-
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'space-between' }}>
                                     <Button variant="contained" color="primary" startIcon={<AddShoppingCart />}>
