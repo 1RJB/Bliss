@@ -12,8 +12,5 @@ obj/
 .DS_Store
 
 # project's static files in wwwroot
-Bliss/wwwroot/uploads/*
-!Bliss/wwwroot/uploads/README.md
-
-# Node modules
-node_modules/
+LearningAPI/wwwroot/uploads/*
+!LearningAPI/wwwroot/uploads/README.md

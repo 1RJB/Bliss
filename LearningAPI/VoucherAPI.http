@@ -1,0 +1,107 @@
+﻿@BlissAPI_HostAddress = https://localhost:7004
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwidW5pcXVlX25hbWUiOiJMaSBIYWl5dW4iLCJlbWFpbCI6ImxpX2hhaXl1bkBueXAuZWR1LnNnIiwibmJmIjoxNzM2ODE1NDc0LCJleHAiOjE3Mzk0MDc0NzQsImlhdCI6MTczNjgxNTQ3NH0.XGR8SMZF-7HPLxgXwumFWdHRdRVQtS6ppE4IWscYNf8
+
+### Get all vouchers with optional search
+GET {{BlissAPI_HostAddress}}/voucher?search=
+
+### Get a specific voucher by ID
+GET {{BlissAPI_HostAddress}}/voucher/6
+
+### Register a new user
+POST {{BlissAPI_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+ "name": "Li Haiyun",
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+### User login
+POST {{BlissAPI_HostAddress}}/user/login
+Content-Type: application/json
+
+{
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+### Authenticate user
+GET {{BlissAPI_HostAddress}}/user/auth
+Authorization: Bearer {{token}}
+
+### Create a new item voucher
+POST {{BlissAPI_HostAddress}}/voucher
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "Item Voucher",
+ "description": "Get a free item",
+ "imageFile": "item.png",
+ "cost": 100,
+ "validDuration": 30,
+ "memberType": 0,
+ "quantity": 10,
+ "voucherType": 0,
+ "itemName": "Book",
+ "itemQuantity": 1
+}
+
+### Create a new discount voucher
+POST {{BlissAPI_HostAddress}}/voucher
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "Discount Voucher",
+ "description": "Get a discount",
+ "imageFile": "discount.png",
+ "cost": 150,
+ "validDuration": 60,
+ "memberType": 1,
+ "quantity": 5,
+ "voucherType": 1,
+ "discountPercentage": 20.0,
+ "maxAmount": 50.0
+}
+
+### Create a new gift card voucher
+POST {{BlissAPI_HostAddress}}/voucher
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "Gift Card Voucher",
+ "description": "Get a gift card",
+ "imageFile": "giftcard.png",
+ "cost": 200,
+ "validDuration": 90,
+ "memberType": 2,
+ "quantity": 3,
+ "voucherType": 2,
+ "value": 100.0
+}
+
+### Update an existing voucher by ID
+PUT {{BlissAPI_HostAddress}}/voucher/5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "Updated Voucher",
+ "description": "Updated description",
+ "imageFile": "updated_image.png",
+ "status": 1,
+ "cost": 150,
+ "validDuration": 60,
+ "quantity": 5,
+ "memberType": 2,
+ "voucherType": 1,
+ "discountPercentage": 20.0,
+ "maxAmount": 50.0
+}
+
+### Delete a voucher by ID
+DELETE {{BlissAPI_HostAddress}}/voucher/2
+Authorization: Bearer {{token}}
