@@ -18,7 +18,14 @@ namespace Bliss
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ✅ Define UserVoucher Relationship
+
+            modelBuilder.Entity<User>();
+            modelBuilder.Entity<Voucher>();
+            modelBuilder.Entity<ItemVoucher>();
+            modelBuilder.Entity<DiscountVoucher>();
+            modelBuilder.Entity<GiftCardVoucher>();
+
+
             modelBuilder.Entity<UserVoucher>()
                 .HasKey(uv => new { uv.UserId, uv.VoucherId });
 
@@ -34,19 +41,16 @@ namespace Bliss
                 .HasForeignKey(uv => uv.VoucherId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ✅ Configure One-to-One Relationship (User & RewardPoints)
             modelBuilder.Entity<User>()
                 .HasOne(u => u.RewardPoints)
                 .WithOne()
                 .HasForeignKey<RewardPoints>(rp => rp.UserId);
 
-            // ✅ Configure One-to-Many Relationship (User & Membership)
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Membership)
                 .WithMany()
                 .HasForeignKey(u => u.MembershipId);
 
-            // ✅ Seed Membership Data
             modelBuilder.Entity<Membership>().HasData(
                 new Membership
                 {
