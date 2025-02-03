@@ -466,6 +466,12 @@ namespace Bliss.Controllers
         {
             var geolocation = await _ipGeolocationService.GetGeolocation(ipAddress);
 
+            if (ipAddress == "::1") // Localhost IPv6
+            {
+                // Use a mock IP address for development environment
+                ipAddress = "8.8.8.8"; // Example: Google's public DNS IP
+            }
+
             var activityLog = new ActivityLog
             {
                 UserId = userId,
