@@ -106,3 +106,33 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{Bliss_HostAddress}}/transaction
+
+###
+
+POST {{Bliss_HostAddress}}/transaction
+Content-Type: application/json
+
+{
+  //Transaction
+}
+
+###
+
+DELETE {{Bliss_HostAddress}}/transaction/{{id}}
+
+###
+
+GET {{Bliss_HostAddress}}/transaction/{{id}}
+
+###
+
+PUT {{Bliss_HostAddress}}/transaction/{{id}}
+Content-Type: application/json
+
+{
+  //Transaction
+}
+
+###
