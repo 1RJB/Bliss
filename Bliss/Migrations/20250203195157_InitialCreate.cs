@@ -9,7 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Bliss.Migrations
 {
     /// <inheritdoc />
-    public partial class TryingRegister : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,23 @@ namespace Bliss.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SupportTickets", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    transactionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    userID = table.Column<int>(type: "int", nullable: false),
+                    transactionDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.transactionID);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -195,22 +212,15 @@ namespace Bliss.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
+                    name = table.Column<string>(type: "longtext", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    ImageFile = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    HomepageId = table.Column<int>(type: "int", nullable: true)
+                    ImageFile = table.Column<string>(type: "longtext", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_Homepages_HomepageId",
-                        column: x => x.HomepageId,
-                        principalTable: "Homepages",
-                        principalColumn: "HomepageId",
-                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Products_Users_UserId",
                         column: x => x.UserId,
@@ -333,37 +343,59 @@ namespace Bliss.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "HomepageProducts",
                 columns: table => new
                 {
-                    transactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    userID = table.Column<int>(type: "int", nullable: false),
-                    productID = table.Column<int>(type: "int", nullable: false),
-                    quantity = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    rewardsPoints = table.Column<int>(type: "int", nullable: true),
-                    pointsEarned = table.Column<int>(type: "int", nullable: true),
-                    discountApplied = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    finalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    transactionDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    HomepagesHomepageId = table.Column<int>(type: "int", nullable: false),
+                    ProductsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.transactionID);
+                    table.PrimaryKey("PK_HomepageProducts", x => new { x.HomepagesHomepageId, x.ProductsId });
                     table.ForeignKey(
-                        name: "FK_Transactions_Products_productID",
-                        column: x => x.productID,
+                        name: "FK_HomepageProducts_Homepages_HomepagesHomepageId",
+                        column: x => x.HomepagesHomepageId,
+                        principalTable: "Homepages",
+                        principalColumn: "HomepageId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HomepageProducts_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TransactionItems",
+                columns: table => new
+                {
+                    TransactionItemId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    TransactionId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RewardsPoints = table.Column<int>(type: "int", nullable: true),
+                    PointsEarned = table.Column<int>(type: "int", nullable: true),
+                    DiscountApplied = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    FinalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionItems", x => x.TransactionItemId);
+                    table.ForeignKey(
+                        name: "FK_TransactionItems_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transactions_Users_userID",
-                        column: x => x.userID,
-                        principalTable: "Users",
-                        principalColumn: "Id",
+                        name: "FK_TransactionItems_Transactions_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "Transactions",
+                        principalColumn: "transactionID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -400,9 +432,9 @@ namespace Bliss.Migrations
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5640), new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5636), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650), new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652), new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652), 2 }
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1084), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1082), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093), 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -431,9 +463,9 @@ namespace Bliss.Migrations
                 column: "SupportTicketId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_HomepageId",
-                table: "Products",
-                column: "HomepageId");
+                name: "IX_HomepageProducts_ProductsId",
+                table: "HomepageProducts",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_UserId",
@@ -441,14 +473,14 @@ namespace Bliss.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_productID",
-                table: "Transactions",
-                column: "productID");
+                name: "IX_TransactionItems_ProductId",
+                table: "TransactionItems",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_userID",
-                table: "Transactions",
-                column: "userID");
+                name: "IX_TransactionItems_TransactionId",
+                table: "TransactionItems",
+                column: "TransactionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_MembershipId",
@@ -484,13 +516,16 @@ namespace Bliss.Migrations
                 name: "Chats");
 
             migrationBuilder.DropTable(
+                name: "HomepageProducts");
+
+            migrationBuilder.DropTable(
                 name: "OtpRecords");
 
             migrationBuilder.DropTable(
                 name: "RewardPoints");
 
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "TransactionItems");
 
             migrationBuilder.DropTable(
                 name: "UserVouchers");
@@ -505,13 +540,16 @@ namespace Bliss.Migrations
                 name: "SupportTickets");
 
             migrationBuilder.DropTable(
+                name: "Homepages");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Vouchers");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Homepages");
+                name: "Vouchers");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250203161129_TryingRegister")]
-    partial class TryingRegister
+    [Migration("20250203195157_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,8 +172,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5640),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5636),
+                            EndDate = new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1084),
+                            StartDate = new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1082),
                             Type = 0
                         },
                         new
@@ -181,8 +181,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650),
+                            EndDate = new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091),
+                            StartDate = new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091),
                             Type = 1
                         },
                         new
@@ -190,8 +190,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652),
+                            EndDate = new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093),
+                            StartDate = new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093),
                             Type = 2
                         });
                 });
@@ -226,15 +226,10 @@ namespace Bliss.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int?>("HomepageId")
-                        .HasColumnType("int");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ImageFile")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -244,12 +239,9 @@ namespace Bliss.Migrations
 
                     b.Property<string>("name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HomepageId");
 
                     b.HasIndex("UserId");
 
@@ -322,27 +314,6 @@ namespace Bliss.Migrations
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<decimal?>("discountApplied")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("finalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("pointsEarned")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("productID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("rewardsPoints")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("transactionDate")
                         .HasColumnType("datetime(6)");
 
@@ -354,11 +325,46 @@ namespace Bliss.Migrations
 
                     b.HasKey("transactionID");
 
-                    b.HasIndex("productID");
-
-                    b.HasIndex("userID");
-
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Bliss.Models.TransactionItem", b =>
+                {
+                    b.Property<int>("TransactionItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("DiscountApplied")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("FinalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PointsEarned")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RewardsPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TransactionItemId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("TransactionItems");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>
@@ -555,6 +561,21 @@ namespace Bliss.Migrations
                     b.ToTable("Chats");
                 });
 
+            modelBuilder.Entity("HomepageProduct", b =>
+                {
+                    b.Property<int>("HomepagesHomepageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("HomepagesHomepageId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("HomepageProducts", (string)null);
+                });
+
             modelBuilder.Entity("Bliss.Models.DiscountVoucher", b =>
                 {
                     b.HasBaseType("Bliss.Models.Voucher");
@@ -635,18 +656,11 @@ namespace Bliss.Migrations
 
             modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
-                    b.HasOne("Bliss.Models.Homepage", "Homepage")
-                        .WithMany("Products")
-                        .HasForeignKey("HomepageId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Bliss.Models.User", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Homepage");
 
                     b.Navigation("User");
                 });
@@ -660,19 +674,23 @@ namespace Bliss.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Bliss.Models.Transaction", b =>
+            modelBuilder.Entity("Bliss.Models.TransactionItem", b =>
                 {
-                    b.HasOne("Bliss.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("productID")
+                    b.HasOne("Bliss.Models.Product", "Product")
+                        .WithMany("TransactionItems")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bliss.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("userID")
+                    b.HasOne("Bliss.Models.Transaction", "Transaction")
+                        .WithMany("TransactionItems")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>
@@ -738,9 +756,29 @@ namespace Bliss.Migrations
                     b.Navigation("SupportTicket");
                 });
 
-            modelBuilder.Entity("Bliss.Models.Homepage", b =>
+            modelBuilder.Entity("HomepageProduct", b =>
                 {
-                    b.Navigation("Products");
+                    b.HasOne("Bliss.Models.Homepage", null)
+                        .WithMany()
+                        .HasForeignKey("HomepagesHomepageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bliss.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Bliss.Models.Product", b =>
+                {
+                    b.Navigation("TransactionItems");
+                });
+
+            modelBuilder.Entity("Bliss.Models.Transaction", b =>
+                {
+                    b.Navigation("TransactionItems");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>

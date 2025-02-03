@@ -122,15 +122,17 @@ namespace Bliss.Controllers
         [HttpPost("{id}/products")]
         public IActionResult AddProductToHomepage(int id, [FromBody] Product product)
         {
-            var homepage = _context.Homepages.Find(id);
+            // Retrieve the homepage with its Products collection loaded
+            var homepage = _context.Homepages
+                .Include(h => h.Products)
+                .FirstOrDefault(h => h.HomepageId == id);
             if (homepage == null)
             {
                 return NotFound("Homepage not found.");
             }
 
-            // Associate product with the homepage
-            product.HomepageId = id;
-            _context.Products.Add(product);
+            // Instead of setting a non-existent HomepageId, add the product to the homepage's Products collection
+            homepage.Products.Add(product);
             _context.SaveChanges();
 
             Console.WriteLine($"Added product to homepage with ID: {id}");

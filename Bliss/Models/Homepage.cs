@@ -39,7 +39,9 @@ namespace Bliss.Models
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        // One-to-Many Relationship
+
         public List<Product> Products { get; set; } = new List<Product>();
+
+
     }
 }

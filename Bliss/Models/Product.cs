@@ -1,29 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Bliss.Models
+﻿namespace Bliss.Models
 {
     public class Product
     {
         public int Id { get; set; }
 
-        [Required, MaxLength(100)]
+        // Example properties (adjust as needed)
         public string name { get; set; } = string.Empty;
-
-        [Required, MaxLength(500)]
         public string Description { get; set; } = string.Empty;
-
-        [Required]
         public int Price { get; set; }
-
-        [MaxLength(20)]
         public string? ImageFile { get; set; }
-
-        // Foreign key for User (owner)
         public int UserId { get; set; }
+
+        // Add the User navigation property
         public User? User { get; set; }
 
-        // Foreign key for Homepage (optional)
-        public int? HomepageId { get; set; }
-        public Homepage? Homepage { get; set; }
+        // Navigation property for many-to-many with Homepages
+        public List<Homepage> Homepages { get; set; } = new List<Homepage>();
+
+        // Navigation property for many-to-many with Transactions via TransactionItems
+        public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
     }
 }
