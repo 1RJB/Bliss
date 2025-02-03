@@ -2,7 +2,6 @@
 using Bliss.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Bliss.Controllers
 {
     [ApiController]
@@ -16,14 +15,12 @@ namespace Bliss.Controllers
         public IActionResult GetAll([FromQuery] string? search)
         {
             IQueryable<Homepage> query = _context.Homepages;
-
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(h => h.WelcomeMessage.Contains(search) ||
                                          h.FeaturedProducts.Contains(search) ||
                                          h.BannerImages.Contains(search));
             }
-
             var list = query.OrderByDescending(h => h.CreatedAt).ToList();
             Console.WriteLine($"Retrieved {list.Count} homepage records.");
             return Ok(list);
@@ -43,23 +40,21 @@ namespace Bliss.Controllers
             return Ok(homepage);
         }
 
+        // POST /Homepage
         [HttpPost]
-        public IActionResult AddHomepage([FromBody] HomepageCreateDto dto)
+        public IActionResult AddHomepage([FromBody] Homepage homepage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var now = DateTime.Now;
-            var homepage = new Homepage
-            {
-                FeaturedProducts = dto.FeaturedProducts.Trim(),
-                BannerImages = dto.BannerImages.Trim(),
-                WelcomeMessage = dto.WelcomeMessage.Trim(),
-                CreatedAt = now,
-                UpdatedAt = now
-            };
+            // Trim string properties and set timestamps
+            homepage.FeaturedProducts = homepage.FeaturedProducts.Trim();
+            homepage.BannerImages = homepage.BannerImages.Trim();
+            homepage.WelcomeMessage = homepage.WelcomeMessage.Trim();
+            homepage.CreatedAt = DateTime.Now;
+            homepage.UpdatedAt = DateTime.Now;
 
             _context.Homepages.Add(homepage);
             _context.SaveChanges();
@@ -77,13 +72,15 @@ namespace Bliss.Controllers
                 return NotFound($"Homepage with ID {id} not found.");
             }
 
-            existingHomepage.WelcomeMessage = homepage.WelcomeMessage.Trim();
+            // Update properties (trim strings and update timestamp)
             existingHomepage.FeaturedProducts = homepage.FeaturedProducts.Trim();
             existingHomepage.BannerImages = homepage.BannerImages.Trim();
+            existingHomepage.WelcomeMessage = homepage.WelcomeMessage.Trim();
             existingHomepage.UpdatedAt = DateTime.Now;
 
             _context.Homepages.Update(existingHomepage);
             _context.SaveChanges();
+
             Console.WriteLine($"Updated homepage record with ID: {id}");
             return Ok(existingHomepage);
         }
@@ -100,6 +97,7 @@ namespace Bliss.Controllers
 
             _context.Homepages.Remove(homepage);
             _context.SaveChanges();
+
             Console.WriteLine($"Deleted homepage record with ID: {id}");
             return Ok($"Homepage with ID {id} deleted successfully.");
         }
@@ -134,6 +132,7 @@ namespace Bliss.Controllers
             product.HomepageId = id;
             _context.Products.Add(product);
             _context.SaveChanges();
+
             Console.WriteLine($"Added product to homepage with ID: {id}");
             return Ok(product);
         }
