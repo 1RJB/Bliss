@@ -17,26 +17,27 @@ import ChangePassword from './pages/ChangePassword';
 import ActivityLogs from './pages/ActivityLogs';
 import http from './http';
 import UserContext from './contexts/UserContext';
-import Voucher from './pages/Vouchers';
 
 function App() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        if (localStorage.getItem("accessToken")) {
-            http.get('/user/auth').then((res) => {
-                setUser(res.data.user);
-            }).catch(() => {
-                localStorage.clear();
-                setUser(null);
-            });
+        if (localStorage.getItem('accessToken')) {
+            http.get('/User/auth')
+                .then(res => {
+                    setUser(res.data.user);
+                })
+                .catch(() => {
+                    localStorage.clear();
+                    setUser(null);
+                });
         }
     }, []);
 
     const logout = () => {
         localStorage.clear();
         setUser(null);
-        window.location = "/";
+        window.location = '/';
     };
 
     return (
@@ -53,9 +54,6 @@ function App() {
                                 </Link>
                                 <Link to="/products">
                                     <Typography>Products</Typography>
-                                </Link>
-                                <Link to="/voucher">
-                                    <Typography>Voucher</Typography>
                                 </Link>
                                 <Link to="/users">
                                     <Typography>Users</Typography>
@@ -96,8 +94,6 @@ function App() {
                             <Route path="/edituser/:id" element={<EditUser />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/activity-logs" element={<ActivityLogs />} />
-                            <Route path="/form" element={<MyForm />} />
-                            <Route path="/voucher" element={<Voucher />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>
