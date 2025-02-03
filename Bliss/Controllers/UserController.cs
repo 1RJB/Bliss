@@ -56,7 +56,8 @@ namespace Bliss.Controllers
                     Email = request.Email,
                     Password = passwordHash,
                     CreatedAt = now,
-                    UpdatedAt = now
+                    UpdatedAt = now,
+                    MembershipId = 1
                 };
 
                 // Add user
