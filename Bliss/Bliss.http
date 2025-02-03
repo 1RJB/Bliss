@@ -61,3 +61,23 @@ Authorization: Bearer {{token}}
 
 ###
 
+
+POST {{Bliss_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+  "name": "Li Haiyun",
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123",
+ "otp" : 
+}
+
+###
+
+
+###
+
+@email=string
+POST {{Bliss_HostAddress}}/user/send-otp?email={{email}}
+
+###
