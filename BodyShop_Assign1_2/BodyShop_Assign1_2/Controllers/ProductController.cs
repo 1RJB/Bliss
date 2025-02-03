@@ -3,17 +3,20 @@ using BodyShop_Assign1_2.Models;
 using System.Security.Claims;
 using Microsoft. AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace BodyShop_Assign1_2.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductController(MyDbContext context) : ControllerBase
+    public class ProductController(MyDbContext context, IMapper mapper) : ControllerBase
     {
         private readonly MyDbContext _context = context;
-        //private static readonly List<Product> list = [];
+        private readonly IMapper _mapper = mapper;
+        
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<TutorialDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search)
         {
             IQueryable<Product> result = _context.Products.Include(t => t.User);

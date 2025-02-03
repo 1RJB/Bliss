@@ -23,6 +23,10 @@ namespace BodyShop_Assign1_2.Models
         // navigation  to represent 1-many rs
         [JsonIgnore]
         public List<Product>? Products { get; set;  }
-        
+
+        //one user has many wishlists
+        [JsonIgnore]
+        public List<Wishlist>? Wishlists { get; set; }
+
     }
 }

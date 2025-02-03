@@ -17,5 +17,10 @@ namespace BodyShop_Assign1_2
 
         public required DbSet<Product> Products { get; set; }
         public required DbSet<User> Users { get; set; }
+
+        public required DbSet<Cart> Carts { get; set; }
+        public required DbSet<CartItem> CartItems { get; set; }
+
+        public required DbSet<Wishlist> Wishlists { get; set; }
     }
 }

@@ -133,3 +133,4 @@ C:\Users\eliza\source\repos\BodyShop_Assign1_2\BodyShop_Assign1_2\bin\Debug\net8
 C:\Users\eliza\source\repos\BodyShop_Assign1_2\BodyShop_Assign1_2\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\eliza\source\repos\BodyShop_Assign1_2\BodyShop_Assign1_2\bin\Debug\net8.0\BodyShop_Assign1_2.staticwebassets.runtime.json
 C:\Users\eliza\source\repos\BodyShop_Assign1_2\BodyShop_Assign1_2\bin\Debug\net8.0\Nanoid.dll
+C:\Users\eliza\source\repos\BodyShop_Assign1_2\BodyShop_Assign1_2\bin\Debug\net8.0\AutoMapper.dll

@@ -24,16 +24,16 @@ Authorization: Bearer {{token}}
 
 
 @id=0
-GET {{BodyShop_Assign1_2_HostAddress}}/product/2
+GET {{BodyShop_Assign1_2_HostAddress}}/product
 
 ###
 
-PUT {{BodyShop_Assign1_2_HostAddress}}/product/1
+PUT {{BodyShop_Assign1_2_HostAddress}}/product/3
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name" : "Testing 3 ",
+  "name" : "Why isit not working ",
   "description": "cold day ",
   "price" : 34
 }
@@ -69,4 +69,48 @@ Content-Type: application/json
 GET {{BodyShop_Assign1_2_HostAddress}}/user/auth
 Authorization: Bearer {{token}}
 
+
+
+###
+
+GET {{BodyShop_Assign1_2_HostAddress}}/cart
+
+###
+
+
+GET {{BodyShop_Assign1_2_HostAddress}}/wishlist
+
+###
+
+POST {{BodyShop_Assign1_2_HostAddress}}/wishlist
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "wishlist test 4",
+  "description": "Cold day :)"
+}
+
+###
+
+
+
+PUT {{BodyShop_Assign1_2_HostAddress}}/wishlist/5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "wishlist test update",
+  "description": "Cold day! :)"
+}
+
+###
+
+DELETE {{BodyShop_Assign1_2_HostAddress}}/wishlist/3
+
+
+###
+
+@search=string
+GET {{BodyShop_Assign1_2_HostAddress}}/wishlist
 ###
