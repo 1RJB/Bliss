@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250203125435_OTPCheck")]
-    partial class OTPCheck
+    [Migration("20250203142307_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,6 +108,38 @@ namespace Bliss.Migrations
                     b.ToTable("CartItems");
                 });
 
+            modelBuilder.Entity("Bliss.Models.Homepage", b =>
+                {
+                    b.Property<int>("HomepageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("BannerImages")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("FeaturedProducts")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("WelcomeMessage")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("HomepageId");
+
+                    b.ToTable("Homepages");
+                });
+
             modelBuilder.Entity("Bliss.Models.Membership", b =>
                 {
                     b.Property<int>("Id")
@@ -140,8 +172,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8791),
-                            StartDate = new DateTime(2025, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8788),
+                            EndDate = new DateTime(2026, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1929),
+                            StartDate = new DateTime(2025, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1928),
                             Type = 0
                         },
                         new
@@ -149,8 +181,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8799),
-                            StartDate = new DateTime(2025, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8799),
+                            EndDate = new DateTime(2026, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1936),
+                            StartDate = new DateTime(2025, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1935),
                             Type = 1
                         },
                         new
@@ -158,8 +190,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8801),
-                            StartDate = new DateTime(2025, 2, 3, 12, 54, 34, 513, DateTimeKind.Utc).AddTicks(8801),
+                            EndDate = new DateTime(2026, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1937),
+                            StartDate = new DateTime(2025, 2, 3, 14, 23, 6, 861, DateTimeKind.Utc).AddTicks(1937),
                             Type = 2
                         });
                 });
@@ -197,6 +229,9 @@ namespace Bliss.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<int?>("HomepageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageFile")
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
@@ -213,6 +248,8 @@ namespace Bliss.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HomepageId");
 
                     b.HasIndex("UserId");
 
@@ -274,6 +311,54 @@ namespace Bliss.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SupportTickets");
+                });
+
+            modelBuilder.Entity("Bliss.Models.Transaction", b =>
+                {
+                    b.Property<int>("transactionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal?>("discountApplied")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("finalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("pointsEarned")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("productID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("rewardsPoints")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("transactionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("userID")
+                        .HasColumnType("int");
+
+                    b.HasKey("transactionID");
+
+                    b.HasIndex("productID");
+
+                    b.HasIndex("userID");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>
@@ -550,11 +635,18 @@ namespace Bliss.Migrations
 
             modelBuilder.Entity("Bliss.Models.Product", b =>
                 {
+                    b.HasOne("Bliss.Models.Homepage", "Homepage")
+                        .WithMany("Products")
+                        .HasForeignKey("HomepageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Bliss.Models.User", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Homepage");
 
                     b.Navigation("User");
                 });
@@ -564,6 +656,21 @@ namespace Bliss.Migrations
                     b.HasOne("Bliss.Models.User", null)
                         .WithOne("RewardPoints")
                         .HasForeignKey("Bliss.Models.RewardPoints", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Bliss.Models.Transaction", b =>
+                {
+                    b.HasOne("Bliss.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("productID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bliss.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -629,6 +736,11 @@ namespace Bliss.Migrations
                         .IsRequired();
 
                     b.Navigation("SupportTicket");
+                });
+
+            modelBuilder.Entity("Bliss.Models.Homepage", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Bliss.Models.User", b =>

@@ -76,8 +76,43 @@ namespace Bliss
                     EndDate = DateTime.UtcNow.AddYears(1)
                 }
             );
+
+            // ------------------------------
+            // New Configurations for Homepage & Transaction
+            // ------------------------------
+
+            // Configure one-to-many relationship: Homepage <--> Product
+            // Assumes Product has a nullable HomepageId property and a navigation property "Homepage"
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Homepage)
+                .WithMany(h => h.Products)
+                .HasForeignKey(p => p.HomepageId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Transaction relationships:
+            // Link Transaction.userID to User (without a navigation property on Transaction)
+            modelBuilder.Entity<Transaction>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(t => t.userID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Link Transaction.productID to Product (without a navigation property on Transaction)
+            modelBuilder.Entity<Transaction>()
+                .HasOne<Product>()
+                .WithMany()
+                .HasForeignKey(t => t.productID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicitly register all voucher-related entities per Simon's instructions
+            modelBuilder.Entity<User>();
+            modelBuilder.Entity<Voucher>();
+            modelBuilder.Entity<ItemVoucher>();
+            modelBuilder.Entity<DiscountVoucher>();
+            modelBuilder.Entity<GiftCardVoucher>();
         }
 
+        // Existing DbSets
         public required DbSet<Product> Products { get; set; }
         public required DbSet<User> Users { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
@@ -91,5 +126,9 @@ namespace Bliss
         public required DbSet<Membership> Memberships { get; set; }
         public required DbSet<RewardPoints> RewardPoints { get; set; }
         public required DbSet<UserVoucher> UserVouchers { get; set; }
+
+        // New DbSets for Homepage and Transaction
+        public DbSet<Homepage> Homepages { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }
