@@ -45,3 +45,4 @@ appsettings.json
 *.sw?
 
 .vercel
+/Bliss/appsettings.*
