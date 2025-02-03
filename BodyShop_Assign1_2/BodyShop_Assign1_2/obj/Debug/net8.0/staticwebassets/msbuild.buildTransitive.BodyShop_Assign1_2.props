@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\BodyShop_Assign1_2.props" />
-</Project>
