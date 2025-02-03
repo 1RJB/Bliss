@@ -126,10 +126,6 @@ namespace Bliss.Controllers
                 if (ticket.EndDate.HasValue && ticket.EndDate.Value >= ticket.StartDate.AddYears(1))
                 {
                     var user = _context.Users.Find(ticket.CreatedBy);
-                    if (user != null)
-                    {
-                        user.MembershipId = 1;
-                    }
                 }
 
                 _context.SaveChanges();
