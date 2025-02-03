@@ -1,0 +1,63 @@
+﻿@Bliss_HostAddress = https://localhost:7004
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJMaSBIYWl5dW4iLCJlbWFpbCI6ImxpX2hhaXl1bkBueXAuZWR1LnNnIiwibmJmIjoxNzI1OTU4OTIwLCJleHAiOjE3Mjg1NTA5MjAsImlhdCI6MTcyNTk1ODkyMH0.0_GTNoUUk2TqCSPd4MiapZPKBi_FkPCVG2toARYryxE
+
+GET {{Bliss_HostAddress}}/product?search=
+
+###
+
+GET {{Bliss_HostAddress}}/product/6
+
+###
+
+POST {{Bliss_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+ "name": "Li Haiyun",
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+###
+
+POST {{Bliss_HostAddress}}/user/login
+Content-Type: application/json
+
+{
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+###
+
+GET {{Bliss_HostAddress}}/user/auth
+Authorization: Bearer {{token}}
+
+###
+POST {{Bliss_HostAddress}}/product
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "Web API",
+ "description": "Happy coding :)"
+}
+
+###
+
+PUT {{Bliss_HostAddress}}/product/6
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+ "title": "My Story",
+ "description": "Your Song ❤"
+}
+
+###
+
+DELETE {{Bliss_HostAddress}}/product/2
+Authorization: Bearer {{token}}
+
+###
+
