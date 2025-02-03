@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BodyShop_Assign1_2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e3995c8f4e9f52840443251d9abd30ea19895c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("BodyShop_Assign1_2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BodyShop_Assign1_2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0C2141A1-AEA2-4DB9-BA54-3D2609822C4D}|Bliss\\Bliss.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bliss\\models\\addproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C2141A1-AEA2-4DB9-BA54-3D2609822C4D}|Bliss\\Bliss.csproj|solutionrelative:bliss\\models\\addproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AddProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\Bliss\\Models\\AddProductRequest.cs",
+              "RelativeDocumentMoniker": "Bliss\\Models\\AddProductRequest.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\Bliss\\Models\\AddProductRequest.cs",
+              "RelativeToolTip": "Bliss\\Models\\AddProductRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-03T08:49:19.682Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

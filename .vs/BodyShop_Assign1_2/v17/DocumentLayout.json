@@ -1,29 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\",
+  "WorkspaceRootPath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\controllers\\wishlistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\controllers\\wishlistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\controllers\\wishlistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\bodyshop_assign1_2.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\bodyshop_assign1_2.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\bodyshop_assign1_2.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\source\\repos\\bodyshop_assign1_2\\bodyshop_assign1_2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|c:\\users\\eliza\\documents\\github\\bliss\\bodyshop_assign1_2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{294C13E1-429F-4031-82BD-C523C462EEF0}|BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj|solutionrelative:bodyshop_assign1_2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -40,23 +40,24 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "WishlistController.cs",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
               "RelativeToolTip": "BodyShop_Assign1_2\\Controllers\\WishlistController.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAQwAIAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T17:02:42.073Z"
+              "WhenOpened": "2025-01-13T17:02:42.073Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "ProductController.cs",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Controllers\\ProductController.cs",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Controllers\\ProductController.cs",
               "RelativeToolTip": "BodyShop_Assign1_2\\Controllers\\ProductController.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAmwFcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA8AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-13T14:14:11.404Z",
               "EditorCaption": ""
@@ -65,9 +66,9 @@
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\User.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Models\\User.cs",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Models\\User.cs",
               "RelativeToolTip": "BodyShop_Assign1_2\\Models\\User.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAAABsAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -77,9 +78,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Program.cs",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Program.cs",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Program.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Program.cs",
               "RelativeToolTip": "BodyShop_Assign1_2\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -89,9 +90,9 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Wishlist.cs",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\Wishlist.cs",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Models\\Wishlist.cs",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\Models\\Wishlist.cs",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\Models\\Wishlist.cs",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\Models\\Wishlist.cs",
               "RelativeToolTip": "BodyShop_Assign1_2\\Models\\Wishlist.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -101,9 +102,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "BodyShop_Assign1_2.http",
-              "DocumentMoniker": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "DocumentMoniker": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
               "RelativeDocumentMoniker": "BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
-              "ToolTip": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
+              "ToolTip": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
               "RelativeToolTip": "BodyShop_Assign1_2\\BodyShop_Assign1_2.http",
               "ViewState": "AgIAADIAAAAAAAAAAAAswB4AAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",

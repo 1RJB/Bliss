@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KvRVLyCNmok=",
+  "dgSpecHash": "qFmZqr31UvQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\eliza\\source\\repos\\BodyShop_Assign1_2\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
+  "projectFilePath": "C:\\Users\\eliza\\Documents\\GitHub\\Bliss\\BodyShop_Assign1_2\\BodyShop_Assign1_2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\eliza\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\eliza\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
