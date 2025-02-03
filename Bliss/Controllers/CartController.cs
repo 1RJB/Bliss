@@ -34,7 +34,7 @@ namespace Bliss.Controllers
 
             var data = cartItems.Select(ci => new
             {
-                ci.Product.Name,
+                ci.Product.name,
                 ci.Quantity,
                 ci.Product.Price,
                 TotalPrice = ci.Quantity * ci.PriceAtTimeOfAdd

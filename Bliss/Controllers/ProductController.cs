@@ -24,7 +24,7 @@ namespace Bliss.Controllers
             var data = list.Select(t => new
             {
                 t.Id,
-                t.Name,
+                t.name,
                 t.Description,
                 t.ImageFile,
                 t.Price,
@@ -44,7 +44,7 @@ namespace Bliss.Controllers
             int userId = GetUserId();
             var myProduct = new Product()
             {
-                Name = product.Name.Trim(),
+                name = product.name.Trim(),
                 Description = product.Description.Trim(),
                 Price = product.Price,
                 ImageFile = product.ImageFile,
@@ -68,7 +68,7 @@ namespace Bliss.Controllers
             var data = new
             {
                 product.Id,
-                product.Name,
+                product.name,
                 product.Description,
                 product.ImageFile,
                 product.UserId,
@@ -96,7 +96,7 @@ namespace Bliss.Controllers
                 return Forbid();
             }
 
-            myProduct.Name = product.Name.Trim();
+            myProduct.name = product.name.Trim();
             myProduct.Description = product.Description.Trim();
             myProduct.ImageFile = product.ImageFile;
             myProduct.Price = product.Price;

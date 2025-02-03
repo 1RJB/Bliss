@@ -5,7 +5,7 @@ namespace Bliss.Models
     public class UpdateProductRequest
     {
         [MinLength(3), MaxLength(100)]
-        public string? Name { get; set; }
+        public string? Title { get; set; }
 
         [MinLength(3), MaxLength(500)]
         public string? Description { get; set; }
