@@ -15,6 +15,9 @@ import UserDetails from './pages/UserDetails';
 import EditUser from './pages/EditUser';
 import ChangePassword from './pages/ChangePassword';
 import ActivityLogs from './pages/ActivityLogs';
+import Homepages from './pages/Homepages';         
+import AddHomepage from './pages/AddHomepage';       
+import EditHomepage from './pages/EditHomepage';     
 import http from './http';
 import UserContext from './contexts/UserContext';
 
@@ -47,15 +50,18 @@ function App() {
                     <AppBar position="static" className="AppBar">
                         <Container>
                             <Toolbar disableGutters={true}>
-                                <Link to="/">
+                                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <Typography variant="h6" component="div">
                                         Bliss
                                     </Typography>
                                 </Link>
-                                <Link to="/products">
+                                <Link to="/products" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Products</Typography>
                                 </Link>
-                                <Link to="/users">
+                                <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>Homepages</Typography>
+                                </Link>
+                                <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Users</Typography>
                                 </Link>
                                 <Box sx={{ flexGrow: 1 }}></Box>
@@ -64,15 +70,15 @@ function App() {
                                         <Button color="inherit" component={Link} to={`/users/${user.id}`}>
                                             {user.name}
                                         </Button>
-                                        <Button onClick={logout}>Logout</Button>
+                                        <Button onClick={logout} color="inherit">Logout</Button>
                                     </>
                                 )}
                                 {!user && (
                                     <>
-                                        <Link to="/register">
+                                        <Link to="/register" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                             <Typography>Register</Typography>
                                         </Link>
-                                        <Link to="/login">
+                                        <Link to="/login" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                             <Typography>Login</Typography>
                                         </Link>
                                     </>
@@ -94,6 +100,9 @@ function App() {
                             <Route path="/edituser/:id" element={<EditUser />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/activity-logs" element={<ActivityLogs />} />
+                            <Route path="/homepages" element={<Homepages />} />
+                            <Route path="/addhomepage" element={<AddHomepage />} />
+                            <Route path="/edithomepage/:id" element={<EditHomepage />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>
