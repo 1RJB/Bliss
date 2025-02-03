@@ -129,9 +129,7 @@ namespace Bliss
         public required DbSet<Chat> Chats { get; set; }
         public required DbSet<Membership> Memberships { get; set; }
         public required DbSet<RewardPoints> RewardPoints { get; set; }
-        public required DbSet<UserVoucher> UserVouchers { get; set; }
-
-        // New DbSets for Homepage and Transaction
+        public required DbSet<UserVoucher> UserVouchers { get; set; }       
         public DbSet<Homepage> Homepages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
     }
