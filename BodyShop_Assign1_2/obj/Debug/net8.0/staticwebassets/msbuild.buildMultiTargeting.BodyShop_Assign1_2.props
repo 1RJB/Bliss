@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\BodyShop_Assign1_2.props" />
+</Project>
