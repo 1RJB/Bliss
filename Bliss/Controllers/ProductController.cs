@@ -17,9 +17,33 @@ namespace Bliss.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
-        public IActionResult GetAll(string? search)
+        public IActionResult GetAll(string? search, string? type, int? priceMin, int? priceMax)
         {
             IQueryable<Product> result = _context.Products.Include(t => t.User);
+
+            // ✅ Apply Search Filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                result = result.Where(t => t.name.Contains(search) || t.Description.Contains(search));
+            }
+
+            // ✅ Apply Type Filter
+            if (!string.IsNullOrEmpty(type))
+            {
+                result = result.Where(t => t.Type == type);
+            }
+
+            // ✅ Apply Price Range Filter
+            if (priceMin.HasValue)
+            {
+                result = result.Where(t => t.Price >= priceMin.Value);
+            }
+
+            if (priceMax.HasValue)
+            {
+                result = result.Where(t => t.Price <= priceMax.Value);
+            }
+
             var list = result.OrderByDescending(x => x.Price).ToList();
             var data = list.Select(t => new
             {
@@ -28,15 +52,19 @@ namespace Bliss.Controllers
                 t.Description,
                 t.ImageFile,
                 t.Price,
+                t.Type, // ✅ Ensure Type is included
                 t.UserId,
                 User = new
                 {
                     t.User?.Name
                 }
-            }
-            );
+            });
+
+            Console.WriteLine($"Filtered Products: {list.Count} items found"); // ✅ Debugging step
+
             return Ok(data);
         }
+
 
         [HttpPost, Authorize]
         public IActionResult AddProdut(Product product)
@@ -48,6 +76,7 @@ namespace Bliss.Controllers
                 Description = product.Description.Trim(),
                 Price = product.Price,
                 ImageFile = product.ImageFile,
+                Type = product.Type,
                 UserId = userId,
 
             };
@@ -71,6 +100,8 @@ namespace Bliss.Controllers
                 product.name,
                 product.Description,
                 product.ImageFile,
+                product.Price,
+                product.Type,
                 product.UserId,
                 User = new
                 {
@@ -100,6 +131,7 @@ namespace Bliss.Controllers
             myProduct.Description = product.Description.Trim();
             myProduct.ImageFile = product.ImageFile;
             myProduct.Price = product.Price;
+            myProduct.Type = product.Type;
 
             _context.SaveChanges();
             return Ok();

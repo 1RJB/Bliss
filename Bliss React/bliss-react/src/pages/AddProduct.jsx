@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material'; // ✅ Added Select & MenuItem
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 function AddProduct() {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ function AddProduct() {
             name: "",
             description: "",
             price: "",
+            type: "", // ✅ Add Type Field
         },
         validationSchema: yup.object({
             name: yup.string().trim()
@@ -28,7 +30,9 @@ function AddProduct() {
                 .required('Description is required'),
             price: yup.number()
                 .required('Price is required')
-                .positive('Price must be a positive number')
+                .positive('Price must be a positive number'),
+            type: yup.string()
+                .required('Product type is required') // ✅ Make Type Required
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -37,20 +41,22 @@ function AddProduct() {
             data.name = data.name.trim();
             data.description = data.description.trim();
             data.price = parseFloat(data.price); // Ensure price is a number
-
+        
+            console.log("Sending Data to API:", data); // ✅ Debugging step
+        
             const token = localStorage.getItem("accessToken"); // Get the token from localStorage
-
+        
             http.post("/product", data, {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Add the token to the headers
+                    Authorization: `Bearer ${token}`,
                 },
             })
                 .then((res) => {
-                    console.log(res.data);
-                    navigate("/products");  // Navigate to product list after success
+                    console.log("Product Added:", res.data);
+                    navigate("/products");
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.error("Error adding product:", error);
                     toast.error("Error adding product");
                 });
         }
@@ -120,6 +126,24 @@ function AddProduct() {
                             error={formik.touched.price && Boolean(formik.errors.price)}
                             helperText={formik.touched.price && formik.errors.price}
                         />
+                        {/* ✅ Add Product Type Dropdown */}
+                        <Typography variant="body1" sx={{ mt: 2 }}>Product Type</Typography>
+                        <TextField
+                            select
+                            fullWidth
+                            margin="dense"
+                            name="type"
+                            value={formik.values.type}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.type && Boolean(formik.errors.type)}
+                            helperText={formik.touched.type && formik.errors.type}
+                        >
+                            <MenuItem value="">Select a Type</MenuItem>
+                            <MenuItem value="Moisturizer">Moisturizer</MenuItem>
+                            <MenuItem value="Toner">Toner</MenuItem>
+                            <MenuItem value="Cleanser">Cleanser</MenuItem>
+                        </TextField>
                     </Grid>
                     <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                         <Box sx={{ textAlign: 'center', mt: 2 }} >

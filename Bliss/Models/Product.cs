@@ -18,6 +18,9 @@ namespace Bliss.Models
         [MaxLength(20)]
         public string? ImageFile { get; set; }
 
+        [Required, MaxLength(50)]
+        public string Type { get; set; } = string.Empty; // ✅ Required Type Field
+
         // Foreign key for User (owner)
         public int UserId { get; set; }
         public User? User { get; set; }
