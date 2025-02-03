@@ -11,7 +11,11 @@
         public string? ImageFile { get; set; }
         public int UserId { get; set; }
 
-        // Add the User navigation property
+        [Required, MaxLength(50)]
+        public string Type { get; set; } = string.Empty; // ✅ Required Type Field
+
+        // Foreign key for User (owner)
+        public int UserId { get; set; }
         public User? User { get; set; }
 
         // Navigation property for many-to-many with Homepages
