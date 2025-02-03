@@ -105,62 +105,6 @@ namespace Bliss.Migrations
                     b.ToTable("CartItems");
                 });
 
-            modelBuilder.Entity("Bliss.Models.Membership", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Benefits")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int>("Cost")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Memberships");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Benefits = "Access to basic features",
-                            Cost = 0,
-                            EndDate = new DateTime(2026, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3664),
-                            StartDate = new DateTime(2025, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3662),
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Benefits = "Access to green features",
-                            Cost = 50,
-                            EndDate = new DateTime(2026, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3674),
-                            StartDate = new DateTime(2025, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3674),
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Benefits = "Access to all features",
-                            Cost = 100,
-                            EndDate = new DateTime(2026, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3677),
-                            StartDate = new DateTime(2025, 2, 3, 10, 22, 39, 623, DateTimeKind.Utc).AddTicks(3676),
-                            Type = 2
-                        });
-                });
-
             modelBuilder.Entity("Bliss.Models.OtpRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -216,63 +160,6 @@ namespace Bliss.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Bliss.Models.RewardPoints", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ResetDay")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("RewardPoints");
-                });
-
-            modelBuilder.Entity("Bliss.Models.SupportTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AssignedTo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SupportTickets");
-                });
-
             modelBuilder.Entity("Bliss.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -286,9 +173,6 @@ namespace Bliss.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
-
-                    b.Property<int>("MembershipId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -305,100 +189,7 @@ namespace Bliss.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MembershipId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Bliss.Models.UserVoucher", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VoucherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("RedeemedAt")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("UserId", "VoucherId");
-
-                    b.HasIndex("VoucherId");
-
-                    b.ToTable("UserVouchers");
-                });
-
-            modelBuilder.Entity("Bliss.Models.Voucher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ClaimedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(5)
-                        .HasColumnType("varchar(5)");
-
-                    b.Property<int>("Cost")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("varchar(21)");
-
-                    b.Property<string>("ImageFile")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("MemberType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ValidDuration")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VoucherType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Vouchers");
-
-                    b.HasDiscriminator().HasValue("Voucher");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Bliss.Models.Wishlist", b =>
@@ -431,77 +222,6 @@ namespace Bliss.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Wishlists");
-                });
-
-            modelBuilder.Entity("Chat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<string>("ResolvedDescription")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<int>("SendBy")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupportTicketId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SupportTicketId");
-
-                    b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("Bliss.Models.DiscountVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<double>("DiscountPercentage")
-                        .HasColumnType("double");
-
-                    b.Property<double>("MaxAmount")
-                        .HasColumnType("double");
-
-                    b.HasDiscriminator().HasValue("DiscountVoucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.GiftCardVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("double");
-
-                    b.HasDiscriminator().HasValue("GiftCardVoucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.ItemVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ItemQuantity")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("ItemVoucher");
                 });
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -556,56 +276,6 @@ namespace Bliss.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bliss.Models.RewardPoints", b =>
-                {
-                    b.HasOne("Bliss.Models.User", null)
-                        .WithOne("RewardPoints")
-                        .HasForeignKey("Bliss.Models.RewardPoints", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Bliss.Models.User", b =>
-                {
-                    b.HasOne("Bliss.Models.Membership", "Membership")
-                        .WithMany()
-                        .HasForeignKey("MembershipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Membership");
-                });
-
-            modelBuilder.Entity("Bliss.Models.UserVoucher", b =>
-                {
-                    b.HasOne("Bliss.Models.User", "User")
-                        .WithMany("RedeemedVouchers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bliss.Models.Voucher", "Voucher")
-                        .WithMany("RedeemedByUsers")
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("Voucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.Voucher", b =>
-                {
-                    b.HasOne("Bliss.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Bliss.Models.Wishlist", b =>
                 {
                     b.HasOne("Bliss.Models.User", "User")
@@ -617,31 +287,11 @@ namespace Bliss.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Chat", b =>
-                {
-                    b.HasOne("Bliss.Models.SupportTicket", "SupportTicket")
-                        .WithMany()
-                        .HasForeignKey("SupportTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SupportTicket");
-                });
-
             modelBuilder.Entity("Bliss.Models.User", b =>
                 {
                     b.Navigation("Products");
 
-                    b.Navigation("RedeemedVouchers");
-
-                    b.Navigation("RewardPoints");
-
                     b.Navigation("Wishlists");
-                });
-
-            modelBuilder.Entity("Bliss.Models.Voucher", b =>
-                {
-                    b.Navigation("RedeemedByUsers");
                 });
 #pragma warning restore 612, 618
         }
