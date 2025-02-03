@@ -15,20 +15,30 @@ namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController(
-        MyDbContext context,
-        IConfiguration configuration,
-        IMapper mapper,
-        ILogger<UserController> logger,
-        IOptions<SmtpSettings> smtpSettings,
-        IPGeolocationService ipGeolocationService) : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly MyDbContext _context = context;
-        private readonly IConfiguration _configuration = configuration;
-        private readonly IMapper _mapper = mapper;
-        private readonly ILogger<UserController> _logger = logger;
-        private readonly SmtpSettings _smtpSettings = smtpSettings.Value;
-        private readonly IPGeolocationService _ipGeolocationService = ipGeolocationService;
+        private readonly MyDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserController> _logger;
+        private readonly SmtpSettings _smtpSettings;
+        private readonly IPGeolocationService _ipGeolocationService;
+
+        public UserController(
+            MyDbContext context,
+            IConfiguration configuration,
+            IMapper mapper,
+            ILogger<UserController> logger,
+            IOptions<SmtpSettings> smtpSettings,
+            IPGeolocationService ipGeolocationService)
+        {
+            _context = context;
+            _configuration = configuration;
+            _mapper = mapper;
+            _logger = logger;
+            _smtpSettings = smtpSettings.Value;
+            _ipGeolocationService = ipGeolocationService;
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
@@ -448,12 +458,12 @@ namespace Bliss.Controllers
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(
-                [
+                Subject = new ClaimsIdentity(new[]
+                {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Email, user.Email)
-                ]),
+                }),
                 Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -465,13 +475,15 @@ namespace Bliss.Controllers
 
         private async Task LogActivity(int userId, string action, string ipAddress)
         {
+            // Check if the IP address is a local address and set a mock IP address
+            if (ipAddress == "::1" || ipAddress == "127.0.0.1")
+            {
+                ipAddress = "8.8.8.8"; // Use a public IP address for testing
+            }
+
             var geolocation = await _ipGeolocationService.GetGeolocation(ipAddress);
 
-            if (ipAddress == "::1") // Localhost IPv6
-            {
-                // Use a mock IP address for development environment
-                ipAddress = "8.8.8.8"; // Example: Google's public DNS IP
-            }
+            _logger.LogInformation($"Geolocation for IP {ipAddress}: {geolocation.City}, {geolocation.Country}, {geolocation.Latitude}, {geolocation.Longitude}");
 
             var activityLog = new ActivityLog
             {
