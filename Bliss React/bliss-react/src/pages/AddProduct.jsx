@@ -13,29 +13,45 @@ function AddProduct() {
 
     const formik = useFormik({
         initialValues: {
-            title: "",
-            description: ""
+            name: "",
+            description: "",
+            price: "",
         },
         validationSchema: yup.object({
-            title: yup.string().trim()
-                .min(3, 'Title must be at least 3 characters')
-                .max(100, 'Title must be at most 100 characters')
-                .required('Title is required'),
+            name: yup.string().trim()
+                .min(3, 'Name must be at least 3 characters')
+                .max(100, 'Name must be at most 100 characters')
+                .required('Name is required'),
             description: yup.string().trim()
                 .min(3, 'Description must be at least 3 characters')
                 .max(500, 'Description must be at most 500 characters')
-                .required('Description is required')
+                .required('Description is required'),
+            price: yup.number()
+                .required('Price is required')
+                .positive('Price must be a positive number')
         }),
         onSubmit: (data) => {
             if (imageFile) {
                 data.imageFile = imageFile;
             }
-            data.title = data.title.trim();
+            data.name = data.name.trim();
             data.description = data.description.trim();
-            http.post("/product", data)
+            data.price = parseFloat(data.price); // Ensure price is a number
+
+            const token = localStorage.getItem("accessToken"); // Get the token from localStorage
+
+            http.post("/product", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Add the token to the headers
+                },
+            })
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/products");
+                    navigate("/products");  // Navigate to product list after success
+                })
+                .catch((error) => {
+                    console.error(error);
+                    toast.error("Error adding product");
                 });
         }
     });
@@ -43,7 +59,7 @@ function AddProduct() {
     const onFileChange = (e) => {
         let file = e.target.files[0];
         if (file) {
-            if (file.size > 1024 * 1024) {
+            if (file.size > 1024 * 1024) { // 1MB limit
                 toast.error('Maximum file size is 1MB');
                 return;
             }
@@ -56,10 +72,11 @@ function AddProduct() {
                 }
             })
                 .then((res) => {
-                    setImageFile(res.data.filename);
+                    setImageFile(res.data.filename); // Save the file name for later use
                 })
                 .catch(function (error) {
                     console.log(error.response);
+                    toast.error('File upload failed');
                 });
         }
     };
@@ -71,16 +88,16 @@ function AddProduct() {
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
-                    <Grid size={{xs:12, md:6, lg:8}}>
+                    <Grid size={{ xs: 12, md: 6, lg: 8 }}>
                         <TextField
                             fullWidth margin="dense" autoComplete="off"
-                            label="Title"
-                            name="title"
-                            value={formik.values.title}
+                            label="Product Name"
+                            name="name"
+                            value={formik.values.name}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.title && Boolean(formik.errors.title)}
-                            helperText={formik.touched.title && formik.errors.title}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
                         />
                         <TextField
                             fullWidth margin="dense" autoComplete="off"
@@ -93,8 +110,18 @@ function AddProduct() {
                             error={formik.touched.description && Boolean(formik.errors.description)}
                             helperText={formik.touched.description && formik.errors.description}
                         />
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Price"
+                            name="price"
+                            value={formik.values.price}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.price && Boolean(formik.errors.price)}
+                            helperText={formik.touched.price && formik.errors.price}
+                        />
                     </Grid>
-                    <Grid size={{xs:12, md:6, lg:4}}>
+                    <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                         <Box sx={{ textAlign: 'center', mt: 2 }} >
                             <Button variant="contained" component="label">
                                 Upload Image
@@ -105,8 +132,7 @@ function AddProduct() {
                                 imageFile && (
                                     <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                                         <img alt="product"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                        </img>
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} />
                                     </Box>
                                 )
                             }
@@ -115,7 +141,7 @@ function AddProduct() {
                 </Grid>
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">
-                        Add
+                        Add Product
                     </Button>
                 </Box>
             </Box>

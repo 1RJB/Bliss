@@ -7,59 +7,46 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Edit } from '@mui/icons-material';
 
-
-
-function EditProduct() {
-    const { id } = useParams();  // Get the product ID from the URL params
+function EditWishlist() {
+    const { id } = useParams();
     const navigate = useNavigate();
-    const [product, setProduct] = useState({
+
+    const [wishlist, setWishlist] = useState({
         name: "",
-        description: "",
-        price: ""
+        description: ""
     });
 
-    const [imageFile, setImageFile] = useState(null); // Store the image file name
+    const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(true);  // State to track if data is loading
-
-    // Fetch product data on component mount
     useEffect(() => {
-        http.get(`/product/${id}`).then((res) => {
-            setProduct(res.data);
-            setImageFile(res.data.imageFile);
+        http.get(`/wishlist/${id}`).then((res) => {
+            setWishlist(res.data);
             setLoading(false);
         });
     }, []);
 
-    // Formik for validation and handling form data
     const formik = useFormik({
-        initialValues: product,
+        initialValues: wishlist,
         enableReinitialize: true,
         validationSchema: yup.object({
             name: yup.string().trim()
-                .min(3, 'Name must be at least 3 characters')
-                .max(100, 'Name must be at most 100 characters')
-                .required('Name is required'),
+                .min(3, 'Title must be at least 3 characters')
+                .max(100, 'Title must be at most 100 characters')
+                .required('Title is required'),
             description: yup.string().trim()
                 .min(3, 'Description must be at least 3 characters')
                 .max(500, 'Description must be at most 500 characters')
-                .required('Description is required'),
-            price: yup.number()
-                .required('Price is required')
-                .positive('Price must be a positive number')
+                .required('Description is required')
         }),
         onSubmit: (data) => {
-            if (imageFile) {
-                data.imageFile = imageFile;
-            }
             data.name = data.name.trim();
             data.description = data.description.trim();
-            data.price = parseFloat(data.price); 
-            http.put(`/product/${id}`, data)
+            http.put(`/wishlist/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/products");
+                    navigate("/wishlists");
                 });
         }
     });
@@ -74,52 +61,28 @@ function EditProduct() {
         setOpen(false);
     };
 
-    const deleteProduct = () => {
-        http.delete(`/product/${id}`)
+    const deleteWishlist = () => {
+        http.delete(`/wishlist/${id}`)
             .then((res) => {
                 console.log(res.data);
-                navigate("/products");
+                navigate("/wishlists");
             });
     }
 
-    // Handle file change (upload image)
-    const onFileChange = (e) => {
-        let file = e.target.files[0];
-        if (file) {
-            if (file.size > 1024 * 1024) { // 1MB limit
-                toast.error('Maximum file size is 1MB');
-                return;
-            }
-
-            let formData = new FormData();
-            formData.append('file', file);
-            http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-                .then((res) => {
-                    setImageFile(res.data.filename);
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                });
-        }
-    };
 
     return (
         <Box>
             <Typography variant="h5" sx={{ my: 2 }}>
-                Edit Product
+                Edit Wishlists details
             </Typography>
             {
                 !loading && (
                     <Box component="form" onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+                            <Grid size={{xs:12, md:6, lg:8}}>
                                 <TextField
                                     fullWidth margin="dense" autoComplete="off"
-                                    label="Product Name"
+                                    label="Wishlist Name"
                                     name="name"
                                     value={formik.values.name}
                                     onChange={formik.handleChange}
@@ -138,33 +101,6 @@ function EditProduct() {
                                     error={formik.touched.description && Boolean(formik.errors.description)}
                                     helperText={formik.touched.description && formik.errors.description}
                                 />
-                                <TextField
-                                    fullWidth margin="dense" autoComplete="off"
-                                    label="Price"
-                                    name="price"
-                                    value={formik.values.price}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.price && Boolean(formik.errors.price)}
-                                    helperText={formik.touched.price && formik.errors.price}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                                <Box sx={{ textAlign: 'center', mt: 2 }} >
-                                    <Button variant="contained" component="label">
-                                        Upload New Image
-                                        <input hidden accept="image/*" type="file" onChange={onFileChange} />
-                                    </Button>
-                                    {
-                                        imageFile && (
-                                            <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                                <img alt="product"
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                                </img>
-                                            </Box>
-                                        )
-                                    }
-                                </Box>
                             </Grid>
                         </Grid>
                         <Box sx={{ mt: 2 }}>
@@ -179,13 +115,14 @@ function EditProduct() {
                     </Box>
                 )
             }
+
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>
-                    Delete Product
+                    Delete Wishlist
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete this Product?
+                        Are you sure you want to delete this wishlist?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -194,16 +131,15 @@ function EditProduct() {
                         Cancel
                     </Button>
                     <Button variant="contained" color="error"
-                        onClick={deleteProduct}>
+                        onClick={deleteWishlist}>
                         Delete
                     </Button>
                 </DialogActions>
             </Dialog>
-
 
             <ToastContainer />
         </Box>
     );
 }
 
-export default EditProduct;
+export default EditWishlist;
