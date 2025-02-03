@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BlissAPI.Models
+namespace Bliss.Models
 {
     public class UserVoucher
     {

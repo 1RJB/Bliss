@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlissAPI.Models
+namespace Bliss.Models
 {
     public class AddVoucherRequest
     {

@@ -1,9 +1,9 @@
-﻿using BlissAPI.Models;
+﻿using Bliss.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BlissAPI.Controllers
+namespace Bliss.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,4 @@
-﻿namespace BlissAPI.Models
+﻿namespace Bliss.Models
 {
     public class VoucherDTO
     {
