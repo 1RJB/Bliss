@@ -2,8 +2,7 @@
 {
     public class VoucherDTO
     {
-         public int Id { get; set; }
-        public string? Code { get; set; }
+        public int Id { get; set; }
 
         public string Title { get; set; } = string.Empty;
 
@@ -19,6 +18,8 @@
 
         public int ValidDuration { get; set; }
 
+        public int Quantity { get; set; }
+
         public VoucherStatus Status { get; set; }
 
         public MemberType MemberType { get; set; }
@@ -30,5 +31,13 @@
         public int ClaimedBy { get; set; }
 
         public UserBasicDTO? User { get; set; }
+
+        public string? ItemName { get; set; }
+        public int? ItemQuantity { get; set; }
+
+        public int? DiscountPercentage { get; set; }
+        public int? MaxAmount { get; set; }
+
+        public int? Value { get; set; }
     }
 }

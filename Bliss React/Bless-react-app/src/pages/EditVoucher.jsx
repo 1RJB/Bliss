@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
@@ -8,56 +8,19 @@ import { toast } from 'react-toastify';
 
 // Validation schema
 const validationSchema = yup.object({
-    title: yup.string('Enter voucher title').required('Title is required'),
-    description: yup.string('Enter voucher description').required('Description is required'),
-    validDuration: yup.number('Enter valid duration').required('Valid duration is required'),
-    status: yup.string('Select status').required('Status is required'),
-    memberType: yup.string('Select member type').required('Member type is required'),
+    title: yup.string().required('Title is required'),
+    description: yup.string().required('Description is required'),
+    validDuration: yup.number().required('Valid duration is required'),
+    status: yup.string().required('Status is required'),
+    memberType: yup.number().required('Member type is required'),
 });
-
-// Error boundary component
-class ErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { hasError: false };
-    }
-
-    static getDerivedStateFromError() {
-        return { hasError: true };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error('ErrorBoundary caught an error:', error, errorInfo);
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return <Typography variant="h6" color="error">Something went wrong.</Typography>;
-        }
-
-        return this.props.children;
-    }
-}
 
 function EditVoucher() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [imageFile, setImageFile] = useState('');
     const baseURL = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000/';
-
-    useEffect(() => {
-        http.get(`/voucher/${id}`)
-            .then((res) => {
-                console.log('Fetched Data:', res.data);
-                formik.setValues(res.data);
-                setImageFile(res.data.imageFile);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error('Error fetching voucher:', err);
-                setLoading(false);
-            });
-    }, [id]);
 
     const formik = useFormik({
         initialValues: {
@@ -69,9 +32,16 @@ function EditVoucher() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
+            if (imageFile) {
+                values.imageFile = imageFile;
+            }
+            values.memberType = parseInt(values.memberType, 10);
+            values.status = parseInt(values.status, 10);
+
             http.put(`/voucher/${id}`, values)
                 .then(() => {
                     toast.success('Voucher updated successfully');
+                    navigate("/vouchers");
                 })
                 .catch((err) => {
                     toast.error('Error updating voucher');
@@ -79,6 +49,24 @@ function EditVoucher() {
                 });
         },
     });
+
+    useEffect(() => {
+        http.get(`/voucher/${id}`)
+            .then((res) => {
+                console.log('Fetched Data:', res.data);
+                formik.setValues({
+                    ...res.data,
+                    status: parseInt(res.data.status, 10),
+                    memberType: parseInt(res.data.memberType, 10),
+                });
+                setImageFile(res.data.imageFile);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error fetching voucher:', err);
+                setLoading(false);
+            });
+    }, [id]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -92,9 +80,7 @@ function EditVoucher() {
             formData.append('file', file);
 
             http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
                 .then((res) => {
                     setImageFile(res.data.filename);
@@ -108,144 +94,117 @@ function EditVoucher() {
     };
 
     return (
-        <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Edit Voucher
-            </Typography>
+        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 3 }}>
+            <Typography variant="h5" sx={{ my: 2 }}>Edit Voucher</Typography>
 
             {!loading && (
                 <Box component="form" onSubmit={formik.handleSubmit}>
-                    <Grid container spacing={3}> {/* Adjusted spacing here */}
-                        <Grid item xs={12}>
-                            {/* Title Field */}
-                            <TextField
-                                fullWidth
-                                id="title"
-                                name="title"
-                                label="Title"
-                                value={formik.values.title}
-                                onChange={formik.handleChange}
-                                error={formik.touched.title && Boolean(formik.errors.title)}
-                                helperText={formik.touched.title && formik.errors.title}
-                            />
-                        </Grid>
+                    <Box sx={{ mb: 3 }}>
+                        <TextField
+                            fullWidth
+                            id="title"
+                            name="title"
+                            label="Title"
+                            value={formik.values.title}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.title && Boolean(formik.errors.title)}
+                            helperText={formik.touched.title && formik.errors.title}
+                        />
+                    </Box>
 
-                        <Grid item xs={12}>
-                            {/* Description Field */}
-                            <TextField
-                                fullWidth
-                                id="description"
-                                name="description"
-                                label="Description"
-                                value={formik.values.description}
-                                onChange={formik.handleChange}
-                                error={formik.touched.description && Boolean(formik.errors.description)}
-                                helperText={formik.touched.description && formik.errors.description}
-                            />
-                        </Grid>
+                    <Box sx={{ mb: 3 }}>
+                        <TextField
+                            fullWidth
+                            id="description"
+                            name="description"
+                            label="Description"
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.description && Boolean(formik.errors.description)}
+                            helperText={formik.touched.description && formik.errors.description}
+                        />
+                    </Box>
 
-                        <Grid item xs={12}>
-                            {/* Valid Duration Field */}
-                            <TextField
-                                fullWidth
-                                id="validDuration"
-                                name="validDuration"
-                                label="Valid Duration"
-                                value={formik.values.validDuration}
-                                onChange={formik.handleChange}
-                                error={formik.touched.validDuration && Boolean(formik.errors.validDuration)}
-                                helperText={formik.touched.validDuration && formik.errors.validDuration}
-                            />
-                        </Grid>
+                    <Box sx={{ mb: 3 }}>
+                        <TextField
+                            fullWidth
+                            id="validDuration"
+                            name="validDuration"
+                            label="Valid Duration"
+                            type="number"
+                            value={formik.values.validDuration}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.validDuration && Boolean(formik.errors.validDuration)}
+                            helperText={formik.touched.validDuration && formik.errors.validDuration}
+                        />
+                    </Box>
 
-                        <Grid item xs={12}>
-                            {/* Status Field */}
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    name="status"
-                                    value={formik.values.status}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.status && Boolean(formik.errors.status)}
-                                >
-                                    <MenuItem value="0">Available</MenuItem>
-                                    <MenuItem value="1">Redeemed</MenuItem>
-                                    <MenuItem value="3">Expired</MenuItem>
-                                </Select>
-                                {formik.touched.status && formik.errors.status && (
-                                    <Typography color="error" variant="caption">
-                                        {formik.errors.status}
-                                    </Typography>
-                                )}
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            {/* Member Type Field */}
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Member Type</InputLabel>
-                                <Select
-                                    name="memberType"
-                                    value={formik.values.memberType}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.memberType && Boolean(formik.errors.memberType)}
-                                >
-                                    <MenuItem value="0">Basic</MenuItem>
-                                    <MenuItem value="1">Green</MenuItem>
-                                    <MenuItem value="2">Premium</MenuItem>
-                                </Select>
-                                {formik.touched.memberType && formik.errors.memberType && (
-                                    <Typography color="error" variant="caption">
-                                        {formik.errors.memberType}
-                                    </Typography>
-                                )}
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            {/* File Upload Button */}
-                            <Button
-                                variant="contained"
-                                component="label"
-                                sx={{ mt: 2 }}
+                    <Box sx={{ mb: 3 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                name="status"
+                                value={formik.values.status}
+                                onChange={(e) => formik.setFieldValue("status", e.target.value)}
+                                error={formik.touched.status && Boolean(formik.errors.status)}
                             >
-                                Upload File
-                                <input type="file" hidden onChange={handleFileChange} />
-                            </Button>
-                        </Grid>
+                                <MenuItem value={0}>Available</MenuItem>
+                                <MenuItem value={1}>Redeemed</MenuItem>
+                                <MenuItem value={3}>Expired</MenuItem>
+                            </Select>
+                            {formik.touched.status && formik.errors.status && (
+                                <FormHelperText error>{formik.errors.status}</FormHelperText>
+                            )}
+                        </FormControl>
+                    </Box>
 
-                        {imageFile && (
-                            <Grid item xs={12}>
-                                {/* Image Preview */}
-                                <Box mt={2}>
-                                    <img
-                                        src={`${baseURL}${imageFile}`}
-                                        alt="voucher"
-                                        style={{ maxWidth: '100%' }}
-                                    />
-                                </Box>
-                            </Grid>
-                        )}
+                    <Box sx={{ mb: 3 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Member Type</InputLabel>
+                            <Select
+                                name="memberType"
+                                value={formik.values.memberType}
+                                onChange={(e) => formik.setFieldValue("memberType", e.target.value)}
+                                error={formik.touched.memberType && Boolean(formik.errors.memberType)}
+                            >
+                                <MenuItem value={0}>Basic</MenuItem>
+                                <MenuItem value={1}>Green</MenuItem>
+                                <MenuItem value={2}>Premium</MenuItem>
+                            </Select>
+                            {formik.touched.memberType && formik.errors.memberType && (
+                                <FormHelperText error>{formik.errors.memberType}</FormHelperText>
+                            )}
+                        </FormControl>
+                    </Box>
 
-                        <Grid item xs={12}>
-                            {/* Submit Button */}
-                            <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
-                                Update Voucher
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    {/* File Upload Button */}
+                    <Box sx={{ mb: 3 }}>
+                        <Button variant="contained" component="label">
+                            Upload File
+                            <input type="file" hidden onChange={handleFileChange} />
+                        </Button>
+                    </Box>
+
+                    {/* Image Preview */}
+                    {imageFile && (
+                        <Box sx={{ mb: 3 }}>
+                            <img src={`${baseURL}${imageFile}`} alt="voucher" style={{ maxWidth: '100%' }} />
+                        </Box>
+                    )}
+
+                    {/* Submit Button */}
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Button color="primary" variant="contained" fullWidth type="submit">
+                            Update Voucher
+                        </Button>
+                    </Box>
                 </Box>
             )}
         </Box>
     );
 }
 
-function App() {
-    return (
-        <ErrorBoundary>
-            <EditVoucher />
-        </ErrorBoundary>
-    );
-}
-
-export default App;
+export default EditVoucher;
