@@ -14,18 +14,36 @@ namespace Bliss.Controllers
         private readonly MyDbContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        // GET /Product?search={search}
+        // GET /Product?search={search}&type={type}&priceMin={priceMin}&priceMax={priceMax}
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
-        public IActionResult GetAll(string? search)
+        public IActionResult GetAll(string? search, string? type, int? priceMin, int? priceMax)
         {
             IQueryable<Product> result = _context.Products.Include(t => t.User);
+            
+            // Apply Search Filter
             if (!string.IsNullOrEmpty(search))
             {
                 result = result.Where(t => t.name.Contains(search) || t.Description.Contains(search));
             }
+
+            // Apply Type Filter
+            if (!string.IsNullOrEmpty(type))
+            {
+                result = result.Where(t => t.Type == type);
+            }
+
+            // Apply Price Range Filter
+            if (priceMin.HasValue)
+            {
+                result = result.Where(t => t.Price >= priceMin.Value);
+            }
+            if (priceMax.HasValue)
+            {
+                result = result.Where(t => t.Price <= priceMax.Value);
+            }
+
             var list = result.OrderByDescending(x => x.Price).ToList();
-            // Optionally, if you want to expose Homepages, you can include them too.
             var data = list.Select(t => new
             {
                 t.Id,
@@ -33,20 +51,23 @@ namespace Bliss.Controllers
                 t.Description,
                 t.ImageFile,
                 t.Price,
+                t.Type,
                 t.UserId,
                 User = new
                 {
                     t.User?.Name
-                },
-                // If needed, you could include:
+                }
+                // Optionally, if you need to expose associated homepages:
                 // Homepages = t.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
             });
+
+            Console.WriteLine($"Filtered Products: {list.Count} items found");
             return Ok(data);
         }
 
         // POST /Product
         [HttpPost, Authorize]
-        public IActionResult AddProduct(Product product)
+        public IActionResult AddProduct([FromBody] Product product)
         {
             int userId = GetUserId();
             var myProduct = new Product()
@@ -55,8 +76,8 @@ namespace Bliss.Controllers
                 Description = product.Description.Trim(),
                 Price = product.Price,
                 ImageFile = product.ImageFile,
+                Type = product.Type,
                 UserId = userId,
-                // Do not attempt to set a HomepageId here; the many-to-many relationship is managed elsewhere.
             };
             _context.Products.Add(myProduct);
             _context.SaveChanges();
@@ -68,7 +89,8 @@ namespace Bliss.Controllers
         [HttpGet("{id}")]
         public IActionResult GetProduct(int id)
         {
-            Product? product = _context.Products.Include(t => t.User)
+            Product? product = _context.Products
+                .Include(t => t.User)
                 .Include(t => t.Homepages)  // Optionally include related homepages
                 .SingleOrDefault(t => t.Id == id);
             if (product == null)
@@ -82,12 +104,13 @@ namespace Bliss.Controllers
                 product.Description,
                 product.ImageFile,
                 product.Price,
+                product.Type,
                 product.UserId,
                 User = new
                 {
                     product.User?.Name
                 },
-                // Optionally expose homepages
+                // Optionally expose homepages:
                 // Homepages = product.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
             };
 
@@ -96,7 +119,7 @@ namespace Bliss.Controllers
 
         // PUT /Product/{id}
         [HttpPut("{id}"), Authorize]
-        public IActionResult UpdateProduct(int id, Product product)
+        public IActionResult UpdateProduct(int id, [FromBody] Product product)
         {
             var myProduct = _context.Products.Find(id);
             if (myProduct == null)
@@ -113,6 +136,7 @@ namespace Bliss.Controllers
             myProduct.Description = product.Description.Trim();
             myProduct.ImageFile = product.ImageFile;
             myProduct.Price = product.Price;
+            myProduct.Type = product.Type;
 
             _context.SaveChanges();
             return Ok(myProduct);

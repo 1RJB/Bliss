@@ -1,4 +1,6 @@
-﻿namespace Bliss.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bliss.Models
 {
     public class Product
     {
@@ -9,9 +11,12 @@
         public string Description { get; set; } = string.Empty;
         public int Price { get; set; }
         public string? ImageFile { get; set; }
-        public int UserId { get; set; }
 
-        // Add the User navigation property
+        [Required, MaxLength(50)]
+        public string Type { get; set; } = string.Empty; // ✅ Required Type Field
+
+        // Foreign key for User (owner)
+        public int UserId { get; set; }
         public User? User { get; set; }
 
         // Navigation property for many-to-many with Homepages

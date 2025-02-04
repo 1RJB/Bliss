@@ -12,10 +12,7 @@ import {
     Button,
     Select,
     MenuItem,
-    Checkbox,
     Slider,
-    List,
-    ListItem,
     Divider,
 } from '@mui/material';
 import { Search, Clear, Edit, AddShoppingCart } from '@mui/icons-material';
@@ -25,35 +22,56 @@ import UserContext from '../contexts/UserContext';
 function Products() {
     const [productList, setProductList] = useState([]);
     const [search, setSearch] = useState('');
-    const [filters, setFilters] = useState({ type: '', brand: '', price: [0, 500] });
+    const [filters, setFilters] = useState({ type: '', price: [0, 500] });
+    const [currency, setCurrency] = useState("SGD");
+    const [convertedPrices, setConvertedPrices] = useState({});
     const { user } = useContext(UserContext);
 
-    // Fetch products from the backend
+    useEffect(() => {
+        getProducts();
+    }, [filters, search]); // Auto-fetch when filters change
+
+    // Fetch Products
     const getProducts = () => {
-        http.get('/product')
+        const { type, price } = filters;
+        const query = `/product?search=${search}&type=${type}&priceMin=${price[0]}&priceMax=${price[1]}`;
+
+        http.get(query)
             .then((res) => {
                 setProductList(res.data);
+                convertPrices(res.data, currency);
             })
             .catch((err) => {
                 console.error("Error fetching products:", err);
             });
     };
 
-    const searchProducts = () => {
-        const { type, brand, price } = filters;
-        const query = `/products?search=${search}&type=${type}&brand=${brand}&priceMin=${price[0]}&priceMax=${price[1]}`;
-        http.get(query).then((res) => {
-            setProductList(res.data);
-        });
+    // Convert Prices
+    const convertPrices = async (products, toCurrency) => {
+        let updatedPrices = {};
+        for (let product of products) {
+            try {
+                const res = await http.get(`/currency/convert`, {
+                    params: { amount: product.price, from: "SGD", to: toCurrency }
+                });
+                updatedPrices[product.id] = res.data.converted.toFixed(2);
+            } catch (error) {
+                console.error("Error converting currency:", error);
+            }
+        }
+        setConvertedPrices(updatedPrices);
     };
+    
 
-    useEffect(() => {
-        getProducts();
-    }, []);
+    // Handle Currency Change
+    const handleCurrencyChange = (event) => {
+        setCurrency(event.target.value);
+        convertPrices(productList, event.target.value);
+    };
 
     const onSearchKeyDown = (e) => {
         if (e.key === 'Enter') {
-            searchProducts();
+            getProducts();
         }
     };
 
@@ -72,31 +90,34 @@ function Products() {
                 <Typography variant="h6">Filters</Typography>
                 <Divider sx={{ my: 2 }} />
 
-                <Typography variant="body1">Product Type</Typography>
-                <List>
-                    {['Clothes', 'Accessories', 'Skincare'].map((type) => (
-                        <ListItem key={type}>
-                            <Checkbox
-                                checked={filters.type === type}
-                                onChange={() => onFilterChange('type', type)}
-                            />
-                            {type}
-                        </ListItem>
-                    ))}
-                </List>
+                {/* Currency Selector */}
+                <Typography variant="body1">Currency</Typography>
+                <Select
+                    value={currency}
+                    onChange={handleCurrencyChange}
+                    displayEmpty
+                    fullWidth
+                    sx={{ my: 2 }}
+                >
+                    <MenuItem value="SGD">SGD</MenuItem>
+                    <MenuItem value="USD">USD</MenuItem>
+                    <MenuItem value="EUR">EUR</MenuItem>
+                    <MenuItem value="MYR">MYR</MenuItem>
+                </Select>
 
-                <Typography variant="body1">Brands</Typography>
-                <List>
-                    {['Brand A', 'Brand B', 'Brand C'].map((brand) => (
-                        <ListItem key={brand}>
-                            <Checkbox
-                                checked={filters.brand === brand}
-                                onChange={() => onFilterChange('brand', brand)}
-                            />
-                            {brand}
-                        </ListItem>
-                    ))}
-                </List>
+                <Typography variant="body1">Product Type</Typography>
+                <Select
+                    value={filters.type}
+                    onChange={(e) => onFilterChange('type', e.target.value)}
+                    displayEmpty
+                    fullWidth
+                    sx={{ my: 2 }}
+                >
+                    <MenuItem value="">All Products</MenuItem>
+                    <MenuItem value="Moisturizer">Moisturizer</MenuItem>
+                    <MenuItem value="Toner">Toner</MenuItem>
+                    <MenuItem value="Cleanser">Cleanser</MenuItem>
+                </Select>
 
                 <Typography variant="body1">Price Range</Typography>
                 <Slider
@@ -112,7 +133,7 @@ function Products() {
                     fullWidth
                     sx={{ mt: 2 }}
                     onClick={() => {
-                        setFilters({ type: '', brand: '', price: [0, 500] });
+                        setFilters({ type: '', price: [0, 500] });
                         setSearch('');
                         getProducts();
                     }}
@@ -132,25 +153,12 @@ function Products() {
                         onKeyDown={onSearchKeyDown}
                         sx={{ flexGrow: 1, backgroundColor: '#f9f9f9', borderRadius: 1, padding: 1 }}
                     />
-                    <IconButton color="primary" onClick={searchProducts}>
+                    <IconButton color="primary" onClick={getProducts}>
                         <Search />
                     </IconButton>
                     <IconButton color="primary" onClick={() => setSearch('')}>
                         <Clear />
                     </IconButton>
-                    <Box sx={{ ml: 2 }}>
-                        <Select
-                            value={filters.sort}
-                            onChange={(e) => onFilterChange('sort', e.target.value)}
-                            displayEmpty
-                            sx={{ minWidth: 150 }}
-                        >
-                            <MenuItem value="">Sort by</MenuItem>
-                            <MenuItem value="latest">Latest</MenuItem>
-                            <MenuItem value="priceLow">Price: Low to High</MenuItem>
-                            <MenuItem value="priceHigh">Price: High to Low</MenuItem>
-                        </Select>
-                    </Box>
                     {user && (
                         <Box sx={{ ml: 2 }}>
                             <Link to="/addproduct">
@@ -182,7 +190,12 @@ function Products() {
                                         {product.description}
                                     </Typography>
                                     <Typography variant="h6" color="primary">
-                                        ${product.price}
+                                        {convertedPrices[product.id] 
+                                            ? `${convertedPrices[product.id]} ${currency}` 
+                                            : `${product.price} SGD`}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold', mt: 1 }}>
+                                        Type: {product.type} {/* Show Product Type */}
                                     </Typography>
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'space-between' }}>
