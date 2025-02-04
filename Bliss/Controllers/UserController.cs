@@ -15,30 +15,20 @@ namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(
+        MyDbContext context,
+        IConfiguration configuration,
+        IMapper mapper,
+        ILogger<UserController> logger,
+        IOptions<SmtpSettings> smtpSettings,
+        IPGeolocationService ipGeolocationService) : ControllerBase
     {
-        private readonly MyDbContext _context;
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        private readonly ILogger<UserController> _logger;
-        private readonly SmtpSettings _smtpSettings;
-        private readonly IPGeolocationService _ipGeolocationService;
-
-        public UserController(
-            MyDbContext context,
-            IConfiguration configuration,
-            IMapper mapper,
-            ILogger<UserController> logger,
-            IOptions<SmtpSettings> smtpSettings,
-            IPGeolocationService ipGeolocationService)
-        {
-            _context = context;
-            _configuration = configuration;
-            _mapper = mapper;
-            _logger = logger;
-            _smtpSettings = smtpSettings.Value;
-            _ipGeolocationService = ipGeolocationService;
-        }
+        private readonly MyDbContext _context = context;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IMapper _mapper = mapper;
+        private readonly ILogger<UserController> _logger = logger;
+        private readonly SmtpSettings _smtpSettings = smtpSettings.Value;
+        private readonly IPGeolocationService _ipGeolocationService = ipGeolocationService;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
