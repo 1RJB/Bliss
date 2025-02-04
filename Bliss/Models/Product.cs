@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Bliss.Models
+﻿namespace Bliss.Models
 {
     public class Product
     {
@@ -11,6 +9,7 @@ namespace Bliss.Models
         public string Description { get; set; } = string.Empty;
         public int Price { get; set; }
         public string? ImageFile { get; set; }
+        public int UserId { get; set; }
 
         [Required, MaxLength(50)]
         public string Type { get; set; } = string.Empty; // ✅ Required Type Field
