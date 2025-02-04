@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, MenuItem } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -16,8 +16,7 @@ function EditProduct() {
     const [product, setProduct] = useState({
         name: "",
         description: "",
-        price: "",
-        type: "",
+        price: ""
     });
 
     const [imageFile, setImageFile] = useState(null); // Store the image file name
@@ -32,6 +31,7 @@ function EditProduct() {
             setLoading(false);
         });
     }, []);
+
     // Formik for validation and handling form data
     const formik = useFormik({
         initialValues: product,
@@ -47,9 +47,7 @@ function EditProduct() {
                 .required('Description is required'),
             price: yup.number()
                 .required('Price is required')
-                .positive('Price must be a positive number'),
-            type: yup.string()
-                .required('Product type is required') // ✅ Validate Type
+                .positive('Price must be a positive number')
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -57,7 +55,7 @@ function EditProduct() {
             }
             data.name = data.name.trim();
             data.description = data.description.trim();
-            data.price = parseFloat(data.price);
+            data.price = parseFloat(data.price); 
             http.put(`/product/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
@@ -150,24 +148,6 @@ function EditProduct() {
                                     error={formik.touched.price && Boolean(formik.errors.price)}
                                     helperText={formik.touched.price && formik.errors.price}
                                 />
-                                <TextField
-                                    select
-                                    fullWidth
-                                    margin="dense"
-                                    label="Product Type"
-                                    name="type"
-                                    value={formik.values.type}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.type && Boolean(formik.errors.type)}
-                                    helperText={formik.touched.type && formik.errors.type}
-                                >
-                                    <MenuItem value="">Select a Type</MenuItem>
-                                    <MenuItem value="Moisturizer">Moisturizer</MenuItem>
-                                    <MenuItem value="Toner">Toner</MenuItem>
-                                    <MenuItem value="Cleanser">Cleanser</MenuItem>
-                                </TextField>
-
                             </Grid>
                             <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                                 <Box sx={{ textAlign: 'center', mt: 2 }} >
