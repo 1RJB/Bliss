@@ -79,7 +79,7 @@ function Register() {
                 .then((res) => {
                     toast.success('Registration successful!')
                     console.log(res.data);
-                    navigate("https://localhost:7004/user/login");
+                    navigate("/login");
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
