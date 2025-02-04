@@ -18,14 +18,14 @@ namespace Bliss
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            // Explicitly register voucher-related entities per Simon's instructions
             modelBuilder.Entity<User>();
             modelBuilder.Entity<Voucher>();
             modelBuilder.Entity<ItemVoucher>();
             modelBuilder.Entity<DiscountVoucher>();
             modelBuilder.Entity<GiftCardVoucher>();
 
-
+            // UserVoucher relationships
             modelBuilder.Entity<UserVoucher>()
                 .HasKey(uv => new { uv.UserId, uv.VoucherId });
 
@@ -41,16 +41,19 @@ namespace Bliss
                 .HasForeignKey(uv => uv.VoucherId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // One-to-one relationship: User & RewardPoints
             modelBuilder.Entity<User>()
                 .HasOne(u => u.RewardPoints)
                 .WithOne()
                 .HasForeignKey<RewardPoints>(rp => rp.UserId);
 
+            // One-to-many: User & Membership
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Membership)
                 .WithMany()
                 .HasForeignKey(u => u.MembershipId);
 
+            // Seed Membership Data
             modelBuilder.Entity<Membership>().HasData(
                 new Membership
                 {
@@ -82,38 +85,32 @@ namespace Bliss
             );
 
             // ------------------------------
-            // New Configurations for Homepage & Transaction
+            // Many-to-many: Homepage <--> Product
             // ------------------------------
+            modelBuilder.Entity<Homepage>()
+                .HasMany(h => h.Products)
+                .WithMany(p => p.Homepages)
+                .UsingEntity(j => j.ToTable("HomepageProducts"));
 
-            // Configure one-to-many relationship: Homepage <--> Product
-            // Assumes Product has a nullable HomepageId property and a navigation property "Homepage"
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Homepage)
-                .WithMany(h => h.Products)
-                .HasForeignKey(p => p.HomepageId)
-                .OnDelete(DeleteBehavior.SetNull);
+            // ------------------------------
+            // Many-to-many with extra fields: Transaction <--> Product via TransactionItem
+            // ------------------------------
+            modelBuilder.Entity<TransactionItem>()
+                .HasKey(ti => ti.TransactionItemId);
 
-            // Configure Transaction relationships:
-            // Link Transaction.userID to User (without a navigation property on Transaction)
-            modelBuilder.Entity<Transaction>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(t => t.userID)
+            modelBuilder.Entity<TransactionItem>()
+                .HasOne(ti => ti.Transaction)
+                .WithMany(t => t.TransactionItems)
+                .HasForeignKey(ti => ti.TransactionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Link Transaction.productID to Product (without a navigation property on Transaction)
-            modelBuilder.Entity<Transaction>()
-                .HasOne<Product>()
-                .WithMany()
-                .HasForeignKey(t => t.productID)
+            modelBuilder.Entity<TransactionItem>()
+                .HasOne(ti => ti.Product)
+                .WithMany(p => p.TransactionItems)
+                .HasForeignKey(ti => ti.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Explicitly register all voucher-related entities per Simon's instructions
-            modelBuilder.Entity<User>();
-            modelBuilder.Entity<Voucher>();
-            modelBuilder.Entity<ItemVoucher>();
-            modelBuilder.Entity<DiscountVoucher>();
-            modelBuilder.Entity<GiftCardVoucher>();
+            // Other configurations as needed...
         }
 
         // Existing DbSets
@@ -129,8 +126,11 @@ namespace Bliss
         public required DbSet<Chat> Chats { get; set; }
         public required DbSet<Membership> Memberships { get; set; }
         public required DbSet<RewardPoints> RewardPoints { get; set; }
-        public required DbSet<UserVoucher> UserVouchers { get; set; }       
+        public required DbSet<UserVoucher> UserVouchers { get; set; }
+
+        // New DbSets for Homepage, Transaction, and TransactionItem
         public DbSet<Homepage> Homepages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionItem> TransactionItems { get; set; }
     }
 }

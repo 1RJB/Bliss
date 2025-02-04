@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250203161129_TryingRegister")]
-    partial class TryingRegister
+    [Migration("20250203191330_AddedType")]
+    partial class AddedType
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,8 +172,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5640),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5636),
+                            EndDate = new DateTime(2026, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2059),
+                            StartDate = new DateTime(2025, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2056),
                             Type = 0
                         },
                         new
@@ -181,8 +181,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5650),
+                            EndDate = new DateTime(2026, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2071),
+                            StartDate = new DateTime(2025, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2070),
                             Type = 1
                         },
                         new
@@ -190,8 +190,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652),
-                            StartDate = new DateTime(2025, 2, 3, 16, 11, 28, 621, DateTimeKind.Utc).AddTicks(5652),
+                            EndDate = new DateTime(2026, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2073),
+                            StartDate = new DateTime(2025, 2, 3, 19, 13, 29, 526, DateTimeKind.Utc).AddTicks(2072),
                             Type = 2
                         });
                 });
@@ -238,6 +238,11 @@ namespace Bliss.Migrations
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
