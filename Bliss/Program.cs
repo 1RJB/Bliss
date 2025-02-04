@@ -11,9 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<MyDbContext>();
-builder.Services.AddHttpClient<IPGeolocationService>();
-builder.Services.AddScoped<IPGeolocationService>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
+// Register HttpClient and IPGeolocationService
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IPGeolocationService>();
 
 // Auto Mapper
 var mappingConfig = new MapperConfiguration(mc =>

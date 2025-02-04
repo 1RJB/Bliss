@@ -216,7 +216,6 @@ namespace Bliss.Migrations
                     Description = table.Column<string>(type: "longtext", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     ImageFile = table.Column<string>(type: "longtext", nullable: true),
-                    Type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -433,9 +432,9 @@ namespace Bliss.Migrations
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3270), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3268), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3279), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3278), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3280), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3280), 2 }
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1084), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1082), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1091), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093), new DateTime(2025, 2, 3, 19, 51, 57, 632, DateTimeKind.Utc).AddTicks(1093), 2 }
                 });
 
             migrationBuilder.CreateIndex(
