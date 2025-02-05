@@ -9,7 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Bliss.Migrations
 {
     /// <inheritdoc />
-    public partial class NewTables5 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -433,9 +433,9 @@ namespace Bliss.Migrations
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5796), new DateTime(2025, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5794), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5808), new DateTime(2025, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5808), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5810), new DateTime(2025, 2, 4, 5, 20, 48, 390, DateTimeKind.Utc).AddTicks(5809), 2 }
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3270), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3268), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3279), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3278), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3280), new DateTime(2025, 2, 4, 2, 43, 33, 123, DateTimeKind.Utc).AddTicks(3280), 2 }
                 });
 
             migrationBuilder.CreateIndex(
