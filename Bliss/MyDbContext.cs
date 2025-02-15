@@ -89,7 +89,7 @@ namespace Bliss
             // ------------------------------
             modelBuilder.Entity<Wishlist>()
                 .HasMany(w => w.Products)
-                .WithMany()
+                .WithMany(p => p.Wishlists)
                 .UsingEntity(j => j.ToTable("WishlistProducts"));
 
             // ------------------------------

@@ -11,6 +11,7 @@ import ProductDetail from './pages/ProductDetail';
 import Wishlists from './pages/Wishlist';
 import EditWishlist from './pages/EditWishlist';
 import Addwishlist from './pages/AddWishlist';
+import WishlistDetail from './pages/WishlistDetail'; // ✅ Correct import
 import MyForm from './pages/MyForm';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -106,6 +107,7 @@ function App() {
                             <Route path="/wishlists" element={<Wishlists />} />
                             <Route path="/editwishlist/:id" element={<EditWishlist />} />
                             <Route path="/addwishlist" element={<Addwishlist />} />
+                            <Route path="/wishlist/:id" element={<WishlistDetail />} /> 
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/users" element={<UsersList />} />

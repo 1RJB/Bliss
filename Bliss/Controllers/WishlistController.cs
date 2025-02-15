@@ -42,11 +42,17 @@ namespace Bliss.Controllers
         [HttpGet("{id}")]
         public IActionResult GetWishlist(int id)
         {
-            Wishlist? wishlist = _context.Wishlists.Include(t => t.User).SingleOrDefault(t => t.Id == id); 
+            Wishlist? wishlist = _context.Wishlists
+                .Include(w => w.User)
+                .Include(w => w.Products)  // ✅ Ensure Products are loaded
+                .ThenInclude(p => p.Wishlists) // ✅ Ensure two-way linking
+                .SingleOrDefault(w => w.Id == id);
+
             if (wishlist == null)
             {
                 return NotFound();
             }
+
             var data = new
             {
                 wishlist.Id,
@@ -54,13 +60,23 @@ namespace Bliss.Controllers
                 wishlist.Description,
                 wishlist.CreatedAt,
                 wishlist.UserId,
-                User = new
+                User = new { wishlist.User?.Name },
+                Products = wishlist.Products.Select(p => new
                 {
-                    wishlist.User?.Name
-                }
+                    Id = p.Id,
+                    Name = p.name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    ImageFile = p.ImageFile ?? "" // Ensure image is sent
+                }).ToList()
             };
+
+            Console.WriteLine($"Wishlist {id} API Response: {data.Products.Count} products."); // ✅ Debug log
+
             return Ok(data);
         }
+
+
 
         [HttpPost, Authorize]
         public IActionResult AddWishlist(Wishlist wishlist)

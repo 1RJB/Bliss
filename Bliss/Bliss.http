@@ -136,3 +136,11 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{Bliss_HostAddress}}/wishlist/{{id}}
+
+###
+
+GET {{Bliss_HostAddress}}/wishlist/{{id}}
+
+###

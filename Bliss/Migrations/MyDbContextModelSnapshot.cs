@@ -178,8 +178,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
+                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4761),
+                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4759),
                             Type = 0
                         },
                         new
@@ -187,8 +187,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
+                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4769),
+                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4768),
                             Type = 1
                         },
                         new
@@ -196,8 +196,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
+                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
+                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
                             Type = 2
                         });
                 });
@@ -614,12 +614,12 @@ namespace Bliss.Migrations
                     b.Property<int>("ProductsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WishlistId")
+                    b.Property<int>("WishlistsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductsId", "WishlistId");
+                    b.HasKey("ProductsId", "WishlistsId");
 
-                    b.HasIndex("WishlistId");
+                    b.HasIndex("WishlistsId");
 
                     b.ToTable("WishlistProducts", (string)null);
                 });
@@ -779,7 +779,7 @@ namespace Bliss.Migrations
 
                     b.HasOne("Bliss.Models.Wishlist", null)
                         .WithMany()
-                        .HasForeignKey("WishlistId")
+                        .HasForeignKey("WishlistsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
