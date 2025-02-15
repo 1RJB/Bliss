@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Bliss.Models
 {
@@ -6,28 +7,18 @@ namespace Bliss.Models
     {
         public int Id { get; set; }
 
-
-        
-        [Required]
-        public int Quantity { get; set; }
-
-        
-        [Required]
-        public decimal PriceAtTimeOfAdd { get; set; }
-
-       
-        //public decimal Discount { get; set; } = 0;
-
-        // Foreign key for the Cart
+        // Foreign keys
         public int CartId { get; set; }
 
-        // Navigation property to represent the many-to-one relationship with Cart
-        public Cart? Cart { get; set; }
+        [JsonIgnore] // This prevents serializing the parent Cart and breaking the cycle
+        public Cart Cart { get; set; }
 
-        // Foreign key for the Product
         public int ProductId { get; set; }
+        public Product Product { get; set; }
 
-        // Navigation property to represent the many-to-one relationship with Product
-        public Product? Product { get; set; }
+        // Track how many of this product the cart contains
+        [Range(1, int.MaxValue)]
+        public int Quantity { get; set; } = 1;
     }
 }
+

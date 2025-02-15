@@ -141,5 +141,7 @@ namespace Bliss
         public DbSet<Homepage> Homepages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionItem> TransactionItems { get; set; }
+
+        public DbSet<CartItem> CartItem { get; set; }
     }
 }

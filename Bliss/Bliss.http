@@ -136,3 +136,12 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{Bliss_HostAddress}}/api/cart/add
+Content-Type: application/json
+
+{
+  //dynamic
+}
+
+###

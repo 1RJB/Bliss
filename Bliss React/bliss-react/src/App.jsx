@@ -4,6 +4,8 @@ import { Container, AppBar, Toolbar, Typography, Box, Button } from '@mui/materi
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import IconButton from '@mui/material/IconButton';
 import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
@@ -19,10 +21,11 @@ import UserDetails from './pages/UserDetails';
 import EditUser from './pages/EditUser';
 import ChangePassword from './pages/ChangePassword';
 import ActivityLogs from './pages/ActivityLogs';
-import Homepages from './pages/Homepages';         
-import AddHomepage from './pages/AddHomepage';       
+import Homepages from './pages/Homepages';
+import AddHomepage from './pages/AddHomepage';
 import EditHomepage from './pages/EditHomepage';
-import HomepageDetail from './pages/HomepageDetail';     
+import HomepageDetail from './pages/HomepageDetail';
+import Cart from './pages/Cart';
 import http from './http';
 import UserContext from './contexts/UserContext';
 
@@ -70,6 +73,7 @@ function App() {
                                 <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Wishlists</Typography>
                                 </Link>
+
                                 <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Users</Typography>
                                 </Link>
@@ -79,6 +83,9 @@ function App() {
                                         <Button color="inherit" component={Link} to={`/users/${user.id}`}>
                                             {user.name}
                                         </Button>
+                                        <IconButton component={Link} to="/cart" color="inherit" sx={{ ml: 1 }}>
+                                            <ShoppingCartIcon />
+                                        </IconButton>
                                         <Button onClick={logout} color="inherit">Logout</Button>
                                     </>
                                 )}
@@ -117,6 +124,7 @@ function App() {
                             <Route path="/addhomepage" element={<AddHomepage />} />
                             <Route path="/edithomepage/:id" element={<EditHomepage />} />
                             <Route path="/homepagedetail/:id" element={<HomepageDetail />} />
+                            <Route path="/cart" element={<Cart />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>

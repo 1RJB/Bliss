@@ -48,6 +48,39 @@ function ProductDetail() {
             });
     };
 
+
+    const handleAddToCart = async () => {
+        if (!user) {
+          console.error("User is not logged in.");
+          return;
+        }
+        if (!product) {
+          console.error("Product data is not available.");
+          return;
+        }
+        try {
+          const response = await fetch("https://localhost:7004/api/Cart/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: product.id, userId: user.id }),
+          });
+      
+          if (!response.ok) {
+            console.error("Failed to add product to cart");
+            // Optionally display an error message
+          } else {
+            const data = await response.json();
+            console.log("Cart updated successfully:", data);
+            // Optionally update your UI or display a success message
+          }
+        } catch (error) {
+          console.error("Error adding product to cart:", error);
+        }
+      };
+
+
+
+
     if (!product) return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
 
     return (
@@ -151,18 +184,18 @@ function ProductDetail() {
                         </>
                     )}
 
-                    {/* Add to Cart Button */}
                     <Button
                         variant="contained"
+                        onClick={handleAddToCart}
                         sx={{
-                            width: '100%',
-                            backgroundColor: '#222',
-                            color: '#fff',
-                            padding: '12px',
-                            textTransform: 'none',
-                            fontWeight: 'bold',
-                            '&:hover': { backgroundColor: '#444' },
-                            mt: 2
+                            width: "100%",
+                            backgroundColor: "#222",
+                            color: "#fff",
+                            padding: "12px",
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            "&:hover": { backgroundColor: "#444" },
+                            mt: 2,
                         }}
                     >
                         Add to Cart
