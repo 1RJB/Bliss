@@ -8,6 +8,9 @@ import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
 import ProductDetail from './pages/ProductDetail';
+import Wishlists from './pages/Wishlist';
+import EditWishlist from './pages/EditWishlist';
+import Addwishlist from './pages/AddWishlist';
 import MyForm from './pages/MyForm';
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -63,6 +66,10 @@ function App() {
                                 <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Homepages</Typography>
                                 </Link>
+
+                                <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>Wishlists</Typography>
+                                </Link>
                                 <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Users</Typography>
                                 </Link>
@@ -96,6 +103,9 @@ function App() {
                             <Route path="/addproduct" element={<AddProduct />} />
                             <Route path="/editproduct/:id" element={<EditProduct />} />
                             <Route path="/productdetail/:id" element={<ProductDetail />} />
+                            <Route path="/wishlists" element={<Wishlists />} />
+                            <Route path="/editwishlist/:id" element={<EditWishlist />} />
+                            <Route path="/addwishlist" element={<Addwishlist />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/users" element={<UsersList />} />

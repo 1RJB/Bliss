@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import http from '../http';
 import {
@@ -6,19 +6,47 @@ import {
     Typography,
     Button,
     Divider,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import UserContext from '../contexts/UserContext';
 
 function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
     const [product, setProduct] = useState(null);
+    const [wishlists, setWishlists] = useState([]); // Store user's wishlists
+    const [selectedWishlist, setSelectedWishlist] = useState(""); // Selected wishlist
 
     useEffect(() => {
         http.get(`/product/${id}`)
             .then((res) => setProduct(res.data))
             .catch((err) => console.error("Error fetching product:", err));
-    }, [id]);
+
+        if (user) {
+            http.get('/wishlist')
+                .then((res) => setWishlists(res.data))
+                .catch((err) => console.error("Error fetching wishlists:", err));
+        }
+    }, [id, user]);
+
+    const handleAddToWishlist = () => {
+        if (!selectedWishlist) {
+            alert("⚠️ Please select a wishlist first!");
+            return;
+        }
+
+        http.post(`/wishlist/${selectedWishlist}/addProduct/${product.id}`)
+            .then(() => {
+                alert("✅ Product added to wishlist successfully!");
+            })
+            .catch((err) => {
+                console.error("Error adding product to wishlist:", err);
+                alert("❌ Failed to add product to wishlist.");
+            });
+    };
 
     if (!product) return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
 
@@ -93,6 +121,37 @@ function ProductDetail() {
                         Find in stores →
                     </Typography>
 
+                    {/* Wishlist Selection & Add Button */}
+                    {user && wishlists.length > 0 && (
+                        <>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                Select Wishlist:
+                            </Typography>
+                            <Select
+                                value={selectedWishlist}
+                                onChange={(e) => setSelectedWishlist(e.target.value)}
+                                displayEmpty
+                                fullWidth
+                                sx={{ my: 2 }}
+                            >
+                                <MenuItem value="" disabled>Select a wishlist</MenuItem>
+                                {wishlists.map(wishlist => (
+                                    <MenuItem key={wishlist.id} value={wishlist.id}>{wishlist.name}</MenuItem>
+                                ))}
+                            </Select>
+
+                            <Button
+                                variant="contained"
+                                color="success"
+                                sx={{ mt: 1 }}
+                                onClick={handleAddToWishlist}
+                            >
+                                Add to Wishlist
+                            </Button>
+                        </>
+                    )}
+
+                    {/* Add to Cart Button */}
                     <Button
                         variant="contained"
                         sx={{
@@ -102,7 +161,8 @@ function ProductDetail() {
                             padding: '12px',
                             textTransform: 'none',
                             fontWeight: 'bold',
-                            '&:hover': { backgroundColor: '#444' }
+                            '&:hover': { backgroundColor: '#444' },
+                            mt: 2
                         }}
                     >
                         Add to Cart
@@ -138,7 +198,7 @@ function ProductDetail() {
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '40px' }}>
                 <img src="/eco-friendly-icon.png" alt="Eco-friendly" style={{ width: '30px', marginRight: '10px' }} />
                 <Typography variant="body2" sx={{ color: '#666' }}>
-                    Verified more than 80% of the packaging and ingredients are environmentally sustainable.  
+                    Verified more than 80% of the packaging and ingredients are environmentally sustainable.
                     *Tested by third-parties.
                 </Typography>
             </Box>

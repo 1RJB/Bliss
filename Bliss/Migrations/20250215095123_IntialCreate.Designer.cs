@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250215052930_IntialCreate")]
+    [Migration("20250215095123_IntialCreate")]
     partial class IntialCreate
     {
         /// <inheritdoc />
@@ -19,7 +19,7 @@ namespace Bliss.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -181,8 +181,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8058),
-                            StartDate = new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8055),
+                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2125),
+                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2123),
                             Type = 0
                         },
                         new
@@ -190,8 +190,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8066),
-                            StartDate = new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8065),
+                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132),
+                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132),
                             Type = 1
                         },
                         new
@@ -199,8 +199,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8067),
-                            StartDate = new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8067),
+                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2134),
+                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2133),
                             Type = 2
                         });
                 });
@@ -590,6 +590,21 @@ namespace Bliss.Migrations
                     b.ToTable("HomepageProducts", (string)null);
                 });
 
+            modelBuilder.Entity("ProductWishlist", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WishlistId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsId", "WishlistId");
+
+                    b.HasIndex("WishlistId");
+
+                    b.ToTable("WishlistProducts", (string)null);
+                });
+
             modelBuilder.Entity("Bliss.Models.DiscountVoucher", b =>
                 {
                     b.HasBaseType("Bliss.Models.Voucher");
@@ -781,6 +796,21 @@ namespace Bliss.Migrations
                     b.HasOne("Bliss.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProductWishlist", b =>
+                {
+                    b.HasOne("Bliss.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bliss.Models.Wishlist", null)
+                        .WithMany()
+                        .HasForeignKey("WishlistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

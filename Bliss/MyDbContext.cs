@@ -92,6 +92,15 @@ namespace Bliss
                 .WithMany(p => p.Homepages)
                 .UsingEntity(j => j.ToTable("HomepageProducts"));
 
+
+            // ------------------------------
+            // Many-to-Many: Wishlist <--> Product (New) Elizabeth
+            // ------------------------------
+            modelBuilder.Entity<Wishlist>()
+                .HasMany(w => w.Products)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("WishlistProducts"));
+
             // ------------------------------
             // Many-to-many with extra fields: Transaction <--> Product via TransactionItem
             // ------------------------------

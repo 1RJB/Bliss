@@ -24,8 +24,7 @@ namespace Bliss.Models
         // Navigation property to represent the one-to-many relationship
         public User? User { get; set; }
 
-        //// Foreign key for the Product
-        //public int ProductId { get; set; }
-        //public Product Product { get; set; }
+        // Many-to-Many: Wishlist can contain multiple Products
+        public List<Product> Products { get; set; } = new();
     }
 }

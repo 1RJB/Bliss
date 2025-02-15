@@ -430,14 +430,39 @@ namespace Bliss.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "WishlistProducts",
+                columns: table => new
+                {
+                    ProductsId = table.Column<int>(type: "int", nullable: false),
+                    WishlistId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WishlistProducts", x => new { x.ProductsId, x.WishlistId });
+                    table.ForeignKey(
+                        name: "FK_WishlistProducts_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WishlistProducts_Wishlists_WishlistId",
+                        column: x => x.WishlistId,
+                        principalTable: "Wishlists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.InsertData(
                 table: "Memberships",
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8058), new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8055), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8066), new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8065), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8067), new DateTime(2025, 2, 15, 5, 29, 29, 742, DateTimeKind.Utc).AddTicks(8067), 2 }
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2125), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2123), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2134), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2133), 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -501,6 +526,11 @@ namespace Bliss.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_WishlistProducts_WishlistId",
+                table: "WishlistProducts",
+                column: "WishlistId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wishlists_UserId",
                 table: "Wishlists",
                 column: "UserId");
@@ -534,7 +564,7 @@ namespace Bliss.Migrations
                 name: "UserVouchers");
 
             migrationBuilder.DropTable(
-                name: "Wishlists");
+                name: "WishlistProducts");
 
             migrationBuilder.DropTable(
                 name: "Carts");
@@ -546,13 +576,16 @@ namespace Bliss.Migrations
                 name: "Homepages");
 
             migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Vouchers");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Wishlists");
 
             migrationBuilder.DropTable(
                 name: "Users");

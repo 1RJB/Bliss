@@ -80,6 +80,25 @@ namespace Bliss.Controllers
             return Ok(myWishlist);
         }
 
+        [HttpPost("{wishlistId}/addProduct/{productId}"), Authorize]
+        public IActionResult AddProductToWishlist(int wishlistId, int productId)
+        {
+            var wishlist = _context.Wishlists.Include(w => w.Products).FirstOrDefault(w => w.Id == wishlistId);
+            if (wishlist == null) return NotFound("Wishlist not found");
+
+            var product = _context.Products.Find(productId);
+            if (product == null) return NotFound("Product not found");
+
+            // Ensure product is not already in the wishlist
+            if (!wishlist.Products.Any(p => p.Id == productId))
+            {
+                wishlist.Products.Add(product);
+                _context.SaveChanges();
+            }
+
+            return Ok();
+        }
+
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateTutorial(int id, Wishlist Wishlist)
         {
@@ -111,6 +130,22 @@ namespace Bliss.Controllers
             }
             _context.Wishlists.Remove(myWishlist);
             _context.SaveChanges();
+            return Ok();
+        }
+
+
+        [HttpDelete("{wishlistId}/removeProduct/{productId}"), Authorize]
+        public IActionResult RemoveProductFromWishlist(int wishlistId, int productId)
+        {
+            var wishlist = _context.Wishlists.Include(w => w.Products).FirstOrDefault(w => w.Id == wishlistId);
+            if (wishlist == null) return NotFound("Wishlist not found");
+
+            var product = wishlist.Products.FirstOrDefault(p => p.Id == productId);
+            if (product == null) return NotFound("Product not found in wishlist");
+
+            wishlist.Products.Remove(product);
+            _context.SaveChanges();
+
             return Ok();
         }
 
