@@ -45,14 +45,21 @@ Authorization: Bearer {{token}}
 
 ###
 
-PUT {{Bliss_HostAddress}}/product/6
+POST {{Bliss_HostAddress}}/voucher
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
- "title": "My Story",
- "description": "Your Song ❤"
+    "title": "Discount Voucher",
+    "description": "Get 20% off on your next purchase!",
+    "cost": 50,
+    "validDuration": 30,
+    "memberType": 1, 
+    "quantity": 100,
+    "voucherType": "DiscountVoucher", 
+    "discountPercentage": 20,
+    "maxAmount": 500
 }
+
 
 ###
 

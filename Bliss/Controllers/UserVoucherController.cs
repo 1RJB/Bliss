@@ -17,7 +17,7 @@ namespace Bliss.Controllers
             _context = context;
         }
 
-        [HttpPost("redeem/{voucherId}"), Authorize]
+        [HttpPost("redeem/{voucherId}")]
         public IActionResult RedeemVoucher(int voucherId)
         {
             int userId = GetUserId();
@@ -89,7 +89,7 @@ namespace Bliss.Controllers
 
 
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult GetUserVouchers()
         {
             int userId = GetUserId();
@@ -120,7 +120,7 @@ namespace Bliss.Controllers
         }
 
         // Search for a specific voucher
-        [HttpGet("search"), Authorize]
+        [HttpGet("search")]
         public IActionResult SearchUserVouchers(string query)
         {
             int userId = GetUserId();
