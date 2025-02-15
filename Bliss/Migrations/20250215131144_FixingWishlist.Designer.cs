@@ -11,20 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bliss.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.Designer.cs
-    [Migration("20250215123604_Bliss")]
-    partial class Bliss
-========
-    [Migration("20250215122456_FixingWishlist")]
+    [Migration("20250215131144_FixingWishlist")]
     partial class FixingWishlist
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -186,13 +181,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.Designer.cs
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
-========
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4761),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4759),
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.Designer.cs
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9754),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9750),
                             Type = 0
                         },
                         new
@@ -200,13 +190,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.Designer.cs
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
-========
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4769),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4768),
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.Designer.cs
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9762),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9761),
                             Type = 1
                         },
                         new
@@ -214,13 +199,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.Designer.cs
-                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
-                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
-========
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.Designer.cs
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763),
                             Type = 2
                         });
                 });

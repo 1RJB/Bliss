@@ -9,11 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Bliss.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.cs
-    public partial class Bliss : Migration
-========
     public partial class FixingWishlist : Migration
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -460,15 +456,9 @@ namespace Bliss.Migrations
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.cs
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769), new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775), new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776), new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776), 2 }
-========
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4761), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4759), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4769), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4768), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771), 2 }
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.cs
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9754), new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9750), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9762), new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9761), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763), new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763), 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -532,16 +522,7 @@ namespace Bliss.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:Bliss/Migrations/20250215123604_Bliss.cs
-                name: "IX_WishlistProducts_WishlistId",
-========
-                name: "IX_Vouchers_UserId",
-                table: "Vouchers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WishlistProducts_WishlistsId",
->>>>>>>> 772a2dab4029d559c18ce07690ad191715efe04e:Bliss/Migrations/20250215122456_FixingWishlist.cs
                 table: "WishlistProducts",
                 column: "WishlistsId");
 

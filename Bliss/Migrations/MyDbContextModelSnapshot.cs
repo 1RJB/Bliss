@@ -16,7 +16,7 @@ namespace Bliss.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -178,8 +178,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4761),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4759),
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9754),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9750),
                             Type = 0
                         },
                         new
@@ -187,8 +187,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4769),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4768),
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9762),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9761),
                             Type = 1
                         },
                         new
@@ -196,8 +196,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
-                            StartDate = new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771),
+                            EndDate = new DateTime(2026, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763),
+                            StartDate = new DateTime(2025, 2, 15, 13, 11, 44, 625, DateTimeKind.Utc).AddTicks(9763),
                             Type = 2
                         });
                 });
