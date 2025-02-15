@@ -64,10 +64,10 @@ namespace Bliss.Controllers
                 Products = wishlist.Products.Select(p => new
                 {
                     Id = p.Id,
-                    Name = p.name,  // ✅ Ensure correct casing
+                    Name = p.name,
                     Description = p.Description,
                     Price = p.Price,
-                    ImageFile = p.ImageFile ?? "", // ✅ Handle potential null values
+                    ImageFile = p.ImageFile ?? "" // Ensure image is sent
                 }).ToList()
             };
 
