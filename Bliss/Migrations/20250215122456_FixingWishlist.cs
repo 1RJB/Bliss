@@ -9,7 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Bliss.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class FixingWishlist : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -435,11 +435,11 @@ namespace Bliss.Migrations
                 columns: table => new
                 {
                     ProductsId = table.Column<int>(type: "int", nullable: false),
-                    WishlistId = table.Column<int>(type: "int", nullable: false)
+                    WishlistsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WishlistProducts", x => new { x.ProductsId, x.WishlistId });
+                    table.PrimaryKey("PK_WishlistProducts", x => new { x.ProductsId, x.WishlistsId });
                     table.ForeignKey(
                         name: "FK_WishlistProducts_Products_ProductsId",
                         column: x => x.ProductsId,
@@ -447,8 +447,8 @@ namespace Bliss.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WishlistProducts_Wishlists_WishlistId",
-                        column: x => x.WishlistId,
+                        name: "FK_WishlistProducts_Wishlists_WishlistsId",
+                        column: x => x.WishlistsId,
                         principalTable: "Wishlists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -460,9 +460,9 @@ namespace Bliss.Migrations
                 columns: new[] { "Id", "Benefits", "Cost", "EndDate", "StartDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2125), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2123), 0 },
-                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132), 1 },
-                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2134), new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2133), 2 }
+                    { 1, "Access to basic features", 0, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4761), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4759), 0 },
+                    { 2, "Access to green features", 50, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4769), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4768), 1 },
+                    { 3, "Access to all features", 100, new DateTime(2026, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771), new DateTime(2025, 2, 15, 12, 24, 56, 668, DateTimeKind.Utc).AddTicks(4771), 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -526,9 +526,9 @@ namespace Bliss.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WishlistProducts_WishlistId",
+                name: "IX_WishlistProducts_WishlistsId",
                 table: "WishlistProducts",
-                column: "WishlistId");
+                column: "WishlistsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wishlists_UserId",
