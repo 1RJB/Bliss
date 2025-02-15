@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bliss.Models
@@ -24,14 +25,10 @@ namespace Bliss.Models
         GiftCardVoucher
     }
 
-    public abstract class Voucher
+    public class Voucher
     {
         [Key]
         public int Id { get; set; }
-
-        [MaxLength(5)]
-        [Column(TypeName = "varchar(5)")]
-        public string? Code { get; set; }
 
         [Required, MinLength(3), MaxLength(100)]
         public string Title { get; set; } = string.Empty;
@@ -66,30 +63,5 @@ namespace Bliss.Models
         [Required]
         public VoucherType VoucherType { get; set; }
 
-        public int UserId { get; set; }
-        public User? User { get; set; }
-
-        public int? ClaimedBy { get; set; }
-
-        // ✅ **Ensure RedeemedByUsers is Initialized**
-        public List<UserVoucher> RedeemedByUsers { get; set; } = new();
-
-        // ✅ **Generate a Unique Code**
-        public void GenerateAndSetCode()
-        {
-            if (ClaimedBy.HasValue && string.IsNullOrEmpty(Code))
-            {
-                Code = GenerateCode();
-            }
-        }
-
-        private static string GenerateCode()
-        {
-            var random = new Random();
-            const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string digits = "0123456789";
-            return new string(Enumerable.Repeat(letters, 3).Select(s => s[random.Next(s.Length)]).ToArray()) +
-                   new string(Enumerable.Repeat(digits, 2).Select(s => s[random.Next(s.Length)]).ToArray());
-        }
     }
 }

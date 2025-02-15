@@ -8,42 +8,18 @@ import { toast } from 'react-toastify';
 
 // 🛠️ Validation schema for form fields
 const validationSchema = yup.object({
-    title: yup
-        .string()
-        .trim()
-        .min(3, 'Title must be at least 3 characters')
-        .max(100, 'Title must be at most 100 characters')
-        .required('Title is required'),
-
-    description: yup
-        .string()
-        .trim()
-        .min(3, 'Description must be at least 3 characters')
-        .max(500, 'Description must be at most 500 characters')
-        .required('Description is required'),
-
-    validDuration: yup
-        .number()
-        .min(1, 'Valid duration must be at least 1 day')
-        .required('Valid duration is required'),
-
-    status: yup
-        .number()
-        .oneOf([0, 1, 3], 'Invalid status selected')
-        .required('Status is required'),
-
-    memberType: yup
-        .number()
-        .oneOf([0, 1, 2], 'Invalid member type selected')
-        .required('Member type is required'),
+    title: yup.string().trim().min(3).max(100).required(),
+    description: yup.string().trim().min(3).max(500).required(),
+    cost: yup.number().min(0).required(),
+    validDuration: yup.number().min(1).required(),
+    memberType: yup.number().oneOf([0, 1, 2]).required(),
+    quantity: yup.number().min(0).required(),
 });
 
 function EditVoucher() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [imageFile, setImageFile] = useState('');
-    const baseURL = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000/';
 
     // Fetch existing voucher data
     useEffect(() => {
@@ -53,12 +29,12 @@ function EditVoucher() {
                 const fetchedData = {
                     title: res.data.title,
                     description: res.data.description,
-                    validDuration: res.data.validDuration,
-                    status: parseInt(res.data.status, 10),  // Ensure integer conversion
-                    memberType: parseInt(res.data.memberType, 10),  // Ensure integer conversion
+                    cost: res.data.cost ?? 0,
+                    validDuration: res.data.validDuration ?? 0,
+                    memberType: parseInt(res.data.memberType, 10),
+                    quantity: res.data.quantity ?? 0,
                 };
                 formik.setValues(fetchedData);
-                setImageFile(res.data.imageFile);
                 setLoading(false);
             })
             .catch((err) => {
@@ -71,17 +47,17 @@ function EditVoucher() {
         initialValues: {
             title: '',
             description: '',
-            validDuration: 1, // Default to 1
-            status: 0,
+            cost: 0,
+            validDuration: 1,
             memberType: 0,
+            quantity: 0,
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            if (imageFile) {
-                values.imageFile = imageFile;  // ✅ Corrected reference
-            }
-            values.status = parseInt(values.status, 10);  // ✅ Ensure integer
-            values.memberType = parseInt(values.memberType, 10);  // ✅ Ensure integer
+            values.memberType = parseInt(values.memberType, 10);
+            values.cost = values.cost ?? 0;
+            values.validDuration = values.validDuration ?? 0;
+            values.quantity = values.quantity ?? 0;
 
             console.log("Submitting Data:", JSON.stringify(values, null, 2));
 
@@ -97,34 +73,6 @@ function EditVoucher() {
         },
     });
 
-    // Handle file upload
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 1024 * 1024) {
-                toast.error('Maximum file size is 1MB');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-                .then((res) => {
-                    setImageFile(res.data.filename);
-                    toast.success('File uploaded successfully');
-                })
-                .catch((error) => {
-                    toast.error('Error uploading file');
-                    console.error('File upload error:', error);
-                });
-        }
-    };
-
     return (
         <Box>
             <Typography variant="h5" sx={{ my: 2 }}>
@@ -136,10 +84,8 @@ function EditVoucher() {
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <TextField
-                                fullWidth
-                                id="title"
+                                fullWidth label="Title"
                                 name="title"
-                                label="Title"
                                 value={formik.values.title}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -150,10 +96,8 @@ function EditVoucher() {
 
                         <Grid item xs={12}>
                             <TextField
-                                fullWidth
-                                id="description"
+                                fullWidth label="Description"
                                 name="description"
-                                label="Description"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -164,10 +108,21 @@ function EditVoucher() {
 
                         <Grid item xs={12}>
                             <TextField
-                                fullWidth
-                                id="validDuration"
+                                fullWidth label="Cost"
+                                name="cost"
+                                type="number"
+                                value={formik.values.cost}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.cost && Boolean(formik.errors.cost)}
+                                helperText={formik.touched.cost && formik.errors.cost}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth label="Valid Duration"
                                 name="validDuration"
-                                label="Valid Duration"
                                 type="number"
                                 value={formik.values.validDuration}
                                 onChange={formik.handleChange}
@@ -175,23 +130,6 @@ function EditVoucher() {
                                 error={formik.touched.validDuration && Boolean(formik.errors.validDuration)}
                                 helperText={formik.touched.validDuration && formik.errors.validDuration}
                             />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    name="status"
-                                    value={formik.values.status}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.status && Boolean(formik.errors.status)}
-                                >
-                                    <MenuItem value={0}>Available</MenuItem>
-                                    <MenuItem value={1}>Redeemed</MenuItem>
-                                    <MenuItem value={3}>Expired</MenuItem>
-                                </Select>
-                            </FormControl>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -212,23 +150,17 @@ function EditVoucher() {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                                Upload File
-                                <input type="file" hidden onChange={handleFileChange} />
-                            </Button>
+                            <TextField
+                                fullWidth label="Quantity"
+                                name="quantity"
+                                type="number"
+                                value={formik.values.quantity}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+                                helperText={formik.touched.quantity && formik.errors.quantity}
+                            />
                         </Grid>
-
-                        {imageFile && (
-                            <Grid item xs={12}>
-                                <Box mt={2}>
-                                    <img
-                                        src={`${baseURL}${imageFile}`}
-                                        alt="voucher"
-                                        style={{ maxWidth: '100%' }}
-                                    />
-                                </Box>
-                            </Grid>
-                        )}
 
                         <Grid item xs={12}>
                             <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>

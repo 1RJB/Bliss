@@ -16,7 +16,7 @@ namespace Bliss.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.12")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -178,8 +178,8 @@ namespace Bliss.Migrations
                             Id = 1,
                             Benefits = "Access to basic features",
                             Cost = 0,
-                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2125),
-                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2123),
+                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
+                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6769),
                             Type = 0
                         },
                         new
@@ -187,8 +187,8 @@ namespace Bliss.Migrations
                             Id = 2,
                             Benefits = "Access to green features",
                             Cost = 50,
-                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132),
-                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2132),
+                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
+                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6775),
                             Type = 1
                         },
                         new
@@ -196,8 +196,8 @@ namespace Bliss.Migrations
                             Id = 3,
                             Benefits = "Access to all features",
                             Cost = 100,
-                            EndDate = new DateTime(2026, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2134),
-                            StartDate = new DateTime(2025, 2, 15, 9, 51, 23, 339, DateTimeKind.Utc).AddTicks(2133),
+                            EndDate = new DateTime(2026, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
+                            StartDate = new DateTime(2025, 2, 15, 12, 36, 4, 251, DateTimeKind.Utc).AddTicks(6776),
                             Type = 2
                         });
                 });
@@ -417,19 +417,59 @@ namespace Bliss.Migrations
 
             modelBuilder.Entity("Bliss.Models.UserVoucher", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ClaimedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("varchar(5)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("DiscountPercentage")
+                        .HasColumnType("double");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("ItemQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("MaxAmount")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VoucherId")
+                    b.Property<double?>("Value")
+                        .HasColumnType("double");
+
+                    b.Property<int?>("VoucherId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("VoucherType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("RedeemedAt")
-                        .HasColumnType("datetime");
+                    b.Property<bool>("isValid")
+                        .HasColumnType("tinyint(1)");
 
-                    b.HasKey("UserId", "VoucherId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VoucherId");
 
@@ -442,13 +482,6 @@ namespace Bliss.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClaimedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(5)
-                        .HasColumnType("varchar(5)");
-
                     b.Property<int>("Cost")
                         .HasColumnType("int");
 
@@ -460,23 +493,20 @@ namespace Bliss.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("varchar(21)");
-
                     b.Property<string>("ImageFile")
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("MemberType")
-                        .HasColumnType("int");
+                    b.Property<string>("MemberType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -486,24 +516,16 @@ namespace Bliss.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ValidDuration")
                         .HasColumnType("int");
 
-                    b.Property<int>("VoucherType")
-                        .HasColumnType("int");
+                    b.Property<string>("VoucherType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Vouchers");
-
-                    b.HasDiscriminator().HasValue("Voucher");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Bliss.Models.Wishlist", b =>
@@ -600,43 +622,6 @@ namespace Bliss.Migrations
                     b.HasIndex("WishlistId");
 
                     b.ToTable("WishlistProducts", (string)null);
-                });
-
-            modelBuilder.Entity("Bliss.Models.DiscountVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<double>("DiscountPercentage")
-                        .HasColumnType("double");
-
-                    b.Property<double>("MaxAmount")
-                        .HasColumnType("double");
-
-                    b.HasDiscriminator().HasValue("DiscountVoucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.GiftCardVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("double");
-
-                    b.HasDiscriminator().HasValue("GiftCardVoucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.ItemVoucher", b =>
-                {
-                    b.HasBaseType("Bliss.Models.Voucher");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ItemQuantity")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("ItemVoucher");
                 });
 
             modelBuilder.Entity("Bliss.Models.ActivityLog", b =>
@@ -739,25 +724,12 @@ namespace Bliss.Migrations
                         .IsRequired();
 
                     b.HasOne("Bliss.Models.Voucher", "Voucher")
-                        .WithMany("RedeemedByUsers")
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("User");
 
                     b.Navigation("Voucher");
-                });
-
-            modelBuilder.Entity("Bliss.Models.Voucher", b =>
-                {
-                    b.HasOne("Bliss.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bliss.Models.Wishlist", b =>
@@ -831,11 +803,6 @@ namespace Bliss.Migrations
                     b.Navigation("RewardPoints");
 
                     b.Navigation("Wishlists");
-                });
-
-            modelBuilder.Entity("Bliss.Models.Voucher", b =>
-                {
-                    b.Navigation("RedeemedByUsers");
                 });
 #pragma warning restore 612, 618
         }

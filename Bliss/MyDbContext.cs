@@ -18,28 +18,19 @@ namespace Bliss
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Explicitly register voucher-related entities per Simon's instructions
-            modelBuilder.Entity<User>();
-            modelBuilder.Entity<Voucher>();
-            modelBuilder.Entity<ItemVoucher>();
-            modelBuilder.Entity<DiscountVoucher>();
-            modelBuilder.Entity<GiftCardVoucher>();
+            base.OnModelCreating(modelBuilder);
 
-            // UserVoucher relationships
-            modelBuilder.Entity<UserVoucher>()
-                .HasKey(uv => new { uv.UserId, uv.VoucherId });
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.Status)
+                .HasConversion<string>();
 
-            modelBuilder.Entity<UserVoucher>()
-                .HasOne(uv => uv.User)
-                .WithMany(u => u.RedeemedVouchers)
-                .HasForeignKey(uv => uv.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.MemberType)
+                .HasConversion<string>();
 
-            modelBuilder.Entity<UserVoucher>()
-                .HasOne(uv => uv.Voucher)
-                .WithMany(v => v.RedeemedByUsers)
-                .HasForeignKey(uv => uv.VoucherId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.VoucherType)
+                .HasConversion<string>();
 
             // One-to-one relationship: User & RewardPoints
             modelBuilder.Entity<User>()

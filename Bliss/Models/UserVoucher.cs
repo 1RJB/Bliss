@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bliss.Models
@@ -9,22 +8,47 @@ namespace Bliss.Models
         [Key]
         public int Id { get; set; }
 
-        // ✅ Foreign key for User
+        // Store key voucher details to prevent data loss
         [Required]
-        public int UserId { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        [ForeignKey(nameof(UserId))]
+        [Required]
+        public string Description { get; set; } = string.Empty;
+
+        [Required]
+        public VoucherType VoucherType { get; set; }
+
+        // Store additional data from voucher subclasses
+        public string? ItemName { get; set; }
+        public int? ItemQuantity { get; set; }
+        public double? DiscountPercentage { get; set; }
+        public double? MaxAmount { get; set; }
+        public double? Value { get; set; }
+
+        // Foreign key to the original Voucher (nullable if deleted)
+        public int? VoucherId { get; set; }
+        public Voucher? Voucher { get; set; }  // Navigation Property
+
+        // Foreign key to the User who claimed the voucher
+        public int UserId { get; set; }
+        [ForeignKey("UserId")]
         public User User { get; set; } = null!;
 
-        // ✅ Foreign key for Voucher
+        // Unique Code
         [Required]
-        public int VoucherId { get; set; }
+        [MaxLength(5)] // Increased in case codes get longer in the future
+        public string Code { get; set; } = string.Empty;
 
-        [ForeignKey(nameof(VoucherId))]
-        public Voucher Voucher { get; set; } = null!;
-
-        // ✅ Automatically sets the current timestamp when redeemed
+        // Date when the voucher was claimed
+        [Required]
         [Column(TypeName = "datetime")]
-        public DateTime RedeemedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ClaimedAt { get; set; } = DateTime.UtcNow;
+
+        // Determines if the voucher is still valid
+        [Required]
+        public bool isValid { get; set; } = true;
+
+        [Required]
+        public int Duration { get; set; }
     }
 }
