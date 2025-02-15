@@ -4,10 +4,20 @@ import { Container, AppBar, Toolbar, Typography, Box, Button } from '@mui/materi
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import IconButton from '@mui/material/IconButton';
 import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
-import MyForm from './pages/MyForm';
+import ProductDetail from './pages/ProductDetail';
+import Wishlists from './pages/Wishlist';
+import EditWishlist from './pages/EditWishlist';
+import Addwishlist from './pages/AddWishlist';
+import WishlistDetail from './pages/WishlistDetail';
+import Vouchers from './pages/Vouchers';
+import MyVoucher from './pages/MyVoucher';
+import AddVoucher from './pages/AddVoucher';
+import EditVoucher from './pages/EditVoucher';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import UsersList from './pages/UsersList';
@@ -15,9 +25,11 @@ import UserDetails from './pages/UserDetails';
 import EditUser from './pages/EditUser';
 import ChangePassword from './pages/ChangePassword';
 import ActivityLogs from './pages/ActivityLogs';
-import Homepages from './pages/Homepages'; 
-import AddHomepage from './pages/AddHomepage'; 
-import EditHomepage from './pages/EditHomepage'; 
+import Homepages from './pages/Homepages';
+import AddHomepage from './pages/AddHomepage';
+import EditHomepage from './pages/EditHomepage';
+import HomepageDetail from './pages/HomepageDetail';
+import Cart from './pages/Cart';
 import http from './http';
 import UserContext from './contexts/UserContext';
 
@@ -61,6 +73,19 @@ function App() {
                                 <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Homepages</Typography>
                                 </Link>
+
+                                <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>Wishlists</Typography>
+                                </Link>
+                                <Link to="/vouchers" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>Vouchers</Typography>
+                                </Link>
+                                <Link to="/myvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>My Voucher</Typography>
+                                </Link>
+                                <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                    <Typography>Add Voucher</Typography>
+                                </Link>
                                 <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Users</Typography>
                                 </Link>
@@ -70,6 +95,9 @@ function App() {
                                         <Button color="inherit" component={Link} to={`/users/${user.id}`}>
                                             {user.name}
                                         </Button>
+                                        <IconButton component={Link} to="/cart" color="inherit" sx={{ ml: 1 }}>
+                                            <ShoppingCartIcon />
+                                        </IconButton>
                                         <Button onClick={logout} color="inherit">Logout</Button>
                                     </>
                                 )}
@@ -93,6 +121,15 @@ function App() {
                             <Route path="/products" element={<Products />} />
                             <Route path="/addproduct" element={<AddProduct />} />
                             <Route path="/editproduct/:id" element={<EditProduct />} />
+                            <Route path="/productdetail/:id" element={<ProductDetail />} />
+                            <Route path="/vouchers" element={<Vouchers />} />
+                            <Route path="/myvoucher" element={<MyVoucher />} />
+                            <Route path="/addvoucher" element={<AddVoucher />} />
+                            <Route path="/editvoucher/:id" element={<EditVoucher />} />
+                            <Route path="/wishlists" element={<Wishlists />} />
+                            <Route path="/editwishlist/:id" element={<EditWishlist />} />
+                            <Route path="/addwishlist" element={<Addwishlist />} />
+                            <Route path="/wishlist/:id" element={<WishlistDetail />} /> 
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/users" element={<UsersList />} />
@@ -100,9 +137,11 @@ function App() {
                             <Route path="/edituser/:id" element={<EditUser />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/activity-logs" element={<ActivityLogs />} />
-                            <Route path="/homepages" element={<Homepages />} /> {/* New route for Homepages */}
+                            <Route path="/homepages" element={<Homepages />} />
                             <Route path="/addhomepage" element={<AddHomepage />} />
                             <Route path="/edithomepage/:id" element={<EditHomepage />} />
+                            <Route path="/homepagedetail/:id" element={<HomepageDetail />} />
+                            <Route path="/cart" element={<Cart />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>

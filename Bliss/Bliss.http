@@ -45,14 +45,21 @@ Authorization: Bearer {{token}}
 
 ###
 
-PUT {{Bliss_HostAddress}}/product/6
+POST {{Bliss_HostAddress}}/voucher
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
- "title": "My Story",
- "description": "Your Song ❤"
+    "title": "Discount Voucher",
+    "description": "Get 20% off on your next purchase!",
+    "cost": 50,
+    "validDuration": 30,
+    "memberType": 1, 
+    "quantity": 100,
+    "voucherType": "DiscountVoucher", 
+    "discountPercentage": 20,
+    "maxAmount": 500
 }
+
 
 ###
 
@@ -61,3 +68,86 @@ Authorization: Bearer {{token}}
 
 ###
 
+
+@search=string
+GET {{Bliss_HostAddress}}/homepage?search={{search}}
+
+###
+
+POST {{Bliss_HostAddress}}/homepage
+Content-Type: application/json
+
+{
+  //Homepage
+}
+
+###
+
+@id=0
+DELETE {{Bliss_HostAddress}}/homepage/{{id}}
+
+###
+
+GET {{Bliss_HostAddress}}/homepage/{{id}}
+
+###
+
+PUT {{Bliss_HostAddress}}/homepage/{{id}}
+Content-Type: application/json
+
+{
+  //Homepage
+}
+
+###
+
+GET {{Bliss_HostAddress}}/homepage/{{id}}/products
+
+###
+
+POST {{Bliss_HostAddress}}/homepage/{{id}}/products
+Content-Type: application/json
+
+{
+  //Product
+}
+
+###
+
+GET {{Bliss_HostAddress}}/transaction
+
+###
+
+POST {{Bliss_HostAddress}}/transaction
+Content-Type: application/json
+
+{
+  //Transaction
+}
+
+###
+
+DELETE {{Bliss_HostAddress}}/transaction/{{id}}
+
+###
+
+GET {{Bliss_HostAddress}}/transaction/{{id}}
+
+###
+
+PUT {{Bliss_HostAddress}}/transaction/{{id}}
+Content-Type: application/json
+
+{
+  //Transaction
+}
+
+###
+
+GET {{Bliss_HostAddress}}/wishlist/{{id}}
+
+###
+
+GET {{Bliss_HostAddress}}/wishlist/{{id}}
+
+###

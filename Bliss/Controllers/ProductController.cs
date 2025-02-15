@@ -1,173 +1,168 @@
-﻿using AutoMapper;
+﻿using Microsoft.AspNetCore.Mvc;
 using Bliss.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Bliss.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductController(MyDbContext context, IMapper mapper,
-        ILogger<ProductController> logger) : ControllerBase
+    public class ProductController(MyDbContext context, IMapper mapper) : ControllerBase
     {
         private readonly MyDbContext _context = context;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<ProductController> _logger = logger;
 
+        // GET /Product?search={search}&type={type}&priceMin={priceMin}&priceMax={priceMax}
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProductDTO>), StatusCodes.Status200OK)]
-        public IActionResult GetAll(string? search)
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        public IActionResult GetAll(string? search, string? type, int? priceMin, int? priceMax)
         {
-            try
+            IQueryable<Product> result = _context.Products.Include(t => t.User);
+            
+            // Apply Search Filter
+            if (!string.IsNullOrEmpty(search))
             {
-                IQueryable<Product> result = _context.Products.Include(t => t.User);
-                if (search != null)
+                result = result.Where(t => t.name.Contains(search) || t.Description.Contains(search));
+            }
+
+            // Apply Type Filter
+            if (!string.IsNullOrEmpty(type))
+            {
+                result = result.Where(t => t.Type == type);
+            }
+
+            // Apply Price Range Filter
+            if (priceMin.HasValue)
+            {
+                result = result.Where(t => t.Price >= priceMin.Value);
+            }
+            if (priceMax.HasValue)
+            {
+                result = result.Where(t => t.Price <= priceMax.Value);
+            }
+
+            var list = result.OrderByDescending(x => x.Price).ToList();
+            var data = list.Select(t => new
+            {
+                t.Id,
+                t.name,
+                t.Description,
+                t.ImageFile,
+                t.Price,
+                t.Type,
+                t.UserId,
+                User = new
                 {
-                    result = result.Where(x => x.Title.Contains(search)
-                        || x.Description.Contains(search));
+                    t.User?.Name
                 }
-                var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-                IEnumerable<ProductDTO> data = list.Select(_mapper.Map<ProductDTO>);
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when get all products");
-                return StatusCode(500);
-            }
+                // Optionally, if you need to expose associated homepages:
+                // Homepages = t.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
+            });
+
+            Console.WriteLine($"Filtered Products: {list.Count} items found");
+            return Ok(data);
         }
 
+        // POST /Product
+        [HttpPost, Authorize]
+        public IActionResult AddProduct([FromBody] Product product)
+        {
+            int userId = GetUserId();
+            var myProduct = new Product()
+            {
+                name = product.name.Trim(),
+                Description = product.Description.Trim(),
+                Price = product.Price,
+                ImageFile = product.ImageFile,
+                Type = product.Type,
+                UserId = userId,
+            };
+            _context.Products.Add(myProduct);
+            _context.SaveChanges();
+
+            return Ok(myProduct);
+        }
+
+        // GET /Product/{id}
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
         public IActionResult GetProduct(int id)
         {
-            try
-            {
-                Product? product = _context.Products.Include(t => t.User)
+            Product? product = _context.Products
+                .Include(t => t.User)
+                .Include(t => t.Homepages)  // Optionally include related homepages
                 .SingleOrDefault(t => t.Id == id);
-                if (product == null)
-                {
-                    return NotFound();
-                }
-                ProductDTO data = _mapper.Map<ProductDTO>(product);
-                return Ok(data);
-            }
-            catch (Exception ex)
+            if (product == null)
             {
-                _logger.LogError(ex, "Error when get product by id");
-                return StatusCode(500);
+                return NotFound();
             }
+            var data = new
+            {
+                product.Id,
+                product.name,
+                product.Description,
+                product.ImageFile,
+                product.Price,
+                product.Type,
+                product.UserId,
+                User = new
+                {
+                    product.User?.Name
+                },
+                // Optionally expose homepages:
+                // Homepages = product.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
+            };
+
+            return Ok(data);
         }
 
-        [HttpPost, Authorize]
-        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
-        public IActionResult AddProduct(AddProductRequest product)
-        {
-            try
-            {
-                int userId = GetUserId();
-                var now = DateTime.Now;
-                var myProduct = new Product()
-                {
-                    Title = product.Title.Trim(),
-                    Description = product.Description.Trim(),
-                    ImageFile = product.ImageFile,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    UserId = userId
-                };
-
-                _context.Products.Add(myProduct);
-                _context.SaveChanges();
-
-                Product? newProduct = _context.Products.Include(t => t.User)
-                    .FirstOrDefault(t => t.Id == myProduct.Id);
-                ProductDTO productDTO = _mapper.Map<ProductDTO>(newProduct);
-                return Ok(productDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when add product");
-                return StatusCode(500);
-            }
-        }
-
+        // PUT /Product/{id}
         [HttpPut("{id}"), Authorize]
-        public IActionResult UpdateProduct(int id, UpdateProductRequest product)
+        public IActionResult UpdateProduct(int id, [FromBody] Product product)
         {
-            try
+            var myProduct = _context.Products.Find(id);
+            if (myProduct == null)
             {
-                var myProduct = _context.Products.Find(id);
-                if (myProduct == null)
-                {
-                    return NotFound();
-                }
-
-                int userId = GetUserId();
-                if (myProduct.UserId != userId)
-                {
-                    return Forbid();
-                }
-
-                if (product.Title != null)
-                {
-                    myProduct.Title = product.Title.Trim();
-                }
-                if (product.Description != null)
-                {
-                    myProduct.Description = product.Description.Trim();
-                }
-                if (product.ImageFile != null)
-                {
-                    myProduct.ImageFile = product.ImageFile;
-                }
-                myProduct.UpdatedAt = DateTime.Now;
-
-                _context.SaveChanges();
-                return Ok();
+                return NotFound();
             }
-            catch (Exception ex)
+            int userId = GetUserId();
+            if (myProduct.UserId != userId)
             {
-                _logger.LogError(ex, "Error when update product");
-                return StatusCode(500);
+                return Forbid();
             }
+
+            myProduct.name = product.name.Trim();
+            myProduct.Description = product.Description.Trim();
+            myProduct.ImageFile = product.ImageFile;
+            myProduct.Price = product.Price;
+            myProduct.Type = product.Type;
+
+            _context.SaveChanges();
+            return Ok(myProduct);
         }
 
-        [HttpDelete("{id}"), Authorize]
+        // DELETE /Product/{id}
+        [HttpDelete("{id}")]
         public IActionResult DeleteProduct(int id)
         {
-            try
+            var myProduct = _context.Products.Find(id);
+            if (myProduct == null)
             {
-                var myProduct = _context.Products.Find(id);
-                if (myProduct == null)
-                {
-                    return NotFound();
-                }
-
-                int userId = GetUserId();
-                if (myProduct.UserId != userId)
-                {
-                    return Forbid();
-                }
-
-                _context.Products.Remove(myProduct);
-                _context.SaveChanges();
-                return Ok();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when delete product");
-                return StatusCode(500);
-            }
+
+            _context.Products.Remove(myProduct);
+            _context.SaveChanges();
+            return Ok();
         }
 
         private int GetUserId()
         {
             return Convert.ToInt32(User.Claims
                 .Where(c => c.Type == ClaimTypes.NameIdentifier)
-                .Select(c => c.Value).SingleOrDefault());
+                .Select(c => c.Value)
+                .SingleOrDefault());
         }
     }
 }

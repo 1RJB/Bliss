@@ -88,10 +88,12 @@ function Login() {
                     type="submit">
                     Login
                 </Button>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                 <HCaptcha
                     sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
                     onVerify={handleCaptchaChange}
                 />
+                </Box>
             </Box>
 
             <ToastContainer />
