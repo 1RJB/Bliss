@@ -37,41 +37,42 @@ function WishlistDetail() {
             <Typography>{wishlist.description}</Typography>
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
-    {wishlist.products.length > 0 ? (
-        wishlist.products.map((product) => (
-            <Grid item xs={12} md={6} lg={4} key={product.id}>
-                <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '10px' }}>
-                    {/* Product Image */}
-                    <Box
-                        sx={{
-                            width: '150px',
-                            height: '150px',
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundImage: `url(${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile})`,
-                            borderRadius: '5px',
-                            marginBottom: 2,
-                        }}
-                    />
-                    
-                    <CardContent>
-                        <Typography variant="h6">{product.name}</Typography>
-                        <Typography>{product.description}</Typography>
-                        <Typography sx={{ fontWeight: 'bold' }}>${product.price}</Typography>
+                {wishlist.products?.length > 0 ? (  // ✅ Use Optional Chaining `?.`
+                    wishlist.products.map((product) => (
+                        <Grid item xs={12} md={6} lg={4} key={product.id}>
+                            <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '10px' }}>
+                                {/* Product Image */}
+                                <Box
+                                    sx={{
+                                        width: '150px',
+                                        height: '150px',
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        backgroundImage: `url(${import.meta.env.VITE_FILE_BASE_URL}${product.imageFile})`,
+                                        borderRadius: '5px',
+                                        marginBottom: 2,
+                                    }}
+                                />
 
-                        {user && user.id === wishlist.userId && (
-                            <IconButton color="error" onClick={() => removeProduct(product.id)}>
-                                <Delete />
-                            </IconButton>
-                        )}
-                    </CardContent>
-                </Card>
+                                <CardContent>
+                                    <Typography variant="h6">{product.name}</Typography>
+                                    <Typography>{product.description}</Typography>
+                                    <Typography sx={{ fontWeight: 'bold' }}>${product.price}</Typography>
+
+                                    {user && user.id === wishlist.userId && (
+                                        <IconButton color="error" onClick={() => removeProduct(product.id)}>
+                                            <Delete />
+                                        </IconButton>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))
+                ) : (
+                    <Typography sx={{ mt: 2 }}>No products in this wishlist.</Typography>
+                )}
             </Grid>
-        ))
-    ) : (
-        <Typography sx={{ mt: 2 }}>No products in this wishlist.</Typography>
-    )}
-</Grid>
+
 
         </Box>
     );
