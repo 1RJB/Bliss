@@ -1,65 +1,56 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button, Chip, Divider } from '@mui/material';
 import { AccountCircle, AccessTime, Search, Clear, Edit, Delete, ShoppingCart, MonetizationOn, HourglassBottom } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
-import global from '../global';
 
 function Vouchers() {
     const [voucherList, setVoucherList] = useState([]);
     const [search, setSearch] = useState('');
     const { user } = useContext(UserContext);
 
-    const onSearchChange = (e) => {
-        setSearch(e.target.value);
-    };
+    const onSearchChange = (e) => setSearch(e.target.value);
 
-    const getVouchers = () => {
-        http.get('/voucher').then((res) => {
-            setVoucherList(res.data);
-        });
-    };
+    // ✅ Use useCallback to prevent infinite re-fetching
+    const getVouchers = useCallback(() => {
+        http.get('/voucher')
+            .then((res) => setVoucherList(res.data))
+            .catch((err) => console.error("Error fetching vouchers:", err));
+    }, []);
 
     const searchVouchers = () => {
-        http.get(`/voucher?search=${search}`).then((res) => {
-            setVoucherList(res.data);
-        });
+        http.get(`/voucher?search=${search}`)
+            .then((res) => setVoucherList(res.data))
+            .catch((err) => console.error("Error searching vouchers:", err));
     };
 
     const deleteVoucher = (id) => {
-        http.delete(`/voucher/${id}`).then(() => {
-            getVouchers();
-        }).catch((err) => {
-            console.error('Error deleting voucher:', err);
-        });
+        http.delete(`/voucher/${id}`)
+            .then(() => getVouchers())
+            .catch((err) => console.error('Error deleting voucher:', err));
     };
 
     useEffect(() => {
         getVouchers();
-    }, []);
+    }, [getVouchers]);  // ✅ Prevent infinite re-fetching
 
     const onSearchKeyDown = (e) => {
-        if (e.key === "Enter") {
-            searchVouchers();
-        }
+        if (e.key === "Enter") searchVouchers();
     };
 
-    const onClickSearch = () => {
-        searchVouchers();
-    };
+    const onClickSearch = () => searchVouchers();
 
     const onClickClear = () => {
         setSearch('');
         getVouchers();
     };
 
-    // Define redeemVoucher function
+    // ✅ Correct API endpoint for redeeming a voucher
     const redeemVoucher = (voucherId) => {
-        http.post(`/voucher/redeem/${voucherId}`)
-            .then((res) => {
-                // Refresh the vouchers after redemption
+        http.post(`/uservoucher/redeem/${voucherId}`)
+            .then(() => {
                 getVouchers();
                 alert('Voucher redeemed successfully!');
             })
@@ -74,55 +65,42 @@ function Vouchers() {
             case 0: return '#e3f2fd'; // Light Blue (Item Voucher)
             case 1: return '#fce4ec'; // Light Pink (Discount Voucher)
             case 2: return '#e8f5e9'; // Light Green (Gift Card Voucher)
-            default: return '#ffffff'; // Default White
+            default: return '#ffffff';
         }
     };
 
+    // ✅ Fixed status mapping (Expired = 2)
     const getStatusText = (status) => {
         switch (status) {
             case 0: return "Available";
             case 1: return "Redeemed";
-            case 3: return "Expired";
+            case 2: return "Expired";  
             default: return "Unknown";
         }
     };
 
     const getTimeRemaining = (createdAt, validDuration) => {
-        const expiryDate = dayjs(createdAt).add(validDuration, 'day'); // Add valid days
+        const expiryDate = dayjs(createdAt).add(validDuration, 'day');
         const today = dayjs();
-        const diff = expiryDate.diff(today, 'day'); // Days remaining
-        return diff;
+        return expiryDate.diff(today, 'day'); 
     };
 
     const categorizeVouchers = () => {
-        const categorized = {
-            0: [],
-            1: [],
-            2: []
-        };
-
+        const categorized = { 0: [], 1: [], 2: [] };
         voucherList.forEach((voucher) => {
             if (categorized.hasOwnProperty(voucher.memberType)) {
                 categorized[voucher.memberType].push(voucher);
             }
         });
-
         return categorized;
     };
 
     const categorizedVouchers = categorizeVouchers();
-
-    const memberTypeTitles = {
-        0: "Basic Members",
-        1: "Green Members",
-        2: "Premium Members"
-    };
+    const memberTypeTitles = { 0: "Basic Members", 1: "Green Members", 2: "Premium Members" };
 
     return (
         <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Vouchers
-            </Typography>
+            <Typography variant="h5" sx={{ my: 2 }}>Vouchers</Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Input
@@ -132,13 +110,9 @@ function Vouchers() {
                     onKeyDown={onSearchKeyDown}
                     sx={{ flexGrow: 1 }}
                 />
-                <IconButton color="primary" onClick={onClickSearch}>
-                    <Search />
-                </IconButton>
-                <IconButton color="primary" onClick={onClickClear}>
-                    <Clear />
-                </IconButton>
-                {user && (
+                <IconButton color="primary" onClick={onClickSearch}><Search /></IconButton>
+                <IconButton color="primary" onClick={onClickClear}><Clear /></IconButton>
+                {user?.role === 'Staff' && (
                     <Link to="/addvoucher">
                         <Button variant='contained' sx={{ ml: 2 }}>Add Voucher</Button>
                     </Link>
@@ -148,9 +122,7 @@ function Vouchers() {
             {Object.entries(categorizedVouchers).map(([memberType, vouchers]) => (
                 vouchers.length > 0 && (
                     <Box key={memberType} sx={{ mb: 4 }}>
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-                            {memberTypeTitles[memberType]}
-                        </Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>{memberTypeTitles[memberType]}</Typography>
                         <Divider sx={{ mb: 2 }} />
 
                         <Grid container spacing={3}>
@@ -173,25 +145,19 @@ function Vouchers() {
                                             <CardContent>
                                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{voucher.title}</Typography>
-                                                    {user && user.id === voucher.userId && (
+                                                    {user?.role === 'Staff' && (
                                                         <Box>
                                                             <Link to={`/editvoucher/${voucher.id}`}>
-                                                                <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                                    <Edit />
-                                                                </IconButton>
+                                                                <IconButton color="primary"><Edit /></IconButton>
                                                             </Link>
-                                                            <IconButton color="secondary" sx={{ padding: '4px' }} onClick={() => deleteVoucher(voucher.id)}>
+                                                            <IconButton color="secondary" onClick={() => deleteVoucher(voucher.id)}>
                                                                 <Delete />
                                                             </IconButton>
                                                         </Box>
                                                     )}
                                                 </Box>
 
-                                                <Chip
-                                                    label={getStatusText(voucher.status)}
-                                                    color={voucher.status === 0 ? "success" : "default"}
-                                                    sx={{ mb: 1 }}
-                                                />
+                                                <Chip label={getStatusText(voucher.status)} color={voucher.status === 0 ? "success" : "default"} sx={{ mb: 1 }} />
 
                                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                                                     <MonetizationOn sx={{ mr: 1 }} />
@@ -208,15 +174,13 @@ function Vouchers() {
                                                     <Typography>{isExpired ? "Expired" : `${daysRemaining} days remaining`}</Typography>
                                                 </Box>
 
-                                                <Typography sx={{ whiteSpace: 'pre-wrap', mb: 2 }}>{voucher.description}</Typography>
-
                                                 <Button
                                                     variant="contained"
-                                                    color={voucher.quantity === 0 ? "error" : "primary"}
-                                                    disabled={voucher.quantity === 0}
+                                                    color={(voucher.quantity === 0 || voucher.status === 1) ? "error" : "primary"}
+                                                    disabled={voucher.quantity === 0 || voucher.status === 1}
                                                     onClick={() => redeemVoucher(voucher.id)}
                                                 >
-                                                    {voucher.quantity === 0 ? "Expired" : "Redeem"}
+                                                    {voucher.quantity === 0 ? "Expired" : voucher.status === 1 ? "Redeemed" : "Redeem"}
                                                 </Button>
                                             </CardContent>
                                         </Card>

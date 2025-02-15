@@ -1,49 +1,51 @@
 ﻿namespace Bliss.Models
 {
-    public class VoucherDTO
-    {
-        public int Id { get; set; }
-        public string? Code { get; set; }
+        // DTO for general voucher data
+        public class VoucherDTO
+        {
+            public int Id { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public int Quantity { get; set; }
+            public int Cost { get; set; }
+            public int ValidDuration { get; set; }
+            public VoucherType VoucherType { get; set; }
+            public VoucherStatus Status { get; set; }
+            public MemberType MemberType { get; set; }
+            // Item Voucher
+            public string? ItemName { get; set; }
+            public int? ItemQuantity { get; set; }
 
-        public string Title { get; set; } = string.Empty;
+            // Discount Voucher
+            public double? DiscountPercentage { get; set; }
+            public double? MaxAmount { get; set; }
 
-        public string Description { get; set; } = string.Empty;
+            // Gift Card Voucher
+            public double? Value { get; set; }
+        }
 
-        public string? ImageFile { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
-
-        public int Cost { get; set; }
-
-        public int ValidDuration { get; set; }
-
-        public int Quantity { get; set; }
-
-        public VoucherStatus Status { get; set; }
-
-        public MemberType MemberType { get; set; }
-
-        public VoucherType VoucherType { get; set; }
-
-        public int UserId { get; set; }
-
-        public int ClaimedBy { get; set; }
-
-        public UserBasicDTO? User { get; set; }
-
-        // **NEW: Extra fields based on voucher type**
-
-        // Item Voucher
-        public string? ItemName { get; set; }
-        public int? ItemQuantity { get; set; }
+        // DTO for user-specific voucher data
+        public class UserVoucherDTO
+        {
+            public int Id { get; set; }
+            public int VoucherId { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string Code { get; set; } = string.Empty;
+            public int UserId { get; set; }
+            public DateTime ClaimedAt { get; set; }
+            public Boolean isValid { get; set; }
+            public int Duration { get; set; }
+            public VoucherType VoucherType { get; set; }
+            // Item Voucher
+            public string? ItemName { get; set; }
+            public int? ItemQuantity { get; set; }
 
         // Discount Voucher
-        public int? DiscountPercentage { get; set; }
-        public int? MaxAmount { get; set; }
+            public double? DiscountPercentage { get; set; }
+            public double? MaxAmount { get; set; }
 
         // Gift Card Voucher
-        public int? Value { get; set; }
+            public double? Value { get; set; }
+        }
     }
-}

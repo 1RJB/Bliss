@@ -24,5 +24,7 @@ namespace Bliss.Models
 
         // Navigation property for many-to-many with Transactions via TransactionItems
         public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
+
+        public List<Wishlist> Wishlists { get; set; } = new();
     }
 }
