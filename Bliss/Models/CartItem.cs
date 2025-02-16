@@ -16,9 +16,17 @@ namespace Bliss.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
+        public int ProductSizeId { get; set; }
+        // Optionally, a navigation property:
+        [JsonIgnore]
+        public ProductSize ProductSize { get; set; }
+
+
         // Track how many of this product the cart contains
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; } = 1;
+
+
     }
 }
 

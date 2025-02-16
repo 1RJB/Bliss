@@ -22,7 +22,7 @@ function ProductDetail() {
     const [selectedWishlist, setSelectedWishlist] = useState("");
     const [newWishlistName, setNewWishlistName] = useState("");
     const [creatingWishlist, setCreatingWishlist] = useState(false);
-    // ✅ New states for size selection
+    // New states for size selection:
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedPrice, setSelectedPrice] = useState(null);
 
@@ -31,12 +31,12 @@ function ProductDetail() {
             .then((res) => {
                 setProduct(res.data);
 
-                // ✅ Set default size (first available)
+                // Set default size (first available)
                 if (res.data.sizes && res.data.sizes.length > 0) {
                     setSelectedSize(res.data.sizes[0].size);
                     setSelectedPrice(res.data.sizes[0].price);
                 } else {
-                    setSelectedPrice(res.data.price); // Default to single price if no sizes exist
+                    setSelectedPrice(res.data.price); // default if no sizes exist
                 }
             })
             .catch((err) => console.error("Error fetching product:", err));
@@ -73,10 +73,10 @@ function ProductDetail() {
         http.post('/wishlist', { name: newWishlistName, description: "My new wishlist" })
             .then((res) => {
                 alert("✅ Wishlist created successfully!");
-                setWishlists([...wishlists, res.data]); 
+                setWishlists([...wishlists, res.data]);
                 setSelectedWishlist(res.data.id);
-                setCreatingWishlist(false); 
-                setNewWishlistName(""); 
+                setCreatingWishlist(false);
+                setNewWishlistName("");
             })
             .catch((err) => {
                 console.error("Error creating wishlist:", err);
@@ -84,7 +84,48 @@ function ProductDetail() {
             });
     };
 
-    if (!product) return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
+    const handleAddToCart = async () => {
+        if (!product) return;
+        if (!user) {
+          alert("Please log in to add products to your cart.");
+          return;
+        }
+      
+        // Build the payload.
+        // We're assuming:
+        // - 'selectedSize' is a string (or ID) representing the chosen size.
+        // - 'selectedPrice' is the price from the ProductSize model for the chosen size.
+        const payload = {
+          userId: user.id,
+          productId: product.id,
+          productSize: selectedSize,  // or "productSizeId" if your backend uses an ID instead of a string
+          quantity: 1,
+          price: selectedPrice        // This is the price from the ProductSize model
+        };
+      
+        try {
+          const response = await fetch("https://localhost:7004/api/cart/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) {
+            console.error("Failed to add product to cart. Status:", response.status);
+            alert("Failed to add product to cart.");
+            return;
+          }
+          const data = await response.json();
+          console.log("Product added to cart:", data);
+          alert("Product added to cart successfully!");
+        } catch (error) {
+          console.error("Error adding product to cart:", error);
+          alert("Error adding product to cart");
+        }
+      };
+      
+
+    if (!product)
+        return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
 
     return (
         <Box sx={{ backgroundColor: '#F8F9FA', minHeight: '100vh', padding: '40px' }}>
@@ -134,7 +175,7 @@ function ProductDetail() {
                         {product.description}
                     </Typography>
 
-                    {/* ✅ Size Selection */}
+                    {/* Size Selection */}
                     {product.sizes && product.sizes.length > 1 && (
                         <Box sx={{ display: 'flex', justifyContent: 'start', mt: 1 }}>
                             {product.sizes.map((sizeOption) => (
@@ -153,7 +194,7 @@ function ProductDetail() {
                         </Box>
                     )}
 
-                    {/* ✅ Dynamic Price Display */}
+                    {/* Dynamic Price Display */}
                     <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
                         ${selectedPrice}
                     </Typography>
@@ -169,6 +210,7 @@ function ProductDetail() {
                     >
                         Find in stores →
                     </Typography>
+
                     {/* Wishlist UI */}
                     {user && (
                         <>
@@ -241,6 +283,7 @@ function ProductDetail() {
                         </>
                     )}
 
+                    {/* Updated Add to Cart Button */}
                     <Button
                         variant="contained"
                         sx={{
@@ -253,6 +296,7 @@ function ProductDetail() {
                             "&:hover": { backgroundColor: "#444" },
                             mt: 2,
                         }}
+                        onClick={handleAddToCart}
                     >
                         Add to Cart
                     </Button>

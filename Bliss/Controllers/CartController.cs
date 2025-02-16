@@ -23,15 +23,22 @@ namespace Bliss.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddProductToCart([FromBody] dynamic data)
+        public async Task<IActionResult> AddProductToCart([FromBody] JsonElement data)
         {
-            int userId = data.GetProperty("userId").GetInt32();
-            int productId = data.GetProperty("productId").GetInt32();
-
-            _logger.LogInformation("AddProductToCart invoked for UserId: {UserId}, ProductId: {ProductId}", userId, productId);
             try
             {
-                // Retrieve the product from the database
+                // Extract payload fields
+                int userId = data.GetProperty("userId").GetInt32();
+                int productId = data.GetProperty("productId").GetInt32();
+                string productSizeStr = data.GetProperty("productSize").GetString();
+                int quantity = data.GetProperty("quantity").GetInt32();
+                // Price is provided but we'll validate it against the product size record
+                decimal pricePayload = data.GetProperty("price").GetDecimal();
+
+                _logger.LogInformation("AddProductToCart invoked for UserId: {UserId}, ProductId: {ProductId}, ProductSize: {ProductSize}",
+                    userId, productId, productSizeStr);
+
+                // Retrieve the product
                 var product = await _context.Products.FindAsync(productId);
                 if (product == null)
                 {
@@ -39,13 +46,28 @@ namespace Bliss.Controllers
                     return NotFound("Product not found");
                 }
 
-                // Retrieve the user's cart, including existing items
+                // Retrieve the product size record from the ProductSize table for this product.
+                // This assumes that your ProductSize model contains a Size property that is a string.
+                var productSizeRecord = await _context.ProductSizes
+                    .FirstOrDefaultAsync(ps => ps.ProductId == productId && ps.Size == productSizeStr);
+
+                if (productSizeRecord == null)
+                {
+                    _logger.LogWarning("Product size '{ProductSize}' not found for Product ID {ProductId}.", productSizeStr, productId);
+                    return NotFound("Product size not found");
+                }
+
+                // Use the price from the product size record (ignoring the price from the payload if needed)
+                decimal sizePrice = productSizeRecord.Price;
+                if (sizePrice != pricePayload)
+                {
+                    _logger.LogInformation("Price mismatch: Using ProductSize price {SizePrice} over payload price {PayloadPrice}", sizePrice, pricePayload);
+                }
+
+                // Retrieve or create the user's cart
                 var cart = await _context.Carts
                     .Include(c => c.CartItems)
-                        .ThenInclude(ci => ci.Product)
                     .FirstOrDefaultAsync(c => c.UserId == userId);
-
-                // If no cart exists, create one
                 if (cart == null)
                 {
                     cart = new Cart { UserId = userId };
@@ -53,37 +75,39 @@ namespace Bliss.Controllers
                     _logger.LogInformation("Created new cart for UserId: {UserId}", userId);
                 }
 
-                // Check if the product is already in the cart
-                var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+                // Ensure your CartItem model includes a ProductSizeId property.
+                // Check if a CartItem with the same product and product size already exists.
+                var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId && ci.ProductSizeId == productSizeRecord.Id);
                 if (cartItem != null)
                 {
-                    cartItem.Quantity++;
-                    _logger.LogInformation("Incremented quantity for ProductId: {ProductId} in CartId: {CartId} to {Quantity}", productId, cart.Id, cartItem.Quantity);
+                    cartItem.Quantity += quantity;
+                    _logger.LogInformation("Incremented quantity for ProductId: {ProductId} with size {ProductSize} in CartId: {CartId} to {Quantity}",
+                        productId, productSizeStr, cart.Id, cartItem.Quantity);
                 }
                 else
                 {
-                    // Create a new CartItem and add it to the cart
                     cartItem = new CartItem
                     {
                         ProductId = productId,
-                        Cart = cart,
-                        Quantity = 1
+                        ProductSizeId = productSizeRecord.Id,
+                        Quantity = quantity
                     };
                     cart.CartItems.Add(cartItem);
-                    _logger.LogInformation("Added new CartItem for ProductId: {ProductId} to CartId: {CartId}", productId, cart.Id);
+                    _logger.LogInformation("Added new CartItem for ProductId: {ProductId} with size {ProductSize} to CartId: {CartId}",
+                        productId, productSizeStr, cart.Id);
                 }
 
-                // Save changes to the database
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Successfully updated the cart for UserId: {UserId}", userId);
                 return Ok(cart);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding ProductId: {ProductId} to cart for UserId: {UserId}", productId, userId);
+                _logger.LogError(ex, "An error occurred while adding product to cart.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetCart([FromQuery] int userId)
@@ -92,7 +116,10 @@ namespace Bliss.Controllers
             var cart = await _context.Carts
                 .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Product)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+                .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.ProductSize)
+                 .FirstOrDefaultAsync(c => c.UserId == userId);
+
 
             // If no cart exists, create a new, empty cart.
             if (cart == null)

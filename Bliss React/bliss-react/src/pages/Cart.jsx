@@ -1,13 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
-import { Search, Clear, Add } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom';
 import http from '../http';
-import dayjs from 'dayjs';
+import {
+    Box,
+    Typography,
+    Button,
+    Divider,
+    Select,
+    MenuItem,
+    TextField,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UserContext from '../contexts/UserContext';
 import "../styles/Cart.css";
-import Payment from './Payment';
-import { useNavigate } from 'react-router-dom';
 
 function Cart() {
     const [cartItems, setCartItems] = useState([]);
@@ -26,29 +31,44 @@ function Cart() {
                 return res.json();
             })
             .then((data) => {
-                console.log("Fetched cart data:", data); // Log the complete response
-                console.log("Cart items:", data.cartItems); // Log just the cart items array
+                console.log("Fetched cart data:", data);
+                console.log("Cart items:", data.cartItems);
+                data.cartItems.forEach((item, index) => {
+                    console.log(`Item ${index}:`, item);
+                });
                 setCartItems(data.cartItems || []);
             })
             .catch((err) => console.error("Error fetching cart:", err));
     }, [userId]);
 
+    // Debug log: print cartItems whenever they change
+    useEffect(() => {
+        console.log("Current cartItems:", cartItems);
+        cartItems.forEach((item, index) => {
+            console.log(
+                `Item ${index}: productSize: `,
+                item.productSize,
+                " - Price: ",
+                item.productSize ? item.productSize.price : "No productSize"
+            );
+        });
+    }, [cartItems]);
 
-
+    // Calculate total price using productSize price if available, otherwise product price
+    const totalPriceCalculated = cartItems.reduce((acc, item) => {
+        const price = Number(item.productSize?.price) || Number(item.product.price) || 0;
+        const quantity = Number(item.quantity) || 0;
+        return acc + price * quantity;
+    }, 0);
 
     useEffect(() => {
-        const newTotal = cartItems.reduce((acc, item) => {
-            const price = Number(item.product.price) || 0;
-            const quantity = Number(item.quantity) || 0;
-            return acc + price * quantity;
-        }, 0);
-        setTotalPrice(newTotal);
-    }, [cartItems]);
+        setTotalPrice(totalPriceCalculated);
+    }, [totalPriceCalculated]);
 
     const handleUpdateQuantity = async (itemId, newQuantity) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/Cart/item/update`, {
-                method: "PUT", // Or PATCH if that's your choice
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ cartItemId: itemId, quantity: newQuantity }),
             });
@@ -57,7 +77,6 @@ function Cart() {
                 console.error("Failed to update quantity");
             } else {
                 const updatedItem = await response.json();
-                // Update the state to reflect the backend change.
                 setCartItems((prevItems) =>
                     prevItems.map((item) =>
                         item.id === itemId ? { ...item, quantity: updatedItem.quantity } : item
@@ -69,12 +88,10 @@ function Cart() {
         }
     };
 
-
     const handleIncrement = (item) => {
-        // Ensure the current quantity is a valid number; default to 0 if not.
         const currentQuantity = Number(item.quantity) || 0;
         const newQuantity = currentQuantity + 1;
-        console.log("log 2 for handlers:", item.id);
+        console.log("Incrementing item id:", item.id, "Current quantity:", currentQuantity);
         handleUpdateQuantity(item.id, newQuantity);
     };
 
@@ -82,10 +99,10 @@ function Cart() {
         const currentQuantity = Number(item.quantity) || 0;
         if (currentQuantity > 1) {
             const newQuantity = currentQuantity - 1;
+            console.log("Decrementing item id:", item.id, "Current quantity:", currentQuantity);
             handleUpdateQuantity(item.id, newQuantity);
         }
     };
-
 
     const handleRemove = async (itemId) => {
         try {
@@ -96,7 +113,6 @@ function Cart() {
             if (!response.ok) {
                 console.error("Failed to remove item");
             } else {
-                // Update the local state after successful deletion
                 setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
                 console.log("Item removed successfully");
             }
@@ -107,26 +123,22 @@ function Cart() {
 
     const handleCheckout = async () => {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transaction/init`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ userId: userId })
-          });
-          if (!response.ok) {
-            console.error("Checkout failed.");
-            return;
-          }
-          const transaction = await response.json();
-          console.log("Transaction created: ", transaction);
-          // Navigate to the shipping page (or confirmation page) after successful checkout.
-          navigate("/payment"); // adjust the route as needed
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transaction/init`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: userId })
+            });
+            if (!response.ok) {
+                console.error("Checkout failed.");
+                return;
+            }
+            const transaction = await response.json();
+            console.log("Transaction created: ", transaction);
+            navigate("/payment");
         } catch (error) {
-          console.error("Error during checkout: ", error);
+            console.error("Error during checkout: ", error);
         }
-      };
-
+    };
 
     return (
         <div className="cart-page">
@@ -147,12 +159,17 @@ function Cart() {
                                 <div className="cart-item-title">
                                     <h4>{item.product.name}</h4>
                                     <p>{item.product.type}</p>
+                                    {item.productSize && (
+                                        <p>Size: {item.productSize.size}</p>
+                                    )}
                                 </div>
                                 <div className="cart-item-controls">
                                     <button onClick={() => handleDecrement(item)}>-</button>
                                     <span>{item.quantity}</span>
                                     <button onClick={() => handleIncrement(item)}>+</button>
-                                    <p className="cart-item-price">${item.product.price * item.quantity}</p>
+                                    <p className="cart-item-price">
+                                        ${((Number(item.productSize?.price) || Number(item.product.price)) * item.quantity).toFixed(2)}
+                                    </p>
                                     <button onClick={() => handleRemove(item.id)}>x</button>
                                 </div>
                             </div>
@@ -164,10 +181,9 @@ function Cart() {
             <div className="cart-summary">
                 <h3>Summary</h3>
                 <p>{cartItems.length} Items</p>
-                <p className="grand-total">S${totalPrice}</p>
+                <p className="grand-total">S${totalPrice.toFixed(2)}</p>
                 <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
             </div>
-
         </div>
     );
 }

@@ -26,7 +26,7 @@ function Payment() {
 
   // Calculate total price using the product's price:
   const totalPrice = cartItems.reduce(
-    (acc, item) => acc + Number(item.product.price) * Number(item.quantity),
+    (acc, item) => acc + Number(item.productSize.price) * Number(item.quantity),
     0
   );
 
@@ -111,7 +111,7 @@ function Payment() {
               <div>
                 <p>
                   $
-                  {(Number(item.product.price) * Number(item.quantity)).toFixed(2)}
+                  {(Number(item.productSize.price) * Number(item.quantity)).toFixed(2)}
                 </p>
               </div>
             </div>

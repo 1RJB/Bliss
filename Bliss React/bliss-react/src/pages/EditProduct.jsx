@@ -51,10 +51,22 @@ function EditProduct() {
             data.name = data.name.trim();
             data.description = data.description.trim();
             data.sizes = sizes.filter(s => s.size.trim() !== "" && s.price !== "");
-
-            http.put(`/product/${id}`, data)
-                .then(() => navigate("/products"))
-                .catch(() => toast.error("Error updating product"));
+        
+            const token = localStorage.getItem("accessToken"); // Get token from local storage
+        
+            http.put(`/product/${id}`, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(() => navigate("/products"))
+            .catch((error) => {
+                console.error("Error updating product:", error);
+                toast.error("Error updating product");
+                if (error.response && error.response.status === 401) {
+                    navigate("/login"); // Redirect to login if unauthorized
+                }
+            });
         }
     });
 
