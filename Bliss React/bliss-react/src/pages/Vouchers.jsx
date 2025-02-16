@@ -106,10 +106,6 @@ function Vouchers() {
     <Box sx={{ p: 2 }}>
       <Typography variant="h5" sx={{ my: 2 }}>Vouchers</Typography>
 
-      <Typography variant="body1" sx={{ mb: 2 }}>
-        Reward Points: {user?.rewardPoints ?? 0}
-      </Typography>
-
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Input
           value={search}
