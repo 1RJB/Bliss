@@ -22,7 +22,7 @@ Content-Type: application/json
 {
   "Title": "Updated Free Coffee - Special Edition",
   "Description": "Enjoy a free coffee with this special updated voucher offer.",
-  "ImageFile": "special_updated_coffee.jpg",
+  "ImageFile": "updated_coffee.jpg",
   "Cost": 25,
   "ValidTill": "2026-01-31T23:59:59Z",
   "MemberType": 0,

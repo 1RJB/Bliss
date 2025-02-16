@@ -12,5 +12,7 @@ namespace Bliss.Models
 
         [Required, EmailAddress, MaxLength(50)]
         public string Email { get; set; } = string.Empty;
+
+        public int RewardPoints { get; set; }
     }
 }

@@ -23,7 +23,6 @@ namespace Bliss.Controllers
             return _context.Memberships.ToList();
         }
 
-        // GET: api/Membership/5
         [HttpGet("{id}")]
         public ActionResult<Membership> GetMembership(int id)
         {
