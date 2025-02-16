@@ -380,6 +380,52 @@ namespace Bliss.Controllers
             }
         }
 
+        // Admin can create staff or client users
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateUser(CreateUserRequest request)
+        {
+            try
+            {
+                // Trim string values
+                request.Name = request.Name.Trim();
+                request.Email = request.Email.Trim().ToLower();
+                request.Password = request.Password.Trim();
+                // Check if the email already exists
+                var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+                if (foundUser != null)
+                {
+                    return BadRequest(new { message = "Email already exists." });
+                }
+                // Create user object
+                var now = DateTime.UtcNow;
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                var user = new User()
+                {
+                    Name = request.Name,
+                    Email = request.Email,
+                    Password = passwordHash,
+                    Role = request.Role,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    RewardPoints = 1000,
+                    LastPasswordChangeDate = now,
+                    PreviousPasswords = new List<string> { passwordHash }
+                };
+                // Add user
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                // Log activity
+                await LogActivity(user.Id, "User created", HttpContext.Connection.RemoteIpAddress.ToString());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when creating user");
+                return StatusCode(500);
+            }
+        }
+
         [HttpPut("{id}/changePassword")]
         [Authorize(Roles = "admin,staff,client")]
         public async Task<IActionResult> ChangePassword(int id, ChangePasswordRequest request)
