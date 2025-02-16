@@ -299,7 +299,7 @@ function Products() {
                                                     onClick={() => setSelectedSizes({ ...selectedSizes, [product.id]: sizeOption.size })}
                                                     sx={{ marginX: 1, textTransform: "none" }}
                                                 >
-                                                    {sizeOption.size}
+                                                    {sizeOption.size + "ml"}
                                                 </Button>
                                             ))}
                                         </Box>
@@ -312,12 +312,6 @@ function Products() {
                                             : `${product.price} SGD`}
                                     </Typography>
 
-                                    {/* Edit Button (Only for Product Owner) */}
-                                    {user && user.role === 'admin' && (
-                                        <Link to={`/editProduct/${product.id}`} style={{ textDecoration: 'none', fontSize: '0.9rem', color: '#666' }}>
-                                            Edit
-                                        </Link>
-                                    )}
                                 </Box>
 
                             </Box>

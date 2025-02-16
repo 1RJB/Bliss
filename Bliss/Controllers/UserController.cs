@@ -59,7 +59,7 @@ namespace Bliss.Controllers
                     Password = passwordHash,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    MembershipId = 1,
+                    RewardPoints = 1000,
                     LastPasswordChangeDate = now,
                     PreviousPasswords = new List<string> { passwordHash }
                 };
@@ -99,7 +99,7 @@ namespace Bliss.Controllers
                     Email = payload.Email,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1
+                    RewardPoints = 1000,
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
@@ -248,10 +248,12 @@ namespace Bliss.Controllers
                     .Select(c => c.Value).SingleOrDefault();
                 var role = User.Claims.Where(c => c.Type == ClaimTypes.Role)
                     .Select(c => c.Value).SingleOrDefault();
+                var points = User.Claims.Where(c => c.Type == "RewardPoints")
+                    .Select(c => c.Value).SingleOrDefault();
 
                 if (id != 0 && name != null && email != null)
                 {
-                    UserDTO userDTO = new() { Id = id, Name = name, Email = email, Role = role };
+                    UserDTO userDTO = new() { Id = id, Name = name, Email = email, Role = role, RewardPoints = points };
                     AuthResponse response = new() { User = userDTO };
                     return Ok(response);
                 }
@@ -322,6 +324,7 @@ namespace Bliss.Controllers
             user.Name = request.Name.Trim();
             user.Email = request.Email.Trim().ToLower();
             user.UpdatedAt = DateTime.UtcNow;
+            user.RewardPoints = request.RewardPoints;
 
             try
             {

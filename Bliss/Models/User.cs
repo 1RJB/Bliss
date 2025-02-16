@@ -32,11 +32,12 @@ namespace Bliss.Models
 
         public bool TwoFactorEnabled { get; set; } = false;
 
-        public RewardPoints? RewardPoints { get; set; }
+        [JsonIgnore]
+        public string? TwoFactorSecret { get; set; }
 
-        public int MembershipId { get; set; }
+        public bool TwoFactorEnabled { get; set; } = false;
 
-        public Membership? Membership { get; set; }
+        public int RewardPoints { get; set; } = 1000;
 
         public int LoginAttempts { get; set; } = 0;
 

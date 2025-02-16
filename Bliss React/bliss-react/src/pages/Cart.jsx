@@ -41,18 +41,7 @@ function Cart() {
             .catch((err) => console.error("Error fetching cart:", err));
     }, [userId]);
 
-    // Debug log: print cartItems whenever they change
-    useEffect(() => {
-        console.log("Current cartItems:", cartItems);
-        cartItems.forEach((item, index) => {
-            console.log(
-                `Item ${index}: productSize: `,
-                item.productSize,
-                " - Price: ",
-                item.productSize ? item.productSize.price : "No productSize"
-            );
-        });
-    }, [cartItems]);
+    
 
     // Calculate total price using productSize price if available, otherwise product price
     const totalPriceCalculated = cartItems.reduce((acc, item) => {
@@ -160,7 +149,7 @@ function Cart() {
                                     <h4>{item.product.name}</h4>
                                     <p>{item.product.type}</p>
                                     {item.productSize && (
-                                        <p>Size: {item.productSize.size}</p>
+                                        <p>{item.productSize.size}ml</p>
                                     )}
                                 </div>
                                 <div className="cart-item-controls">

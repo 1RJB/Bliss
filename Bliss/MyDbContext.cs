@@ -78,7 +78,7 @@ namespace Bliss
                     Role = "admin",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1,
+                    RewardPoints = 1000,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Admin123!") }
                 },
@@ -91,7 +91,7 @@ namespace Bliss
                     Role = "staff",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1,
+                    RewardPoints = 1000,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Staff123!") }
                 },
@@ -104,52 +104,9 @@ namespace Bliss
                     Role = "client",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1,
+                    RewardPoints = 1000,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Client123!") }
-                }
-            );
-
-            // One-to-one relationship: User & RewardPoints
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.RewardPoints)
-                .WithOne()
-                .HasForeignKey<RewardPoints>(rp => rp.UserId);
-
-            // One-to-many: User & Membership
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Membership)
-                .WithMany()
-                .HasForeignKey(u => u.MembershipId);
-
-            // Seed Membership Data
-            modelBuilder.Entity<Membership>().HasData(
-                new Membership
-                {
-                    Id = 1,
-                    Type = MemberType.Basic,
-                    Benefits = "Access to basic features",
-                    Cost = 0,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
-                },
-                new Membership
-                {
-                    Id = 2,
-                    Type = MemberType.Green,
-                    Benefits = "Access to green features",
-                    Cost = 50,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
-                },
-                new Membership
-                {
-                    Id = 3,
-                    Type = MemberType.Premium,
-                    Benefits = "Access to all features",
-                    Cost = 100,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
                 }
             );
 
@@ -169,6 +126,13 @@ namespace Bliss
                 .HasMany(w => w.Products)
                 .WithMany(p => p.Wishlists)
                 .UsingEntity(j => j.ToTable("WishlistProducts"));
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.ProductSize)
+                .WithMany() // or .WithMany(ps => ps.CartItems) if defined in ProductSize
+                .HasForeignKey(ci => ci.ProductSizeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
         // Existing DbSets
@@ -180,8 +144,6 @@ namespace Bliss
         public required DbSet<CartItem> CartItems { get; set; }
         public required DbSet<Wishlist> Wishlists { get; set; }
         public required DbSet<Voucher> Vouchers { get; set; }
-        public required DbSet<Membership> Memberships { get; set; }
-        public required DbSet<RewardPoints> RewardPoints { get; set; }
         public required DbSet<UserVoucher> UserVouchers { get; set; }
 
         // New DbSets for Homepage, Transaction, and TransactionItem

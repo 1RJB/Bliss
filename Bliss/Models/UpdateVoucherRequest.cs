@@ -27,9 +27,6 @@ namespace Bliss.Models
         public VoucherStatus Status { get; set; } = VoucherStatus.Available;
 
         [Required]
-        public MemberType MemberType { get; set; }
-
-        [Required]
         public int Quantity { get; set; }
 
         [Required]

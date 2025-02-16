@@ -18,7 +18,7 @@ namespace Bliss.Models
 
         public int ProductSizeId { get; set; }
         // Optionally, a navigation property:
-        [JsonIgnore]
+        
         public ProductSize ProductSize { get; set; }
 
 

@@ -66,7 +66,7 @@ namespace Bliss.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AddVoucher([FromBody] Voucher voucher)
         {
@@ -77,7 +77,6 @@ namespace Bliss.Controllers
                 Cost = voucher.Cost,
                 ValidTill = voucher.ValidTill,
                 Status = VoucherStatus.Available,
-                MemberType = voucher.MemberType,
                 Quantity = voucher.Quantity,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -91,7 +90,7 @@ namespace Bliss.Controllers
            
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         [ProducesResponseType(typeof(VoucherDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -106,7 +105,6 @@ namespace Bliss.Controllers
             myVoucher.ImageFile = voucher.ImageFile;
             myVoucher.Cost = voucher.Cost;
             myVoucher.ValidTill = voucher.ValidTill;
-            myVoucher.MemberType = voucher.MemberType;
             myVoucher.Status = voucher.Status;
             myVoucher.Quantity = voucher.Quantity;
             myVoucher.Value = voucher.Value;
