@@ -20,6 +20,7 @@ import AddVoucher from './pages/AddVoucher';
 import EditVoucher from './pages/EditVoucher';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import Setup2FA from './pages/Setup2FA';
 import UsersList from './pages/UsersList';
 import UserDetails from './pages/UserDetails';
 import EditUser from './pages/EditUser';
@@ -149,6 +150,7 @@ function App() {
                             <Route path="/wishlist/:id" element={<WishlistDetail />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
+                            <Route path="/setup-2fa" element={<Setup2FA />} />
                             <Route path="/users" element={<UsersList />} />
                             <Route path="/users/:id" element={<UserDetails />} />
                             <Route path="/edituser/:id" element={<EditUser />} />
