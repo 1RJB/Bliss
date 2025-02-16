@@ -7,8 +7,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
-using Bliss.Migrations;
-
 
 namespace Bliss.Controllers
 {
@@ -229,9 +227,9 @@ namespace Bliss.Controllers
 
             // Send the receipt email.
             // Assuming the user's email is available in your user record.
-            await emailService.SendEmailAsync(/* toEmail: */ "user@example.com",
-                                               "Your Receipt from Bliss",
-                                               receiptHtml);
+            //await emailService.SendEmailAsync(/* toEmail: */ "user@example.com",
+            //                                   "Your Receipt from Bliss",
+            //                                   receiptHtml);
             return Ok(transaction);
         }
 
