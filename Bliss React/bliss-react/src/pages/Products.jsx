@@ -299,7 +299,7 @@ function Products() {
                                                     onClick={() => setSelectedSizes({ ...selectedSizes, [product.id]: sizeOption.size })}
                                                     sx={{ marginX: 1, textTransform: "none" }}
                                                 >
-                                                    {sizeOption.size}
+                                                    {sizeOption.size + "ml"}
                                                 </Button>
                                             ))}
                                         </Box>
