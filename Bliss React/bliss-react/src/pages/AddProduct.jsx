@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function AddProduct() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
-    
+
     // ✅ State to store multiple sizes
     const [sizes, setSizes] = useState([{ size: "", price: "" }]);
 
@@ -20,6 +20,9 @@ function AddProduct() {
             name: "",
             description: "",
             type: "",
+            suitedFor: "",
+            skinFeel: "",
+            keyIngredients: "",
         },
         validationSchema: yup.object({
             name: yup.string().trim()
@@ -123,7 +126,7 @@ function AddProduct() {
                             error={formik.touched.description && Boolean(formik.errors.description)}
                             helperText={formik.touched.description && formik.errors.description}
                         />
-                        
+
                         {/* ✅ Product Type Dropdown */}
                         <Typography variant="body1" sx={{ mt: 2 }}>Product Type</Typography>
                         <TextField
@@ -142,6 +145,43 @@ function AddProduct() {
                             <MenuItem value="Toner">Toner</MenuItem>
                             <MenuItem value="Cleanser">Cleanser</MenuItem>
                         </TextField>
+
+                        <TextField
+                            fullWidth margin="dense"
+                            label="Suited For"
+                            name="suitedFor"
+                            value={formik.values.suitedFor}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.suitedFor && Boolean(formik.errors.suitedFor)}
+                            helperText={formik.touched.suitedFor && formik.errors.suitedFor}
+                        />
+
+                        <TextField
+                            fullWidth margin="dense"
+                            label="Skin Feel"
+                            name="skinFeel"
+                            value={formik.values.skinFeel}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.skinFeel && Boolean(formik.errors.skinFeel)}
+                            helperText={formik.touched.skinFeel && formik.errors.skinFeel}
+                        />
+
+                        <TextField
+                            fullWidth margin="dense"
+                            label="Key Ingredients"
+                            name="keyIngredients"
+                            multiline
+                            minRows={2}
+                            value={formik.values.keyIngredients}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.keyIngredients && Boolean(formik.errors.keyIngredients)}
+                            helperText={formik.touched.keyIngredients && formik.errors.keyIngredients}
+                        />
+
+
 
                         {/* ✅ Dynamic Size Fields */}
                         <Typography variant="body1" sx={{ mt: 2 }}>Product Sizes</Typography>
@@ -184,7 +224,7 @@ function AddProduct() {
                             Add Size
                         </Button>
                     </Grid>
-                    
+
                     <Grid item xs={12} md={6}>
                         <Box sx={{ textAlign: 'center', mt: 2 }} >
                             <Button variant="contained" component="label">
@@ -199,6 +239,7 @@ function AddProduct() {
                         </Box>
                     </Grid>
                 </Grid>
+
 
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">

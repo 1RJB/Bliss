@@ -4,13 +4,13 @@ namespace Bliss.Models
 {
     public class AddProductRequest
     {
-        [Required, MinLength(3), MaxLength(100)]
-        public string Title { get; set; } = string.Empty;
-
-        [Required, MinLength(3), MaxLength(500)]
+        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
 
-        [MaxLength(20)]
-        public string? ImageFile { get; set; }
+        public string? SuitedFor { get; set; } // ✅ New Field
+        public string? SkinFeel { get; set; } // ✅ New Field
+        public string? KeyIngredients { get; set; } // ✅ New Field
     }
+
 }

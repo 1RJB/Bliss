@@ -16,6 +16,10 @@ namespace Bliss.Models
         [Required, MaxLength(50)]
         public string Type { get; set; } = string.Empty; // ✅ Required Type Field
 
+        public string? SuitedFor { get; set; } // ✅ New Field
+        public string? SkinFeel { get; set; } // ✅ New Field
+        public string? KeyIngredients { get; set; } // ✅ New Field
+
         // Foreign key for User (owner)
         public int UserId { get; set; }
         public User? User { get; set; }

@@ -1,40 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid2 as Grid } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, MenuItem } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, MenuItem, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { AddCircle, RemoveCircle } from '@mui/icons-material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 function EditProduct() {
-    const { id } = useParams();  // Get the product ID from the URL params
+    const { id } = useParams();
     const navigate = useNavigate();
-    const [product, setProduct] = useState({
-        name: "",
-        description: "",
-        price: "",
-        type: "",
-    });
+    const [imageFile, setImageFile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [sizes, setSizes] = useState([{ size: "", price: "" }]);
+    const [open, setOpen] = useState(false);
 
-    const [imageFile, setImageFile] = useState(null); // Store the image file name
-
-    const [loading, setLoading] = useState(true);  // State to track if data is loading
-
-    // Fetch product data on component mount
     useEffect(() => {
         http.get(`/product/${id}`).then((res) => {
-            setProduct(res.data);
             setImageFile(res.data.imageFile);
+            setSizes(res.data.sizes || [{ size: "", price: "" }]);
+            formik.setValues(res.data);
             setLoading(false);
         });
     }, []);
-    // Formik for validation and handling form data
+
     const formik = useFormik({
-        initialValues: product,
+        initialValues: {
+            name: "",
+            description: "",
+            type: "",
+            suitedFor: "",
+            skinFeel: "",
+            keyIngredients: "",
+        },
         enableReinitialize: true,
         validationSchema: yup.object({
             name: yup.string().trim()
@@ -45,11 +44,8 @@ function EditProduct() {
                 .min(3, 'Description must be at least 3 characters')
                 .max(500, 'Description must be at most 500 characters')
                 .required('Description is required'),
-            price: yup.number()
-                .required('Price is required')
-                .positive('Price must be a positive number'),
             type: yup.string()
-                .required('Product type is required') // ✅ Validate Type
+                .required('Product type is required'),
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -57,170 +53,120 @@ function EditProduct() {
             }
             data.name = data.name.trim();
             data.description = data.description.trim();
-            data.price = parseFloat(data.price);
+            data.sizes = sizes.filter(s => s.size.trim() !== "" && s.price !== "");
+
             http.put(`/product/${id}`, data)
-                .then((res) => {
-                    console.log(res.data);
-                    navigate("/products");
-                });
+                .then(() => navigate("/products"))
+                .catch(() => toast.error("Error updating product"));
         }
     });
 
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const deleteProduct = () => {
-        http.delete(`/product/${id}`)
-            .then((res) => {
-                console.log(res.data);
-                navigate("/products");
-            });
-    }
-
-    // Handle file change (upload image)
     const onFileChange = (e) => {
         let file = e.target.files[0];
         if (file) {
-            if (file.size > 1024 * 1024) { // 1MB limit
+            if (file.size > 1024 * 1024) {
                 toast.error('Maximum file size is 1MB');
                 return;
             }
-
             let formData = new FormData();
             formData.append('file', file);
             http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             })
-                .then((res) => {
-                    setImageFile(res.data.filename);
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                });
+                .then((res) => setImageFile(res.data.filename))
+                .catch(() => toast.error('File upload failed'));
         }
     };
 
+    const addSizeField = () => setSizes([...sizes, { size: "", price: "" }]);
+    const removeSizeField = (index) => setSizes(sizes.filter((_, i) => i !== index));
+    const deleteProduct = () => http.delete(`/product/${id}`).then(() => navigate("/products"));
+
     return (
         <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Edit Product
-            </Typography>
-            {
-                !loading && (
-                    <Box component="form" onSubmit={formik.handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-                                <TextField
-                                    fullWidth margin="dense" autoComplete="off"
-                                    label="Product Name"
-                                    name="name"
-                                    value={formik.values.name}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.name && Boolean(formik.errors.name)}
-                                    helperText={formik.touched.name && formik.errors.name}
-                                />
-                                <TextField
-                                    fullWidth margin="dense" autoComplete="off"
-                                    multiline minRows={2}
-                                    label="Description"
-                                    name="description"
-                                    value={formik.values.description}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.description && Boolean(formik.errors.description)}
-                                    helperText={formik.touched.description && formik.errors.description}
-                                />
-                                <TextField
-                                    fullWidth margin="dense" autoComplete="off"
-                                    label="Price"
-                                    name="price"
-                                    value={formik.values.price}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.price && Boolean(formik.errors.price)}
-                                    helperText={formik.touched.price && formik.errors.price}
-                                />
-                                <TextField
-                                    select
-                                    fullWidth
-                                    margin="dense"
-                                    label="Product Type"
-                                    name="type"
-                                    value={formik.values.type}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.type && Boolean(formik.errors.type)}
-                                    helperText={formik.touched.type && formik.errors.type}
-                                >
-                                    <MenuItem value="">Select a Type</MenuItem>
-                                    <MenuItem value="Moisturizer">Moisturizer</MenuItem>
-                                    <MenuItem value="Toner">Toner</MenuItem>
-                                    <MenuItem value="Cleanser">Cleanser</MenuItem>
-                                </TextField>
+            <Typography variant="h5" sx={{ my: 2 }}>Edit Product</Typography>
+            {!loading && (
+                <Box component="form" onSubmit={formik.handleSubmit}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TextField fullWidth margin="dense" label="Product Name" name="name"
+                                value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.name && Boolean(formik.errors.name)}
+                                helperText={formik.touched.name && formik.errors.name} />
+                            <TextField fullWidth margin="dense" multiline minRows={2} label="Description" name="description"
+                                value={formik.values.description} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description} />
+                            <TextField select fullWidth margin="dense" label="Product Type" name="type"
+                                value={formik.values.type} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.type && Boolean(formik.errors.type)}
+                                helperText={formik.touched.type && formik.errors.type}>
+                                <MenuItem value="">Select a Type</MenuItem>
+                                <MenuItem value="Moisturizer">Moisturizer</MenuItem>
+                                <MenuItem value="Toner">Toner</MenuItem>
+                                <MenuItem value="Cleanser">Cleanser</MenuItem>
+                            </TextField>
 
-                            </Grid>
-                            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                                <Box sx={{ textAlign: 'center', mt: 2 }} >
-                                    <Button variant="contained" component="label">
-                                        Upload New Image
-                                        <input hidden accept="image/*" type="file" onChange={onFileChange} />
-                                    </Button>
-                                    {
-                                        imageFile && (
-                                            <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                                <img alt="product"
-                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                                </img>
-                                            </Box>
-                                        )
-                                    }
-                                </Box>
-                            </Grid>
+                            <TextField fullWidth margin="dense" label="Suited For" name="suitedFor"
+                                value={formik.values.suitedFor} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.suitedFor && Boolean(formik.errors.suitedFor)}
+                                helperText={formik.touched.suitedFor && formik.errors.suitedFor} />
+
+                            <TextField fullWidth margin="dense" label="Skin Feel" name="skinFeel"
+                                value={formik.values.skinFeel} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.skinFeel && Boolean(formik.errors.skinFeel)}
+                                helperText={formik.touched.skinFeel && formik.errors.skinFeel} />
+
+                            <TextField fullWidth margin="dense" label="Key Ingredients" name="keyIngredients" multiline minRows={2}
+                                value={formik.values.keyIngredients} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.keyIngredients && Boolean(formik.errors.keyIngredients)}
+                                helperText={formik.touched.keyIngredients && formik.errors.keyIngredients} />
+
+                            <Typography variant="body1" sx={{ mt: 2 }}>Product Sizes</Typography>
+                            {sizes.map((sizeOption, index) => (
+                                <Grid container spacing={1} alignItems="center" key={index}>
+                                    <Grid item xs={5}>
+                                        <TextField fullWidth margin="dense" label="Size (e.g., 100ML)" value={sizeOption.size}
+                                            onChange={(e) => {
+                                                const updatedSizes = [...sizes];
+                                                updatedSizes[index].size = e.target.value;
+                                                setSizes(updatedSizes);
+                                            }} />
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <TextField fullWidth margin="dense" type="number" label="Price" value={sizeOption.price}
+                                            onChange={(e) => {
+                                                const updatedSizes = [...sizes];
+                                                updatedSizes[index].price = e.target.value;
+                                                setSizes(updatedSizes);
+                                            }} />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        {sizes.length > 1 && (
+                                            <IconButton onClick={() => removeSizeField(index)} color="error">
+                                                <RemoveCircle />
+                                            </IconButton>
+                                        )}
+                                    </Grid>
+                                </Grid>
+                            ))}
+                            <Button startIcon={<AddCircle />} onClick={addSizeField} sx={{ mt: 1 }}>Add Size</Button>
                         </Grid>
-                        <Box sx={{ mt: 2 }}>
-                            <Button variant="contained" type="submit">
-                                Update
-                            </Button>
-                            <Button variant="contained" sx={{ ml: 2 }} color="error"
-                                onClick={handleOpen}>
-                                Delete
-                            </Button>
-                        </Box>
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ textAlign: 'center', mt: 2 }}>
+                                <Button variant="contained" component="label">Upload Image
+                                    <input hidden accept="image/*" type="file" onChange={onFileChange} />
+                                </Button>
+                                {imageFile && (<img alt="product" src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} style={{ width: "100%", maxWidth: "300px" }} />)}
+                            </Box>
+                        </Grid>
+                    </Grid>
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" type="submit">Update Product</Button>
+                        <Button variant="contained" sx={{ ml: 2 }} color="error" onClick={() => setOpen(true)}>Delete</Button>
                     </Box>
-                )
-            }
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    Delete Product
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this Product?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="inherit"
-                        onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="error"
-                        onClick={deleteProduct}>
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-
+                </Box>
+            )}
             <ToastContainer />
         </Box>
     );
