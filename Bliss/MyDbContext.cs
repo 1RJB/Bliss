@@ -1,5 +1,6 @@
 ﻿using Bliss.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Bliss
 {
@@ -19,6 +20,51 @@ namespace Bliss
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // User configuration
+            modelBuilder.Entity<User>(entity =>
+            {
+                // Configure PreviousPasswords as comma-separated string
+                entity.Property(u => u.PreviousPasswords)
+                    .HasConversion(
+                        v => string.Join(',', v),
+                        v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                    )
+                    .Metadata
+                    .SetValueComparer(
+                        new ValueComparer<List<string>>(
+                            (c1, c2) => c1.SequenceEqual(c2),
+                            c => c.Aggregate(19, (hash, item) => hash * 31 + (item != null ? item.GetHashCode() : 0)),
+                            c => c.ToList()
+                        )
+                    );
+
+                // Password reset token configurations
+                entity.Property(u => u.PasswordResetToken)
+                    .IsRequired(false)
+                    .HasMaxLength(100); // Add reasonable max length
+
+                entity.Property(u => u.PasswordResetTokenExpiry)
+                    .IsRequired(false);
+
+                // Account lockout configurations
+                entity.Property(u => u.LoginAttempts)
+                    .HasDefaultValue(0)
+                    .IsRequired();
+
+                entity.Property(u => u.LockoutEnd)
+                    .IsRequired(false);
+
+                entity.Property(u => u.LastPasswordChangeDate)
+                    .IsRequired(false);
+
+                // Add index for password reset token for faster lookups
+                entity.HasIndex(u => u.PasswordResetToken);
+
+                // Add index for email for faster lookups during login
+                entity.HasIndex(u => u.Email)
+                    .IsUnique();
+            });
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.Status)
