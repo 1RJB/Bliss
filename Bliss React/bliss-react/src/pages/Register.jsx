@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
@@ -109,95 +109,101 @@ function Register() {
                 flexDirection: 'column',
                 alignItems: 'center'
             }}>
-                <Typography variant="h5" sx={{ my: 2 }}>
-                    Register
-                </Typography>
-                <Box component="form" sx={{ maxWidth: '500px' }}
-                    onSubmit={formik.handleSubmit}>
-                    <TextField
-                        fullWidth margin="dense" autoComplete="off"
-                        label="Name"
-                        name="name"
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
-                    />
-                    <TextField
-                        fullWidth margin="dense" autoComplete="off"
-                        label="Email"
-                        name="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.email && Boolean(formik.errors.email)}
-                        helperText={formik.touched.email && formik.errors.email}
-                    />
-                    <TextField
-                        fullWidth margin="dense" autoComplete="off"
-                        label="Password"
-                        name="password" type="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
-                    />
-                    <TextField
-                        fullWidth margin="dense" autoComplete="off"
-                        label="Confirm Password"
-                        name="confirmPassword" type="password"
-                        value={formik.values.confirmPassword}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-                        helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="OTP"
-                        name="otp"
-                        value={formik.values.otp}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.otp && Boolean(formik.errors.otp)}
-                        helperText={formik.touched.otp && formik.errors.otp}
-                        disabled={otpDisabled}
-                    />
-                    {!otpSent && (
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            onClick={() => sendOtp(formik.values.email)}
-                        >
-                            Send OTP
-                        </Button>
-                    )}
-                    {otpSent && !otpVerified && (
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
-                        >
-                            Verify OTP
-                        </Button>
-                    )}
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        type="submit"
-                        disabled={!otpVerified}
-                        sx={{ mt: 2 }}
-                    >
+                <Paper elevation={3} sx={{ padding: 4, maxWidth: 500, width: '100%' }}>
+                    <Typography variant="h5" sx={{ my: 2, textAlign: 'center' }}>
                         Register
-                    </Button>
+                    </Typography>
+                    <Box component="form" sx={{ mt: 1 }}
+                        onSubmit={formik.handleSubmit}>
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Name"
+                            name="name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                        />
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Email"
+                            name="email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
+                        />
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Password"
+                            name="password" type="password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                        />
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Confirm Password"
+                            name="confirmPassword" type="password"
+                            value={formik.values.confirmPassword}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                            helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                        />
+                        <TextField
+                            fullWidth
+                            margin="dense"
+                            label="OTP"
+                            name="otp"
+                            value={formik.values.otp}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.otp && Boolean(formik.errors.otp)}
+                            helperText={formik.touched.otp && formik.errors.otp}
+                            disabled={otpDisabled}
+                        />
+                        {!otpSent && (
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                onClick={() => sendOtp(formik.values.email)}
+                                sx={{ mt: 0.5 }}
+                            >
+                                Send OTP
+                            </Button>
+                        )}
+                        {otpSent && !otpVerified && (
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
+                                sx={{ mt: 2 }}
+                            >
+                                Verify OTP
+                            </Button>
+                        )}
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            type="submit"
+                            disabled={!otpVerified}
+                            sx={{ mt: 4, mb: 2 }}
+                        >
+                            Register
+                        </Button>
+                    </Box>
+                </Paper>
+                <Box sx={{ mt: 4, textAlign: 'center', justifyContent: 'center', display: 'flex' }}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleFailure}
+                    />
                 </Box>
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleFailure}
-                />
                 <ToastContainer />
             </Box>
         </GoogleOAuthProvider>
