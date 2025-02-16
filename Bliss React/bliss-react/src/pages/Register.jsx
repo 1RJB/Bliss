@@ -76,7 +76,7 @@ function Register() {
             http.post("/user/register", data)
                 .then((res) => {
                     toast.success('Registration successful!');
-                    navigate("/login");
+                    setTimeout(() => { navigate("/login"); }, 3000);
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
