@@ -181,10 +181,17 @@ namespace Bliss.Controllers
             return Ok(userDTOs);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,staff,client")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
+            // Authorization: Ensure the user is accessing their own account
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || int.Parse(userIdClaim) != id)
+            {
+                return Forbid();
+            }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
@@ -194,10 +201,17 @@ namespace Bliss.Controllers
             return Ok(userDTO);
         }
 
-        [HttpPut("{id}")]
         [Authorize]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserRequest request)
         {
+            // Authorization: Ensure the user is updating their own account
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || int.Parse(userIdClaim) != id)
+            {
+                return Forbid();
+            }
+
             if (id != request.Id)
             {
                 return BadRequest("User ID mismatch.");
@@ -207,18 +221,6 @@ namespace Bliss.Controllers
             if (user == null)
             {
                 return NotFound();
-            }
-
-            // Authorization: Ensure the user is updating their own account
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                return Unauthorized();
-            }
-            var userIdFromToken = int.Parse(userIdClaim);
-            if (user.Id != userIdFromToken)
-            {
-                return Forbid();
             }
 
             // Update user properties
