@@ -96,9 +96,9 @@ namespace Bliss.Controllers
                 {
                     Name = payload.Name,
                     Email = payload.Email,
-                    Role = "client",
                     CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    UpdatedAt = DateTime.UtcNow,
+                    MembershipId = 1
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
