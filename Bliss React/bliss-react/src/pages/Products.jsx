@@ -185,7 +185,7 @@ function Products() {
                     </Box>
 
                     {/* Add Product Button */}
-                    {user && (
+                    {user && user.role === 'admin' &&(
                         <Link to="/addproduct">
                             <Button variant="contained" color="primary" sx={{
                                 borderRadius: '20px',
@@ -270,7 +270,7 @@ function Products() {
                                     </Button>
                                 </Box>
 
-                                {user && user.id === product.userId && (
+                                {user && user.role === 'admin' && (
                                     <Link to={`/editProduct/${product.id}`} style={{ position: 'absolute', top: 8, right: 8 }}>
                                         <Edit sx={{ color: '#A3BE8C' }} />
                                     </Link>
@@ -313,7 +313,7 @@ function Products() {
                                     </Typography>
 
                                     {/* Edit Button (Only for Product Owner) */}
-                                    {user && user.id === product.userId && (
+                                    {user && user.role === 'admin' && (
                                         <Link to={`/editProduct/${product.id}`} style={{ textDecoration: 'none', fontSize: '0.9rem', color: '#666' }}>
                                             Edit
                                         </Link>
