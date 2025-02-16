@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
@@ -89,11 +89,18 @@ function Login() {
                     Login
                 </Button>
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                <HCaptcha
-                    sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
-                    onVerify={handleCaptchaChange}
-                />
+                    <HCaptcha
+                        sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
+                        onVerify={handleCaptchaChange}
+                    />
                 </Box>
+            </Box>
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
+                    <Typography color="primary">
+                        Forgot Password?
+                    </Typography>
+                </Link>
             </Box>
 
             <ToastContainer />
