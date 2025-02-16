@@ -35,6 +35,7 @@ import Cart from './pages/Cart';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import Payment from './pages/Payment';
+import Shipping from './pages/Shipping';
 
 function App() {
     const [user, setUser] = useState(null);
@@ -162,6 +163,7 @@ function App() {
                             <Route path="/homepagedetail/:id" element={<HomepageDetail />} />
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/payment" element={<Payment />} />
+                            <Route path="/shipping" element={<Shipping />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>

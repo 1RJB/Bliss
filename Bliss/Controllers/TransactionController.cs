@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.DataProtection;
 using Bliss.Models;
 using System;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace Bliss.Controllers
     {
         private readonly MyDbContext _context;
         private readonly ILogger<TransactionController> _logger;
+        private readonly IDataProtector _protector;
 
-        public TransactionController(MyDbContext context, ILogger<TransactionController> logger)
+        public TransactionController(MyDbContext context, ILogger<TransactionController> logger, IDataProtectionProvider dataProtectionProvider)
         {
             _context = context;
             _logger = logger;
+            _protector = dataProtectionProvider.CreateProtector("CreditCardProtector");
         }
 
         // POST: api/transaction/init
@@ -100,12 +103,13 @@ namespace Bliss.Controllers
         public async Task<IActionResult> UpdateTransaction([FromBody] JsonElement data)
         {
             int userId = data.GetProperty("userId").GetInt32();
-            string shippingAddress = data.GetProperty("shippingAddress").GetString();
-            string deliveryStr = data.GetProperty("preferredDeliveryDateTime").GetString();
-            DateTime preferredDeliveryDateTime = DateTime.Parse(deliveryStr);
             string cardNumber = data.GetProperty("paymentCardNumber").GetString();
             string expirationDate = data.GetProperty("paymentExpirationDate").GetString();
             string cvv = data.GetProperty("paymentCVV").GetString();
+            string shippingAddress = data.GetProperty("shippingAddress").GetString();
+            string deliveryStr = data.GetProperty("preferredDeliveryDateTime").GetString();
+            DateTime preferredDeliveryDateTime = DateTime.Parse(deliveryStr);
+            
 
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
@@ -116,7 +120,7 @@ namespace Bliss.Controllers
 
             transaction.ShippingAddress = shippingAddress;
             transaction.PreferredDeliveryDateTime = preferredDeliveryDateTime;
-            transaction.PaymentCardNumber = cardNumber;
+            transaction.PaymentCardNumber = _protector.Protect(cardNumber);
             transaction.PaymentExpirationDate = expirationDate;
             transaction.PaymentCVV = cvv;
 
