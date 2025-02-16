@@ -47,8 +47,6 @@ function Vouchers() {
         getVouchers();
     };
 
-    // Updated redeemVoucher: This calls the backend to create a UserVoucher using the voucher's info.
-    // It is assumed that the backend also decrements the Voucher's quantity by 1 on a successful claim.
     const redeemVoucher = (voucherId) => {
         http.post(`/uservoucher/redeem/${voucherId}`)
             .then(() => {
@@ -116,11 +114,6 @@ function Vouchers() {
                 />
                 <IconButton color="primary" onClick={onClickSearch}><Search /></IconButton>
                 <IconButton color="primary" onClick={onClickClear}><Clear /></IconButton>
-                {user?.role === 'Staff' && (
-                    <Link to="/addvoucher">
-                        <Button variant='contained' sx={{ ml: 2 }}>Add Voucher</Button>
-                    </Link>
-                )}
             </Box>
 
             {Object.entries(categorizedVouchers).map(([memberType, vouchers]) => (
@@ -149,10 +142,12 @@ function Vouchers() {
                                             <CardContent>
                                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{voucher.title}</Typography>
-                                                    {user?.role === 'admin' && (
+                                                    {(user?.role === 'admin' || user?.role === 'staff') && (
                                                         <Box>
                                                             <Link to={`/editvoucher/${voucher.id}`}>
-                                                                <IconButton color="primary"><Edit /></IconButton>
+                                                                <IconButton color="primary">
+                                                                    <Edit />
+                                                                </IconButton>
                                                             </Link>
                                                             <IconButton color="secondary" onClick={() => deleteVoucher(voucher.id)}>
                                                                 <Delete />

@@ -44,6 +44,10 @@ namespace Bliss.Controllers
                 codeExists = await _context.UserVouchers.AnyAsync(uv => uv.Code == code);
             } while (codeExists);
 
+            // Set ClaimedAt to the current time and ValidTill to 30 days after claimed.
+            DateTime claimedAt = DateTime.UtcNow;
+            DateTime validTill = claimedAt.AddDays(30);
+
             // Create a new UserVoucher using values from the voucher
             var userVoucher = new UserVoucher
             {
@@ -51,18 +55,55 @@ namespace Bliss.Controllers
                 Description = voucher.Description,
                 ImageFile = voucher.ImageFile,
                 Value = voucher.Value,
-                ClaimedAt = DateTime.UtcNow,
-                ValidTill = voucher.ValidTill,
+                ClaimedAt = claimedAt,
+                ValidTill = validTill,
                 Code = code,
                 IsUsed = false,
                 UserId = userId
             };
+
+            voucher.Quantity--;
+
+            if (voucher.Quantity == 0)
+            {
+                voucher.Status = VoucherStatus.Redeemed;
+            }
 
             _context.UserVouchers.Add(userVoucher);
             await _context.SaveChangesAsync();
 
             return Ok(userVoucher);
         }
+
+        [HttpGet("seemyvouchers")]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<UserVoucherDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllUserVouchers()
+        {
+            try
+            {
+                // Retrieve the current user's id
+                int userId = GetUserId();
+
+                // Query UserVouchers by the user's id
+                var userVouchers = await _context.UserVouchers
+                    .Where(uv => uv.UserId == userId)
+                    .OrderByDescending(uv => uv.ClaimedAt)
+                    .ToListAsync();
+
+                // Optionally, map your UserVoucher entities to a DTO if desired:
+                // IEnumerable<UserVoucherDTO> data = userVouchers.Select(_mapper.Map<UserVoucherDTO>);
+                // For simplicity, we're returning the entities directly here.
+
+                return Ok(userVouchers);
+            }
+            catch (Exception ex)
+            {
+                // Log the error as needed
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         [HttpDelete("{id}")]
         [Authorize]

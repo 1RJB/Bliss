@@ -1,6 +1,7 @@
 ﻿@Bliss_HostAddress = https://localhost:7004
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJMaSBIYWl5dW4iLCJlbWFpbCI6ImxpX2hhaXl1bkBueXAuZWR1LnNnIiwibmJmIjoxNzI1OTU4OTIwLCJleHAiOjE3Mjg1NTA5MjAsImlhdCI6MTcyNTk1ODkyMH0.0_GTNoUUk2TqCSPd4MiapZPKBi_FkPCVG2toARYryxE
 
+
 POST {{Bliss_HostAddress}}/voucher
 Content-Type: application/json
 {
@@ -13,3 +14,22 @@ Content-Type: application/json
   "Quantity": 1,
   "Value": 12.50
 }
+
+###
+
+PUT {{Bliss_HostAddress}}/voucher/9
+Content-Type: application/json
+{
+  "Title": "Updated Free Coffee - Special Edition",
+  "Description": "Enjoy a free coffee with this special updated voucher offer.",
+  "ImageFile": "special_updated_coffee.jpg",
+  "Cost": 25,
+  "ValidTill": "2026-01-31T23:59:59Z",
+  "MemberType": 0,
+  "Status": 0,
+  "Quantity": 5,
+  "Value": 15.00
+}
+
+
+
