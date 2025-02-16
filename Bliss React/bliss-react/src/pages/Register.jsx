@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 function Register() {
     const [otpSent, setOtpSent] = useState(false);
@@ -14,19 +14,17 @@ function Register() {
 
     const sendOtp = async (email) => {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/user/send-otp?email=${email}`);
-            console.log(response);
+            const response = await http.post(`/user/send-otp?email=${email}`);
             setOtpSent(true); // Set otpSent to true after successfully sending OTP
             toast.success('OTP sent successfully.');
         } catch (error) {
-            console.error('Error sending OTP:', error);
             toast.error(error.response.data.message);
         }
     };
 
     const verifyOtp = async (email, otp) => {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/user/verify-otp?email=${email}&otp=${otp}`);
+            const response = await http.post(`/user/verify-otp?email=${email}&otp=${otp}`);
             toast.success('OTP verified successfully.');
             setOtpVerified(true);
             setOtpDisabled(false); // Set otpDisabled to false after successfully verifying OTP
@@ -75,11 +73,10 @@ function Register() {
             data.name = data.name.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post(`${import.meta.env.VITE_API_BASE_URL}/user/register`, data)
+            http.post("/user/register", data)
                 .then((res) => {
-                    toast.success('Registration successful!')
-                    console.log(res.data);
-                    timeout(() => navigate("/login"), 3000);
+                    toast.success('Registration successful!');
+                    navigate("/login");
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
@@ -87,101 +84,123 @@ function Register() {
         }
     });
 
-    return (
-        <Box sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }}>
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Register
-            </Typography>
-            <Box component="form" sx={{ maxWidth: '500px' }}
-                onSubmit={formik.handleSubmit}>
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Name"
-                    name="name"
-                    value={formik.values.name}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.name && Boolean(formik.errors.name)}
-                    helperText={formik.touched.name && formik.errors.name}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Email"
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Password"
-                    name="password" type="password"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Confirm Password"
-                    name="confirmPassword" type="password"
-                    value={formik.values.confirmPassword}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-                    helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-                />
-                <TextField
-                    fullWidth
-                    margin="dense"
-                    label="OTP"
-                    name="otp"
-                    value={formik.values.otp}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.otp && Boolean(formik.errors.otp)}
-                    helperText={formik.touched.otp && formik.errors.otp}
-                    disabled={otpDisabled}
-                />
-                {!otpSent && (
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={() => sendOtp(formik.values.email)}
-                    >
-                        Send OTP
-                    </Button>
-                )}
-                {otpSent && !otpVerified && (
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
-                    >
-                        Verify OTP
-                    </Button>
-                )}
-                <Button
-                    fullWidth
-                    variant="contained"
-                    type="submit"
-                    disabled={!otpVerified}
-                    sx={{ mt: 2 }}
-                >
-                    Register
-                </Button>
-            </Box>
+    const handleGoogleSuccess = (response) => {
+        const idToken = response.credential;
+        http.post("/user/google-signin", { idToken })
+            .then((res) => {
+                localStorage.setItem("accessToken", res.data.accessToken);
+                setUser(res.data.user);
+                navigate("/");
+            })
+            .catch((err) => {
+                toast.error(`${err.response.data.message}`);
+            });
+    };
 
-            <ToastContainer />
-        </Box>
+    const handleGoogleFailure = (response) => {
+        toast.error('Google sign-in failed');
+    };
+
+    return (
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <Box sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
+                <Typography variant="h5" sx={{ my: 2 }}>
+                    Register
+                </Typography>
+                <Box component="form" sx={{ maxWidth: '500px' }}
+                    onSubmit={formik.handleSubmit}>
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Name"
+                        name="name"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.name && Boolean(formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                    />
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Email"
+                        name="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Password"
+                        name="password" type="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
+                    />
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Confirm Password"
+                        name="confirmPassword" type="password"
+                        value={formik.values.confirmPassword}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                        helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="dense"
+                        label="OTP"
+                        name="otp"
+                        value={formik.values.otp}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.otp && Boolean(formik.errors.otp)}
+                        helperText={formik.touched.otp && formik.errors.otp}
+                        disabled={otpDisabled}
+                    />
+                    {!otpSent && (
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            onClick={() => sendOtp(formik.values.email)}
+                        >
+                            Send OTP
+                        </Button>
+                    )}
+                    {otpSent && !otpVerified && (
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
+                        >
+                            Verify OTP
+                        </Button>
+                    )}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        type="submit"
+                        disabled={!otpVerified}
+                        sx={{ mt: 2 }}
+                    >
+                        Register
+                    </Button>
+                </Box>
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleFailure}
+                />
+                <ToastContainer />
+            </Box>
+        </GoogleOAuthProvider>
     );
 }
 
