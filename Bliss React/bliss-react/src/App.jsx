@@ -67,8 +67,9 @@ function App() {
                     <AppBar position="static" className="AppBar">
                         <Container>
                             <Toolbar disableGutters={true}>
-                                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <Typography variant="h6" component="div">
+                                <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                <img src="/peace-hope-pigeon-svgrepo-com.svg" alt="peace-hope-pigeon-logo" width={50} height={50} />
+                                    <Typography variant="h6" component="div" padding={1}>
                                         Bliss
                                     </Typography>
                                 </Link>
