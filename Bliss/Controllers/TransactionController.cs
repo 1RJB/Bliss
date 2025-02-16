@@ -64,7 +64,7 @@ namespace Bliss.Controllers
                 UserId = userId,
                 TransactionDate = DateTime.UtcNow,
                 ShippingAddress = "",
-                PreferredDeliveryDateTime = DateTime.UtcNow, // placeholder; to be updated later
+                PreferredDeliveryDateTime = DateTime.UtcNow,
                 PaymentCardNumber = "",
                 PaymentExpirationDate = "",
                 PaymentCVV = "",
@@ -182,7 +182,9 @@ namespace Bliss.Controllers
         // Finalizes (closes) the current open transaction.
         // Expects payload: { "userId": 1 }
         [HttpPost("finalize")]
-        public async Task<IActionResult> FinalizeTransaction([FromBody] JsonElement data)
+        public async Task<IActionResult> FinalizeTransaction(
+        [FromBody] JsonElement data,
+        [FromServices] IEmailService emailService)
         {
             int userId = data.GetProperty("userId").GetInt32();
 
@@ -190,7 +192,6 @@ namespace Bliss.Controllers
                 .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
             if (transaction == null)
             {
-                // Optionally, fetch the finalized transaction to return its details.
                 var finalizedTransaction = await _context.Transactions
                     .FirstOrDefaultAsync(t => t.UserId == userId && t.IsFinalized);
                 if (finalizedTransaction != null)
@@ -202,22 +203,27 @@ namespace Bliss.Controllers
 
             // Retrieve and remove the user's cart (if necessary)
             var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+     .Include(c => c.CartItems)
+     .FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart != null)
             {
-                // Remove each cart item
-                foreach (var item in cart.CartItems.ToList())
-                {
-                    _context.CartItems.Remove(item);
-                    await _context.SaveChangesAsync();
-                }
-                // Then remove the cart
+                // Remove all cart items at once
+                _context.CartItems.RemoveRange(cart.CartItems);
+                // Remove the cart itself
                 _context.Carts.Remove(cart);
+                await _context.SaveChangesAsync();
             }
+
+            // Then remove the cart
+
 
             transaction.IsFinalized = true;
             await _context.SaveChangesAsync();
+
+            // Calculate overall total from the transaction items
+            decimal overallTotal = transaction.TransactionItems
+                .Sum(item => (decimal)item.PriceAtPurchase * item.Quantity);
+
 
             // Build a simple HTML receipt for the email.
             string receiptHtml = $"<h1>Thank you for your order!</h1>" +
@@ -225,13 +231,21 @@ namespace Bliss.Controllers
                                  $"<p>Date: {transaction.TransactionDate.ToLocalTime()}</p>" +
                                  "<p>We appreciate your business.</p>";
 
-            // Send the receipt email.
-            // Assuming the user's email is available in your user record.
-            //await emailService.SendEmailAsync(/* toEmail: */ "user@example.com",
-            //                                   "Your Receipt from Bliss",
-            //                                   receiptHtml);
+            // Retrieve the user's email dynamically from the database.
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null || string.IsNullOrWhiteSpace(user.Email))
+            {
+                _logger.LogWarning("Could not retrieve email for userId {UserId}", userId);
+                return NotFound("User email not found.");
+            }
+
+            // Send the receipt email using the user's actual email.
+            await emailService.SendEmailAsync(user.Email, "Your Receipt from Bliss", receiptHtml);
+            _logger.LogInformation("Receipt email sent to {Email}", user.Email);
+
             return Ok(transaction);
         }
+
 
         // GET: api/transaction/latest?userId=1
         [HttpGet("latest")]

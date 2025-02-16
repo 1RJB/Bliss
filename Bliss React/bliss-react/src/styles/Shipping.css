@@ -1,0 +1,70 @@
+/* Header styles */
+.shipping-header {
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  .step-progress {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Main shipping card container */
+  .shipping-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  /* For larger screens, display shipping form and order summary side-by-side */
+  @media (min-width: 768px) {
+    .shipping-card {
+      flex-direction: row;
+    }
+  }
+  
+  /* Shipping form (left section) */
+  .shipping-form {
+    flex: 2;
+  }
+  
+  /* Order summary (right section) */
+  .order-summary {
+    flex: 1;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  /* Checkout button styling */
+  .checkout-button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .checkout-button:hover {
+    background: #0056b3;
+  }
+  
+  /* Grand total styling */
+  .grand-total {
+    text-align: right;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
