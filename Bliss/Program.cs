@@ -15,6 +15,7 @@ builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddHttpClient<IPGeolocationService>();
 builder.Services.AddScoped<IPGeolocationService>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 // Auto Mapper
 var mappingConfig = new MapperConfiguration(mc =>

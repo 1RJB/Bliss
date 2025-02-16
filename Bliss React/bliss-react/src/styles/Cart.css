@@ -64,3 +64,28 @@
     cursor: pointer;
   }
   
+  .checkmark-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .checkmark-svg {
+    width: 100px;
+    height: 100px;
+    stroke: #4caf50; /* A nice green color */
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    animation: drawCheck 1s ease-out forwards;
+  }
+  
+  @keyframes drawCheck {
+    0% {
+      stroke-dashoffset: 60;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  

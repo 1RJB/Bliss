@@ -38,6 +38,7 @@ import http from './http';
 import UserContext from './contexts/UserContext';
 import Payment from './pages/Payment';
 import Shipping from './pages/Shipping';
+import Confirmation from './pages/Confirmation';
 
 function App() {
     const [user, setUser] = useState(null);
@@ -169,6 +170,7 @@ function App() {
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/payment" element={<Payment />} />
                             <Route path="/shipping" element={<Shipping />} />
+                            <Route path="/confirmation" element={<Confirmation />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>

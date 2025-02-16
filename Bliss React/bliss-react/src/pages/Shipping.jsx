@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Cart.css"; // Reuse your existing CSS
 import UserContext from "../contexts/UserContext";
+import "../styles/Cart.css"; // Reuse your existing CSS
 import stepProgress from "../assets/Group 3.png"; // Your shipping progress bar image
+import { Box, TextField, Button } from "@mui/material";
+import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { addDays, setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
 
 function Shipping() {
   const [cartItems, setCartItems] = useState([]);
@@ -13,11 +17,18 @@ function Shipping() {
   const [addressLine2, setAddressLine2] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [shippingMethod, setShippingMethod] = useState("Standard");
+  const [preferredDeliveryDateTime, setPreferredDeliveryDateTime] = useState(new Date());
 
   const { user } = useContext(UserContext);
   const userId = user ? user.id : null;
   const navigate = useNavigate();
+
+  // Restrict date/time to next 3 days, 9am–3pm
+  const now = new Date();
+  const minDate = now;
+  const maxDate = addDays(now, 3);
+  const minTime = setMilliseconds(setSeconds(setMinutes(setHours(now, 9), 0), 0), 0);
+  const maxTime = setMilliseconds(setSeconds(setMinutes(setHours(new Date(), 15), 0), 0), 0);
 
   // Fetch cart items
   useEffect(() => {
@@ -37,7 +48,7 @@ function Shipping() {
       .catch((err) => console.error("Error fetching cart:", err));
   }, [userId]);
 
-  // Calculate total price
+  // Calculate total price using productSize price if available, otherwise product price
   useEffect(() => {
     const newTotal = cartItems.reduce((acc, item) => {
       const price = Number(item.productSize?.price) || Number(item.product.price) || 0;
@@ -47,19 +58,56 @@ function Shipping() {
     setTotalPrice(newTotal);
   }, [cartItems]);
 
-  const handlePlaceOrder = () => {
-    // In a real app, you'd send the shipping details & finalize the transaction
-    console.log("Placing order with shipping info:", {
-      addressLine1,
-      addressLine2,
-      zipCode,
-      phoneNumber,
-      shippingMethod
-    });
+  const handlePlaceOrder = async () => {
+    if (!userId) {
+      alert("Please log in first.");
+      return;
+    }
 
-    // Example: finalize transaction or navigate to a confirmation page
-    // navigate("/confirmation");
-    alert("Order placed successfully!");
+    // Build payload for updating transaction with shipping info.
+    const payload = {
+      userId: userId,
+      shippingAddress: `${addressLine1} ${addressLine2}`.trim(),
+      preferredDeliveryDateTime: preferredDeliveryDateTime.toISOString(),
+      // Payment info assumed to be already set on the Payment page.
+      paymentCardNumber: "",
+      paymentExpirationDate: "",
+      paymentCVV: ""
+    };
+
+    try {
+      // 1. Update the transaction with shipping info.
+      const updateResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transaction/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!updateResponse.ok) {
+        console.error("Failed to update transaction with shipping info");
+        alert("Failed to update shipping info.");
+        return;
+      }
+
+      // 2. Finalize the transaction.
+      const finalizeResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transaction/finalize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!finalizeResponse.ok) {
+        console.error("Failed to finalize transaction");
+        alert("Failed to finalize your order.");
+        return;
+      }
+
+      // 3. On success, navigate to the Confirmation page.
+      navigate("/confirmation");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Error placing order.");
+    }
   };
 
   return (
@@ -79,51 +127,47 @@ function Shipping() {
         <div className="cart-main">
           <div style={{ marginBottom: "2rem" }}>
             <h3 style={{ marginBottom: "1rem" }}>Shipping Information</h3>
-            {/* Shipping Form Fields */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                maxWidth: "400px",
-              }}
-            >
-              <input
-                type="text"
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}>
+              <TextField
+                label="Address Line 1"
                 placeholder="Enter Address Line 1"
                 value={addressLine1}
                 onChange={(e) => setAddressLine1(e.target.value)}
-                style={{ padding: "0.5rem" }}
+                variant="outlined"
               />
-              <input
-                type="text"
+              <TextField
+                label="Address Line 2"
                 placeholder="Enter Address Line 2 (Optional)"
                 value={addressLine2}
                 onChange={(e) => setAddressLine2(e.target.value)}
-                style={{ padding: "0.5rem" }}
+                variant="outlined"
               />
-              <input
-                type="text"
-                placeholder="Enter ZipCode"
+              <TextField
+                label="Zip Code"
+                placeholder="Enter Zip Code"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
-                style={{ padding: "0.5rem" }}
+                variant="outlined"
               />
-              <input
-                type="text"
+              <TextField
+                label="Phone Number"
                 placeholder="Enter Phone Number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                style={{ padding: "0.5rem" }}
+                variant="outlined"
               />
-              <select
-                style={{ padding: "0.5rem" }}
-                value={shippingMethod}
-                onChange={(e) => setShippingMethod(e.target.value)}
-              >
-                <option value="Standard">Standard Shipping</option>
-                <option value="Express">Express Shipping</option>
-              </select>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  label="Preferred Delivery Date & Time"
+                  value={preferredDeliveryDateTime}
+                  onChange={(newValue) => setPreferredDeliveryDateTime(newValue)}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  minTime={minTime}
+                  maxTime={maxTime}
+                  renderInput={(params) => <TextField {...params} variant="outlined" />}
+                />
+              </LocalizationProvider>
             </div>
           </div>
         </div>
@@ -159,8 +203,7 @@ function Shipping() {
               </div>
               <div>
                 <p>
-                  $
-                  {(
+                  ${(
                     (Number(item.productSize?.price) || Number(item.product.price)) *
                     Number(item.quantity)
                   ).toFixed(2)}
@@ -169,9 +212,7 @@ function Shipping() {
             </div>
           ))}
           <hr />
-          <p style={{ margin: "0.5rem 0" }}>
-            Cart Subtotal: ${totalPrice.toFixed(2)}
-          </p>
+          <p style={{ margin: "0.5rem 0" }}>Cart Subtotal: ${totalPrice.toFixed(2)}</p>
           <hr />
           <p className="grand-total">S${totalPrice.toFixed(2)}</p>
           <button
