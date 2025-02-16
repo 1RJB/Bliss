@@ -8,6 +8,7 @@ import {
     Divider,
     Select,
     MenuItem,
+    TextField,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UserContext from '../contexts/UserContext';
@@ -17,8 +18,10 @@ function ProductDetail() {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
     const [product, setProduct] = useState(null);
-    const [wishlists, setWishlists] = useState([]); // Store user's wishlists
-    const [selectedWishlist, setSelectedWishlist] = useState(""); // Selected wishlist
+    const [wishlists, setWishlists] = useState([]);
+    const [selectedWishlist, setSelectedWishlist] = useState("");
+    const [newWishlistName, setNewWishlistName] = useState("");
+    const [creatingWishlist, setCreatingWishlist] = useState(false);
 
     useEffect(() => {
         http.get(`/product/${id}`)
@@ -48,38 +51,25 @@ function ProductDetail() {
             });
     };
 
-
-    const handleAddToCart = async () => {
-        if (!user) {
-          console.error("User is not logged in.");
-          return;
+    const handleCreateWishlist = () => {
+        if (!newWishlistName.trim()) {
+            alert("⚠️ Please enter a wishlist name!");
+            return;
         }
-        if (!product) {
-          console.error("Product data is not available.");
-          return;
-        }
-        try {
-          const response = await fetch("https://localhost:7004/api/Cart/add", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ productId: product.id, userId: user.id }),
-          });
-      
-          if (!response.ok) {
-            console.error("Failed to add product to cart");
-            // Optionally display an error message
-          } else {
-            const data = await response.json();
-            console.log("Cart updated successfully:", data);
-            // Optionally update your UI or display a success message
-          }
-        } catch (error) {
-          console.error("Error adding product to cart:", error);
-        }
-      };
 
-
-
+        http.post('/wishlist', { name: newWishlistName, description: "My new wishlist" })
+            .then((res) => {
+                alert("✅ Wishlist created successfully!");
+                setWishlists([...wishlists, res.data]); 
+                setSelectedWishlist(res.data.id);
+                setCreatingWishlist(false); 
+                setNewWishlistName(""); 
+            })
+            .catch((err) => {
+                console.error("Error creating wishlist:", err);
+                alert("❌ Failed to create wishlist.");
+            });
+    };
 
     if (!product) return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
 
@@ -131,13 +121,6 @@ function ProductDetail() {
                         {product.description}
                     </Typography>
 
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Size:
-                    </Typography>
-                    <Typography variant="body2" sx={{ marginBottom: '15px' }}>
-                        {product.size || 'N/A'}
-                    </Typography>
-
                     <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
                         ${product.price}
                     </Typography>
@@ -154,39 +137,80 @@ function ProductDetail() {
                         Find in stores →
                     </Typography>
 
-                    {/* Wishlist Selection & Add Button */}
-                    {user && wishlists.length > 0 && (
+                    {/* Wishlist UI */}
+                    {user && (
                         <>
-                            <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                                Select Wishlist:
-                            </Typography>
-                            <Select
-                                value={selectedWishlist}
-                                onChange={(e) => setSelectedWishlist(e.target.value)}
-                                displayEmpty
-                                fullWidth
-                                sx={{ my: 2 }}
-                            >
-                                <MenuItem value="" disabled>Select a wishlist</MenuItem>
-                                {wishlists.map(wishlist => (
-                                    <MenuItem key={wishlist.id} value={wishlist.id}>{wishlist.name}</MenuItem>
-                                ))}
-                            </Select>
+                            {wishlists.length > 0 ? (
+                                <>
+                                    <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                        Select Wishlist:
+                                    </Typography>
+                                    <Select
+                                        value={selectedWishlist}
+                                        onChange={(e) => setSelectedWishlist(e.target.value)}
+                                        displayEmpty
+                                        fullWidth
+                                        sx={{ my: 2 }}
+                                    >
+                                        <MenuItem value="" disabled>Select a wishlist</MenuItem>
+                                        {wishlists.map(wishlist => (
+                                            <MenuItem key={wishlist.id} value={wishlist.id}>{wishlist.name}</MenuItem>
+                                        ))}
+                                    </Select>
 
-                            <Button
-                                variant="contained"
-                                color="success"
-                                sx={{ mt: 1 }}
-                                onClick={handleAddToWishlist}
-                            >
-                                Add to Wishlist
-                            </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        sx={{ mt: 1 }}
+                                        onClick={handleAddToWishlist}
+                                    >
+                                        Add to Wishlist
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    {!creatingWishlist ? (
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{ mt: 2 }}
+                                            onClick={() => setCreatingWishlist(true)}
+                                        >
+                                            Create a Wishlist
+                                        </Button>
+                                    ) : (
+                                        <>
+                                            <TextField
+                                                label="Wishlist Name"
+                                                variant="outlined"
+                                                fullWidth
+                                                value={newWishlistName}
+                                                onChange={(e) => setNewWishlistName(e.target.value)}
+                                                sx={{ my: 2 }}
+                                            />
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={handleCreateWishlist}
+                                                sx={{ mr: 2 }}
+                                            >
+                                                Save Wishlist
+                                            </Button>
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => setCreatingWishlist(false)}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </>
+                                    )}
+                                </>
+                            )}
                         </>
                     )}
 
                     <Button
                         variant="contained"
-                        onClick={handleAddToCart}
                         sx={{
                             width: "100%",
                             backgroundColor: "#222",
@@ -203,7 +227,7 @@ function ProductDetail() {
 
                     <Divider sx={{ marginY: '20px' }} />
 
-                    {/* Additional Product Information */}
+                    {/* Restored Information */}
                     <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         Suited for
                     </Typography>
@@ -225,15 +249,6 @@ function ProductDetail() {
                         {product.ingredients || 'N/A'}
                     </Typography>
                 </Box>
-            </Box>
-
-            {/* Eco-Friendly Label */}
-            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '40px' }}>
-                <img src="/eco-friendly-icon.png" alt="Eco-friendly" style={{ width: '30px', marginRight: '10px' }} />
-                <Typography variant="body2" sx={{ color: '#666' }}>
-                    Verified more than 80% of the packaging and ingredients are environmentally sustainable.
-                    *Tested by third-parties.
-                </Typography>
             </Box>
         </Box>
     );

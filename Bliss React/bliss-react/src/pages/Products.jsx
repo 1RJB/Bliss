@@ -12,7 +12,7 @@ import {
     Slider,
     Divider
 } from '@mui/material';
-import { Search, Clear } from '@mui/icons-material';
+import { Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import UserContext from '../contexts/UserContext';
 
@@ -221,6 +221,8 @@ function Products() {
                                     }}
                                 />
 
+                                
+
                                 {/* Hover Effect (Darken + Learn More Button) */}
                                 <Box
                                     className="hoverOverlay"
@@ -253,6 +255,13 @@ function Products() {
                                         Learn More
                                     </Button>
                                 </Box>
+
+                                {user && user.id === product.userId && (
+                                    <Link to={`/editProduct/${product.id}`} style={{ position: 'absolute', top: 8, right: 8 }}>
+                                        <Edit sx={{ color: '#A3BE8C' }} />
+                                    </Link>
+                                )}
+
 
                                 {/* Product Details (Still Intact) */}
                                 <Box sx={{ padding: '15px', textAlign: 'center' }}>
