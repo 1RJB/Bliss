@@ -12,6 +12,9 @@ namespace Bliss.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
+        public int? ProductSizeId { get; set; }  // Make it nullable
+        public ProductSize ProductSize { get; set; }
+
         public int Quantity { get; set; }
         public decimal PriceAtPurchase { get; set; }
     }

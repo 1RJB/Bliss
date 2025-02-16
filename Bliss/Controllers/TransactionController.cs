@@ -7,6 +7,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Bliss.Migrations;
+
 
 namespace Bliss.Controllers
 {
@@ -27,7 +29,7 @@ namespace Bliss.Controllers
 
         // POST: api/transaction/init
         // Re-initializes the transaction from the current cart.
-        // This removes any existing open transaction for the user and creates a new one.
+        // Removes any existing open transaction for the user and creates a new one.
         // Expects payload: { "userId": 1 }
         [HttpPost("init")]
         public async Task<IActionResult> InitTransaction([FromBody] JsonElement data)
@@ -45,10 +47,12 @@ namespace Bliss.Controllers
                 _logger.LogInformation("Removed existing open transaction for UserId: {UserId}", userId);
             }
 
-            // Retrieve the user's cart along with its items and product info.
+            // Retrieve the user's cart along with its items, product info, and product size.
             var cart = await _context.Carts
                 .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Product)
+                .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.ProductSize)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
@@ -74,14 +78,15 @@ namespace Bliss.Controllers
                 transaction.TransactionItems.Add(new TransactionItem
                 {
                     ProductId = cartItem.ProductId,
+                    ProductSizeId = cartItem.ProductSizeId,  // Add this
                     Quantity = cartItem.Quantity,
-                    PriceAtPurchase = cartItem.Product.Price
+                    PriceAtPurchase = cartItem.ProductSize?.Price ?? cartItem.Product.Price
                 });
             }
 
-            // Remove the cart (since it's now absorbed into the transaction)
             _context.Transactions.Add(transaction);
-            //_context.Carts.Remove(cart);
+            // Optionally, you can remove the cart here if desired.
+            // _context.Carts.Remove(cart);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Transaction initialized successfully for UserId: {UserId}, TransactionId: {TransactionId}", userId, transaction.Id);
@@ -100,17 +105,33 @@ namespace Bliss.Controllers
         //    "paymentCVV": "123"
         // }
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateTransaction([FromBody] JsonElement data)
+        public async Task<IActionResult> UpdateAndMaybeFinalizeTransaction([FromBody] JsonElement data)
         {
             int userId = data.GetProperty("userId").GetInt32();
-            string cardNumber = data.GetProperty("paymentCardNumber").GetString();
-            string expirationDate = data.GetProperty("paymentExpirationDate").GetString();
-            string cvv = data.GetProperty("paymentCVV").GetString();
-            string shippingAddress = data.GetProperty("shippingAddress").GetString();
-            string deliveryStr = data.GetProperty("preferredDeliveryDateTime").GetString();
-            DateTime preferredDeliveryDateTime = DateTime.Parse(deliveryStr);
-            
 
+            // Extract fields (default to empty string if not provided)
+            string shippingAddress = data.TryGetProperty("shippingAddress", out JsonElement addrEl)
+                ? addrEl.GetString()
+                : "";
+            string deliveryStr = data.TryGetProperty("preferredDeliveryDateTime", out JsonElement deliveryEl)
+                ? deliveryEl.GetString()
+                : "";
+            DateTime? preferredDeliveryDateTime = null;
+            if (!string.IsNullOrWhiteSpace(deliveryStr))
+            {
+                preferredDeliveryDateTime = DateTime.Parse(deliveryStr);
+            }
+            string paymentCardNumber = data.TryGetProperty("paymentCardNumber", out JsonElement cardEl)
+                ? cardEl.GetString()
+                : "";
+            string paymentExpirationDate = data.TryGetProperty("paymentExpirationDate", out JsonElement expEl)
+                ? expEl.GetString()
+                : "";
+            string paymentCVV = data.TryGetProperty("paymentCVV", out JsonElement cvvEl)
+                ? cvvEl.GetString()
+                : "";
+
+            // Retrieve the current open transaction for the user.
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
             if (transaction == null)
@@ -118,15 +139,46 @@ namespace Bliss.Controllers
                 return NotFound("No current open transaction found to update");
             }
 
+            // Update fields regardless
             transaction.ShippingAddress = shippingAddress;
-            transaction.PreferredDeliveryDateTime = preferredDeliveryDateTime;
-            transaction.PaymentCardNumber = _protector.Protect(cardNumber);
-            transaction.PaymentExpirationDate = expirationDate;
-            transaction.PaymentCVV = cvv;
+            if (preferredDeliveryDateTime.HasValue)
+            {
+                transaction.PreferredDeliveryDateTime = preferredDeliveryDateTime.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(paymentCardNumber))
+            {
+                transaction.PaymentCardNumber = _protector.Protect(paymentCardNumber);
+            }
+            if (!string.IsNullOrWhiteSpace(paymentExpirationDate))
+            {
+                transaction.PaymentExpirationDate = paymentExpirationDate;
+            }
+            if (!string.IsNullOrWhiteSpace(paymentCVV))
+            {
+                transaction.PaymentCVV = paymentCVV;
+            }
+
+            // Check if all required fields are present to finalize:
+            bool hasShippingInfo = !string.IsNullOrWhiteSpace(transaction.ShippingAddress)
+                                   && transaction.PreferredDeliveryDateTime != default(DateTime);
+            bool hasPaymentInfo = !string.IsNullOrWhiteSpace(transaction.PaymentCardNumber)
+                                  && !string.IsNullOrWhiteSpace(transaction.PaymentExpirationDate)
+                                  && !string.IsNullOrWhiteSpace(transaction.PaymentCVV);
+
+            if (hasShippingInfo && hasPaymentInfo)
+            {
+                transaction.IsFinalized = true;
+                _logger.LogInformation("All required fields present. Finalizing transaction for UserId: {UserId}", userId);
+            }
+            else
+            {
+                _logger.LogInformation("Transaction updated for UserId: {UserId} but not all fields present for finalization", userId);
+            }
 
             await _context.SaveChangesAsync();
             return Ok(transaction);
         }
+
 
         // POST: api/transaction/finalize
         // Finalizes (closes) the current open transaction.
@@ -134,30 +186,74 @@ namespace Bliss.Controllers
         [HttpPost("finalize")]
         public async Task<IActionResult> FinalizeTransaction([FromBody] JsonElement data)
         {
-
             int userId = data.GetProperty("userId").GetInt32();
 
-            // Retrieve the current open transaction.
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
             if (transaction == null)
             {
+                // Optionally, fetch the finalized transaction to return its details.
+                var finalizedTransaction = await _context.Transactions
+                    .FirstOrDefaultAsync(t => t.UserId == userId && t.IsFinalized);
+                if (finalizedTransaction != null)
+                {
+                    return Ok(finalizedTransaction);
+                }
                 return NotFound("No current open transaction found to finalize");
             }
 
-            // Retrieve the user's cart (if it exists) and remove it.
-            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
+            // Retrieve and remove the user's cart (if necessary)
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart != null)
             {
+                // Remove each cart item
+                foreach (var item in cart.CartItems.ToList())
+                {
+                    _context.CartItems.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                // Then remove the cart
                 _context.Carts.Remove(cart);
             }
 
-            // Mark the transaction as finalized.
             transaction.IsFinalized = true;
             await _context.SaveChangesAsync();
 
-          
+            // Build a simple HTML receipt for the email.
+            string receiptHtml = $"<h1>Thank you for your order!</h1>" +
+                                 $"<p>Transaction ID: {transaction.Id}</p>" +
+                                 $"<p>Date: {transaction.TransactionDate.ToLocalTime()}</p>" +
+                                 "<p>We appreciate your business.</p>";
+
+            // Send the receipt email.
+            // Assuming the user's email is available in your user record.
+            await emailService.SendEmailAsync(/* toEmail: */ "user@example.com",
+                                               "Your Receipt from Bliss",
+                                               receiptHtml);
             return Ok(transaction);
         }
+
+        // GET: api/transaction/latest?userId=1
+        [HttpGet("latest")]
+        public async Task<IActionResult> GetLatestFinalizedTransaction([FromQuery] int userId)
+        {
+
+            var transaction = await _context.Transactions
+                .Include(t => t.TransactionItems)
+                    .ThenInclude(ti => ti.Product)
+                .Include(t => t.TransactionItems)  // Add this new Include
+                    .ThenInclude(ti => ti.ProductSize)  // Add ProductSize
+                .FirstOrDefaultAsync(t => t.UserId == userId && t.IsFinalized);
+
+            if (transaction == null)
+            {
+                return NotFound("No finalized transaction found.");
+            }
+            return Ok(transaction);
+        }
+
+
     }
 }

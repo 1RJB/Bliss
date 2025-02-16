@@ -1,0 +1,132 @@
+/* Remove full-page background container styles */
+
+/* Main card container */
+.confirmation-card {
+  background: #fff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 40px auto; /* Center on the page with vertical spacing */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+/* Header styles */
+.confirmation-header {
+  margin-bottom: 20px;
+}
+
+.confirmation-tick {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+.confirmation-header h2 {
+  margin: 10px 0 5px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.confirmation-header p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Receipt section */
+.receipt-section {
+  margin: 20px 0;
+  text-align: left;
+}
+
+/* Receipt items list */
+.receipt-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Individual receipt item row */
+.receipt-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side: image and item details */
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.item-type {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.item-quantity {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Right side: price */
+.item-price {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Total row */
+.receipt-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+/* Back to Homepage button */
+.back-button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.back-button:hover {
+  background: #0056b3;
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 40px;
+}
