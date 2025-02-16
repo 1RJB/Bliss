@@ -15,7 +15,7 @@ function Register() {
     const sendOtp = async (email) => {
         try {
             const response = await axios.post(`https://localhost:7004/user/send-otp?email=${email}`);
-            console.log(response.data);
+            console.log(response);
             setOtpSent(true); // Set otpSent to true after successfully sending OTP
             toast.success('OTP sent successfully.');
         } catch (error) {
