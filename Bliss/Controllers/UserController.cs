@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Google.Apis.Auth;
+using OtpNet;
 
 namespace Bliss.Controllers
 {
@@ -172,6 +173,18 @@ namespace Bliss.Controllers
                     return BadRequest(new { message = $"Invalid credentials. {3 - foundUser.LoginAttempts} attempts remaining." });
                 }
 
+                // Check if 2FA is enabled and if so, require 2FA code
+                if (foundUser.TwoFactorEnabled)
+                {
+                    return Ok(new { requires2FA = true });
+                }
+
+                // Check if this is the first login or 2FA is not setup
+                if (string.IsNullOrEmpty(foundUser.TwoFactorSecret))
+                {
+                    return Ok(new { requires2FASetup = true });
+                }
+
                 // Reset login attempts on successful login
                 foundUser.LoginAttempts = 0;
                 foundUser.LockoutEnd = null;
@@ -192,6 +205,33 @@ namespace Bliss.Controllers
                 _logger.LogError(ex, "Error when user login");
                 return StatusCode(500);
             }
+        }
+
+        [HttpPost("verify-2fa-login")]
+        public async Task<IActionResult> Verify2FALogin(Verify2FARequest request)
+        {
+            var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+            if (foundUser == null)
+            {
+                return BadRequest(new { message = "Invalid 2FA code." });
+            }
+
+            var totp = new Totp(Base32Encoding.ToBytes(foundUser.TwoFactorSecret));
+            var valid = totp.VerifyTotp(request.Code, out _, new VerificationWindow(2, 2));
+
+            if (!valid)
+            {
+                return BadRequest(new { message = "Invalid 2FA code." });
+            }
+
+            // Log activity
+            await LogActivity(foundUser.Id, "User logged in with 2FA", HttpContext.Connection.RemoteIpAddress.ToString());
+
+            // Return user info
+            UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
+            string accessToken = CreateToken(foundUser);
+            LoginResponse response = new() { User = userDTO, AccessToken = accessToken };
+            return Ok(response);
         }
 
         [HttpGet("auth"), Authorize]
@@ -640,6 +680,82 @@ namespace Bliss.Controllers
                 _logger.LogError(ex, "Error when verifying OTP.");
                 return StatusCode(500, "Internal server error.");
             }
+        }
+
+        [HttpPost("setup-2fa"), Authorize]
+        public async Task<IActionResult> Setup2FA()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(int.Parse(userIdClaim));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var secretKey = KeyGeneration.GenerateRandomKey(20);
+            var base32Secret = Base32Encoding.ToString(secretKey);
+            var otpauthUrl = $"otpauth://totp/Bliss:{user.Email}?secret={base32Secret}&issuer=Bliss";
+
+            user.TwoFactorSecret = base32Secret;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { otpauthUrl });
+        }
+
+        [HttpPost("verify-2fa"), Authorize]
+        public async Task<IActionResult> Verify2FA(Verify2FARequest request)
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(int.Parse(userIdClaim));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var totp = new Totp(Base32Encoding.ToBytes(user.TwoFactorSecret));
+            var valid = totp.VerifyTotp(request.Code, out _, new VerificationWindow(2, 2));
+
+            if (!valid)
+            {
+                return BadRequest(new { message = "Invalid 2FA code." });
+            }
+
+            user.TwoFactorEnabled = true;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "2FA setup successful." });
+        }
+
+        [HttpPost("disable-2fa"), Authorize]
+        public async Task<IActionResult> Disable2FA()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(int.Parse(userIdClaim));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.TwoFactorEnabled = false;
+            user.TwoFactorSecret = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "2FA disabled." });
         }
 
         private string CreateToken(User user)
