@@ -35,6 +35,9 @@ function UsersList() {
                     </ListItem>
                 ))}
             </List>
+            <Button variant="contained" color="primary" onClick={() => navigate('/add-user')}>
+                Add User
+            </Button>
         </div>
     );
 }
