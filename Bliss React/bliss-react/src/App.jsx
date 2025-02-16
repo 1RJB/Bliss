@@ -18,6 +18,7 @@ import Vouchers from './pages/Vouchers';
 import MyVoucher from './pages/MyVoucher';
 import AddVoucher from './pages/AddVoucher';
 import EditVoucher from './pages/EditVoucher';
+import AddUser from './pages/AddUser';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Setup2FA from './pages/Setup2FA';
@@ -150,6 +151,7 @@ function App() {
                             <Route path="/editwishlist/:id" element={<EditWishlist />} />
                             <Route path="/addwishlist" element={<Addwishlist />} />
                             <Route path="/wishlist/:id" element={<WishlistDetail />} />
+                            <Route path="/add-user" element={<AddUser />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/setup-2fa" element={<Setup2FA />} />
