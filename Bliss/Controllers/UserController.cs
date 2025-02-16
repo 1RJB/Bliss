@@ -57,7 +57,9 @@ namespace Bliss.Controllers
                     Password = passwordHash,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    MembershipId = 1
+                    MembershipId = 1,
+                    LastPasswordChangeDate = now,
+                    PreviousPasswords = new List<string> { passwordHash }
                 };
 
                 // Add user
@@ -87,17 +89,41 @@ namespace Bliss.Controllers
                 request.Password = request.Password.Trim();
 
                 // Check email and password
-                string message = "Email or password is not correct.";
-                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+                var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
                 if (foundUser == null)
                 {
-                    return BadRequest(new { message });
+                    return BadRequest(new { message = "Email or password is not correct." });
                 }
+
+                // Check for account lockout
+                if (foundUser.LockoutEnd.HasValue && foundUser.LockoutEnd.Value > DateTime.UtcNow)
+                {
+                    var remainingLockoutTime = foundUser.LockoutEnd.Value - DateTime.UtcNow;
+                    return BadRequest(new { message = $"Account is locked. Please try again in {remainingLockoutTime.Minutes} minute(s)." });
+                }
+
                 bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
                 if (!verified)
                 {
-                    return BadRequest(new { message });
+                    foundUser.LoginAttempts++;
+
+                    if (foundUser.LoginAttempts >= 3)
+                    {
+                        foundUser.LockoutEnd = DateTime.UtcNow.AddMinutes(15);
+                        foundUser.LoginAttempts = 0; // Reset attempts counter
+                        await _context.SaveChangesAsync();
+                        return BadRequest(new { message = $"Account has been locked for {15} minute(s) due to multiple failed attempts." });
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return BadRequest(new { message = $"Invalid credentials. {3 - foundUser.LoginAttempts} attempts remaining." });
                 }
+
+                // Reset login attempts on successful login
+                foundUser.LoginAttempts = 0;
+                foundUser.LockoutEnd = null;
+                await _context.SaveChangesAsync();
+
 
                 // Log activity
                 await LogActivity(foundUser.Id, "User logged in", HttpContext.Connection.RemoteIpAddress.ToString());
@@ -269,43 +295,167 @@ namespace Bliss.Controllers
                 return NotFound();
             }
 
-            // Authorization: Ensure the user is changing their own password
+            // Authorization check
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            if (userIdClaim == null || user.Id != int.Parse(userIdClaim))
             {
                 return Unauthorized();
             }
-            var userIdFromToken = int.Parse(userIdClaim);
-            if (user.Id != userIdFromToken)
-            {
-                return Forbid();
-            }
 
             // Verify current password
-            bool verified = BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.Password);
-            if (!verified)
+            if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.Password))
             {
                 return BadRequest("Current password is incorrect.");
             }
 
+            // Check password history
+            if (user.PreviousPasswords.Any(hash => BCrypt.Net.BCrypt.Verify(request.NewPassword, hash)))
+            {
+                return BadRequest($"Cannot reuse any of your last 3 passwords.");
+            }
+
             // Hash new password
-            string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            user.Password = newHashedPassword;
+            string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            // Update password history
+            user.PreviousPasswords.Add(newPasswordHash);
+            if (user.PreviousPasswords.Count > 3)
+            {
+                user.PreviousPasswords.RemoveAt(0);
+            }
+
+            // Update password
+            user.Password = newPasswordHash;
+            user.LastPasswordChangeDate = DateTime.UtcNow;
             user.UpdatedAt = DateTime.UtcNow;
 
             try
             {
-                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-
-                // Log activity
                 await LogActivity(user.Id, "Password changed", HttpContext.Connection.RemoteIpAddress.ToString());
-
                 return NoContent();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error changing password.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email.ToLower().Trim());
+                if (user == null)
+                {
+                    // Don't reveal that the user doesn't exist
+                    return Ok(new { message = "If your email is registered, you will receive a reset link." });
+                }
+
+                // Generate reset token
+                var token = Guid.NewGuid().ToString();
+                user.PasswordResetToken = token;
+                user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(5);
+                await _context.SaveChangesAsync();
+
+                // Get frontend URL from configuration
+                var frontendUrl = _configuration["Frontend:BaseUrl"] ?? "http://localhost:3000";
+                var resetLink = $"{frontendUrl}/reset-password?token={token}";
+
+                // Send email
+                var smtpClient = new SmtpClient(_smtpSettings.Server)
+                {
+                    Port = _smtpSettings.Port,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(_smtpSettings.SenderEmail, _smtpSettings.SenderPassword),
+                    EnableSsl = _smtpSettings.EnableSsl,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_smtpSettings.SenderEmail ?? throw new ArgumentNullException(nameof(_smtpSettings.SenderEmail))),
+                    Subject = "Password Reset Request",
+                    Body = $@"
+                <html>
+                    <body>
+                        <h2>Password Reset Request</h2>
+                        <p>You requested to reset your password. Click the link below to proceed:</p>
+                        <p><a href='{resetLink}'>{resetLink}</a></p>
+                        <p>This link will expire in 5 minutes.</p>
+                        <p>If you did not request this password reset, please ignore this email.</p>
+                    </body>
+                </html>",
+                    IsBodyHtml = true,
+                };
+                mailMessage.To.Add(request.Email);
+
+                await smtpClient.SendMailAsync(mailMessage);
+
+                // Log activity
+                await LogActivity(user.Id, "Password reset requested", HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+
+                return Ok(new { message = "If your email is registered, you will receive a reset link." });
+            }
+            catch (SmtpException smtpEx)
+            {
+                _logger.LogError(smtpEx, "SMTP error when sending password reset email.");
+                return StatusCode(500, "Error sending password reset email.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in forgot password process.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == request.ResetToken);
+
+                if (user == null || !user.PasswordResetTokenExpiry.HasValue ||
+                    user.PasswordResetTokenExpiry.Value < DateTime.UtcNow)
+                {
+                    return BadRequest(new { message = "Invalid or expired reset token." });
+                }
+
+                // Check password history
+                if (user.PreviousPasswords.Any(hash => BCrypt.Net.BCrypt.Verify(request.NewPassword, hash)))
+                {
+                    return BadRequest(new { message = "Cannot reuse any of your last 3 passwords." });
+                }
+
+                // Hash new password
+                string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+                // Update password history
+                user.PreviousPasswords.Add(newPasswordHash);
+                if (user.PreviousPasswords.Count > 3)
+                {
+                    user.PreviousPasswords.RemoveAt(0);
+                }
+
+                // Update user
+                user.Password = newPasswordHash;
+                user.PasswordResetToken = null;
+                user.PasswordResetTokenExpiry = null;
+                user.LastPasswordChangeDate = DateTime.UtcNow;
+                user.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                // Log activity
+                await LogActivity(user.Id, "Password reset completed", HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+
+                return Ok(new { message = "Password has been reset successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in reset password process.");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -468,7 +618,7 @@ namespace Bliss.Controllers
             // Check if the IP address is a local address and set a mock IP address
             if (ipAddress == "::1" || ipAddress == "127.0.0.1")
             {
-                ipAddress = "8.8.8.8"; // Use a public IP address for testing
+                ipAddress = "8.8.8.8";
             }
 
             var geolocation = await _ipGeolocationService.GetGeolocation(ipAddress);
