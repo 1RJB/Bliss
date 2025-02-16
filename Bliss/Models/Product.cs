@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.Json.Serialization;
 
 namespace Bliss.Models
 {
@@ -8,25 +7,26 @@ namespace Bliss.Models
     {
         public int Id { get; set; }
 
-        [Required, MinLength(3), MaxLength(100)]
-        public string Title { get; set; } = string.Empty;
-
-        [Required, MinLength(3), MaxLength(500)]
+        // Example properties (adjust as needed)
+        public string name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-
-        [MaxLength(20)]
+        public int Price { get; set; }
         public string? ImageFile { get; set; }
 
-        [Column(TypeName = "datetime")]
-        public DateTime CreatedAt { get; set; }
+        [Required, MaxLength(50)]
+        public string Type { get; set; } = string.Empty; // ✅ Required Type Field
 
-        [Column(TypeName = "datetime")]
-        public DateTime UpdatedAt { get; set; }
-
-        // Foreign key property
+        // Foreign key for User (owner)
         public int UserId { get; set; }
-
-        // Navigation property to represent the one-to-many relationship
         public User? User { get; set; }
+
+        // Navigation property for many-to-many with Homepages
+        public List<Homepage> Homepages { get; set; } = new List<Homepage>();
+
+        [JsonIgnore]
+        // Navigation property for many-to-many with Transactions via TransactionItems
+        public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
+
+        public List<Wishlist> Wishlists { get; set; } = new();
     }
 }

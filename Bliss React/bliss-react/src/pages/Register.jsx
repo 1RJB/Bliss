@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 function Register() {
-    const navigate = useNavigate();
+    const [otpSent, setOtpSent] = useState(false);
+    const [otpVerified, setOtpVerified] = useState(false);
+    const [otpDisabled, setOtpDisabled] = useState(false);
+
+    const sendOtp = async (email) => {
+        try {
+            const response = await axios.post(`https://localhost:7004/user/send-otp?email=${email}`);
+            console.log(response);
+            setOtpSent(true); // Set otpSent to true after successfully sending OTP
+            toast.success('OTP sent successfully.');
+        } catch (error) {
+            console.error('Error sending OTP:', error);
+            toast.error(error.response.data.message);
+        }
+    };
+
+    const verifyOtp = async (email, otp) => {
+        try {
+            const response = await axios.post(`https://localhost:7004/user/verify-otp?email=${email}&otp=${otp}`);
+            toast.success('OTP verified successfully.');
+            setOtpVerified(true);
+            setOtpDisabled(false); // Set otpDisabled to false after successfully verifying OTP
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    };
 
     const formik = useFormik({
         initialValues: {
             name: "",
             email: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            otp: ""
         },
         validationSchema: yup.object({
             name: yup.string().trim()
@@ -36,14 +62,22 @@ function Register() {
                     "Password at least 1 letter and 1 number"),
             confirmPassword: yup.string().trim()
                 .required('Confirm password is required')
-                .oneOf([yup.ref('password')], 'Passwords must match')
+                .oneOf([yup.ref('password')], 'Passwords must match'),
+            otp: yup.string()
+                .required('OTP is required')
+                .length(6, 'OTP must be 6 digits')
         }),
         onSubmit: (data) => {
+            if (!otpVerified) {
+                toast.error('Please verify your OTP first.');
+                return;
+            }
             data.name = data.name.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post("/user/register", data)
+            http.post("https://localhost:7004/user/register", data)
                 .then((res) => {
+                    toast.success('Registration successful!')
                     console.log(res.data);
                     navigate("/login");
                 })
@@ -105,8 +139,43 @@ function Register() {
                     error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                     helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                 />
-                <Button fullWidth variant="contained" sx={{ mt: 2 }}
-                    type="submit">
+                <TextField
+                    fullWidth
+                    margin="dense"
+                    label="OTP"
+                    name="otp"
+                    value={formik.values.otp}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.otp && Boolean(formik.errors.otp)}
+                    helperText={formik.touched.otp && formik.errors.otp}
+                    disabled={otpDisabled}
+                />
+                {!otpSent && (
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={() => sendOtp(formik.values.email)}
+                    >
+                        Send OTP
+                    </Button>
+                )}
+                {otpSent && !otpVerified && (
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
+                    >
+                        Verify OTP
+                    </Button>
+                )}
+                <Button
+                    fullWidth
+                    variant="contained"
+                    type="submit"
+                    disabled={!otpVerified}
+                    sx={{ mt: 2 }}
+                >
                     Register
                 </Button>
             </Box>
