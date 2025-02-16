@@ -31,6 +31,18 @@ namespace Bliss.Models
 
         public Membership? Membership { get; set; }
 
+        public int LoginAttempts { get; set; } = 0;
+
+        public DateTime? LockoutEnd { get; set; }
+
+        public DateTime? LastPasswordChangeDate { get; set; }
+
+        public List<string> PreviousPasswords { get; set; } = new List<string>();
+
+        public string? PasswordResetToken { get; set; }
+
+        public DateTime? PasswordResetTokenExpiry { get; set; }
+
         // navigation  to represent 1-many rs
         [JsonIgnore]
         public List<Product>? Products { get; set; }
