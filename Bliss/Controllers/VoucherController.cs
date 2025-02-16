@@ -66,7 +66,7 @@ namespace Bliss.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AddVoucher([FromBody] Voucher voucher)
         {
@@ -91,7 +91,7 @@ namespace Bliss.Controllers
            
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         [ProducesResponseType(typeof(VoucherDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

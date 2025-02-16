@@ -27,7 +27,7 @@ namespace Bliss.Models
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
 
-        public RewardPoints? RewardPoints { get; set; }
+        public int RewardPoints { get; set; } = 1000;
 
         public int MembershipId { get; set; }
 

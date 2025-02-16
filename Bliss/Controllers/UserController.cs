@@ -59,6 +59,7 @@ namespace Bliss.Controllers
                     CreatedAt = now,
                     UpdatedAt = now,
                     MembershipId = 1,
+                    RewardPoints = 1000,
                     LastPasswordChangeDate = now,
                     PreviousPasswords = new List<string> { passwordHash }
                 };
@@ -98,7 +99,8 @@ namespace Bliss.Controllers
                     Email = payload.Email,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1
+                    MembershipId = 1,
+                    RewardPoints = 1000,
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
@@ -282,6 +284,7 @@ namespace Bliss.Controllers
             user.Name = request.Name.Trim();
             user.Email = request.Email.Trim().ToLower();
             user.UpdatedAt = DateTime.UtcNow;
+            user.RewardPoints = request.RewardPoints;
 
             try
             {
