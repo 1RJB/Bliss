@@ -14,6 +14,9 @@ function Login() {
     const navigate = useNavigate();
     const { setUser } = useContext(UserContext);
     const [captchaToken, setCaptchaToken] = useState('');
+    const [requires2FA, setRequires2FA] = useState(false);
+    const [requires2FASetup, setRequires2FASetup] = useState(false);
+    const [twoFactorCode, setTwoFactorCode] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -39,9 +42,15 @@ function Login() {
             data.password = data.password.trim();
             http.post("/user/login", { ...data, captchaToken })
                 .then((res) => {
-                    localStorage.setItem("accessToken", res.data.accessToken);
-                    setUser(res.data.user);
-                    navigate("/");
+                    if (res.data.requires2FA) {
+                        setRequires2FA(true);
+                    } else if (res.data.requires2FASetup) {
+                        navigate("/setup-2fa");
+                    } else {
+                        localStorage.setItem("accessToken", res.data.accessToken);
+                        setUser(res.data.user);
+                        navigate("/");
+                    }
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
@@ -70,6 +79,18 @@ function Login() {
         toast.error('Google sign-in failed');
     };
 
+    const handle2FAVerify = () => {
+        http.post("/user/verify-2fa-login", { email: formik.values.email, code: twoFactorCode })
+            .then((res) => {
+                localStorage.setItem("accessToken", res.data.accessToken);
+                setUser(res.data.user);
+                navigate("/");
+            })
+            .catch((err) => {
+                toast.error(`${err.response.data.message}`);
+            });
+    };
+
     return (
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <Box sx={{
@@ -82,53 +103,76 @@ function Login() {
                     <Typography variant="h5" sx={{ my: 2, textAlign: 'center' }}>
                         Login
                     </Typography>
-                    <Box component="form" sx={{ mt: 1 }}
-                        onSubmit={formik.handleSubmit}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Email"
-                            name="email"
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
-                        />
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Password"
-                            name="password" type="password"
-                            value={formik.values.password}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.password && Boolean(formik.errors.password)}
-                            helperText={formik.touched.password && formik.errors.password}
-                        />
-                        <Button fullWidth variant="contained" sx={{ mt: 2 }}
-                            type="submit">
-                            Login
-                        </Button>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                            <HCaptcha
-                                sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
-                                onVerify={handleCaptchaChange}
+                    {!requires2FA ? (
+                        <Box component="form" sx={{ mt: 1 }}
+                            onSubmit={formik.handleSubmit}>
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Email"
+                                name="email"
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
                             />
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Password"
+                                name="password" type="password"
+                                value={formik.values.password}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.password && Boolean(formik.errors.password)}
+                                helperText={formik.touched.password && formik.errors.password}
+                            />
+                            <Button fullWidth variant="contained" sx={{ mt: 2 }}
+                                type="submit">
+                                Login
+                            </Button>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                                <HCaptcha
+                                    sitekey="37e48d3a-ecc6-4396-9e5e-6494d8026822"
+                                    onVerify={handleCaptchaChange}
+                                />
+                            </Box>
+                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                                <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
+                                    <Typography color="primary">
+                                        Forgot Password?
+                                    </Typography>
+                                </Link>
+                            </Box>
                         </Box>
-                        <Box sx={{ mt: 2, textAlign: 'center' }}>
-                            <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
-                                <Typography color="primary">
-                                    Forgot Password?
-                                </Typography>
-                            </Link>
+                    ) : (
+                        <Box sx={{ mt: 1 }}>
+                            <Typography variant="body1" sx={{ mb: 2 }}>
+                                Enter the 2FA code from your authenticator app:
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                label="2FA Code"
+                                value={twoFactorCode}
+                                onChange={(e) => setTwoFactorCode(e.target.value)}
+                            />
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 2 }}
+                                onClick={handle2FAVerify}
+                            >
+                                Verify
+                            </Button>
                         </Box>
-                    </Box>
+                    )}
                 </Paper>
                 <Box sx={{ mt: 6, textAlign: 'center', justifyContent: 'center', display: 'flex' }}>
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={handleGoogleFailure}
-                        />
-                    </Box>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleFailure}
+                    />
+                </Box>
                 <ToastContainer />
             </Box>
         </GoogleOAuthProvider>
