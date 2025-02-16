@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Bliss.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,75 +66,32 @@ namespace Bliss.Controllers
             }
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(VoucherDTO), StatusCodes.Status200OK)]
+        [HttpPost, Authorize]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AddVoucher([FromBody] Voucher voucher)
         {
-            try
+            var myVoucher = new Voucher
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                Voucher myVoucher;
-
-                // Determine the correct voucher type and set specific properties
-                if (voucher is ItemVoucher itemVoucher)
-                {
-                    myVoucher = new ItemVoucher
-                    {
-                        ItemName = itemVoucher.ItemName,
-                        ItemQuantity = itemVoucher.ItemQuantity
-                    };
-                }
-                else if (voucher is DiscountVoucher discountVoucher)
-                {
-                    myVoucher = new DiscountVoucher
-                    {
-                        DiscountPercentage = discountVoucher.DiscountPercentage,
-                        MaxAmount = discountVoucher.MaxAmount
-                    };
-                }
-                else if (voucher is GiftCardVoucher giftCardVoucher)
-                {
-                    myVoucher = new GiftCardVoucher
-                    {
-                        Value = giftCardVoucher.Value
-                    };
-                }
-                else
-                {
-                    return BadRequest("Invalid voucher type.");
-                }
-
-                // Assign common voucher properties
-                myVoucher.Title = voucher.Title;
-                myVoucher.Description = voucher.Description;
-                myVoucher.Cost = voucher.Cost;
-                myVoucher.ValidDuration = voucher.ValidDuration;
-                myVoucher.Status = VoucherStatus.Available;
-                myVoucher.MemberType = voucher.MemberType;
-                myVoucher.Quantity = voucher.Quantity;
-                myVoucher.VoucherType = voucher.VoucherType;
-                myVoucher.CreatedAt = DateTime.UtcNow;
-                myVoucher.UpdatedAt = DateTime.UtcNow;
-
+                Title = voucher.Title,
+                Description = voucher.Description,
+                Cost = voucher.Cost,
+                ValidTill = voucher.ValidTill,
+                Status = VoucherStatus.Available,
+                MemberType = voucher.MemberType,
+                Quantity = voucher.Quantity,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                ImageFile = voucher.ImageFile,
+                Value = voucher.Value,
+            };
                 // Save the voucher
                 _context.Vouchers.Add(myVoucher);
                 _context.SaveChanges();
-
                 return Ok(myVoucher);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when adding voucher");
-                return StatusCode(500, "Internal server error");
-            }
+           
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(VoucherDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -148,13 +106,15 @@ namespace Bliss.Controllers
                 }
 
                 _mapper.Map(voucher, myVoucher);
-                myVoucher.Title = voucher.Title = "";
-                myVoucher.Description = voucher.Description = "";
-                myVoucher.Cost = voucher.Cost ?? 0;
-                myVoucher.ValidDuration = voucher.ValidDuration ?? 0;
-                myVoucher.MemberType = voucher.MemberType ?? 0;
-                myVoucher.Quantity = voucher.Quantity ?? 0;
+                myVoucher.Title = voucher.Title;
+                myVoucher.Description = voucher.Description;
+                myVoucher.Cost = voucher.Cost;
+                myVoucher.ValidTill = voucher.ValidTill;
+                myVoucher.MemberType = voucher.MemberType;
+                myVoucher.Status = voucher.Status;
+                myVoucher.Quantity = voucher.Quantity;
                 myVoucher.UpdatedAt = DateTime.UtcNow;
+                myVoucher.Value = voucher.Value;
                 _context.SaveChanges();
 
                 VoucherDTO updatedVoucherDTO = _mapper.Map<VoucherDTO>(myVoucher);
@@ -167,31 +127,42 @@ namespace Bliss.Controllers
             }
         }
 
-        [HttpGet("update-status")]
-        public async Task<IActionResult> UpdateVoucherStatus()
+        [HttpPatch("decrement/{id}")]
+        [Authorize]
+        public IActionResult DecrementVoucherQuantity(int id)
         {
-            var vouchers = await _context.Vouchers.ToListAsync();
-
-            foreach (var voucher in vouchers)
+            var voucher = _context.Vouchers.Find(id);
+            if (voucher == null)
             {
-                // Expire vouchers after ValidDuration days
-                if (voucher.Status == VoucherStatus.Available &&
-                    (voucher.CreatedAt.AddDays(voucher.ValidDuration) < DateTime.UtcNow))
-                {
-                    voucher.Status = VoucherStatus.Expired;
-                }
-
-                // Redeem the voucher when quantity reaches zero
-                if (voucher.Quantity <= 0 && voucher.Status != VoucherStatus.Redeemed)
-                {
-                    voucher.Status = VoucherStatus.Redeemed;
-                }
-
-                _context.Vouchers.Update(voucher);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return Ok("Voucher statuses updated successfully.");
+            if (voucher.Quantity <= 0)
+            {
+                return BadRequest("Voucher quantity is already 0.");
+            }
+
+            voucher.Quantity -= 1;
+            voucher.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            return Ok(_mapper.Map<VoucherDTO>(voucher));
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "admin")]
+        public IActionResult UpdateVoucherStatus(int id, [FromBody] UpdateVoucherStatusRequest request)
+        {
+            var voucher = _context.Vouchers.Find(id);
+            if (voucher == null)
+            {
+                return NotFound();
+            }
+
+            voucher.Status = request.Status;
+            voucher.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+            return Ok(_mapper.Map<VoucherDTO>(voucher));
         }
 
         [HttpDelete("{id}"), Authorize]

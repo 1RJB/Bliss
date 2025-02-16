@@ -1,6 +1,7 @@
 ﻿using Bliss.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bliss
 {
@@ -109,18 +110,6 @@ namespace Bliss
                 }
             );
 
-            modelBuilder.Entity<Voucher>()
-                .Property(v => v.Status)
-                .HasConversion<string>();
-
-            modelBuilder.Entity<Voucher>()
-                .Property(v => v.MemberType)
-                .HasConversion<string>();
-
-            modelBuilder.Entity<Voucher>()
-                .Property(v => v.VoucherType)
-                .HasConversion<string>();
-
             // One-to-one relationship: User & RewardPoints
             modelBuilder.Entity<User>()
                 .HasOne(u => u.RewardPoints)
@@ -191,8 +180,6 @@ namespace Bliss
         public required DbSet<CartItem> CartItems { get; set; }
         public required DbSet<Wishlist> Wishlists { get; set; }
         public required DbSet<Voucher> Vouchers { get; set; }
-        public required DbSet<SupportTicket> SupportTickets { get; set; }
-        public required DbSet<Chat> Chats { get; set; }
         public required DbSet<Membership> Memberships { get; set; }
         public required DbSet<RewardPoints> RewardPoints { get; set; }
         public required DbSet<UserVoucher> UserVouchers { get; set; }

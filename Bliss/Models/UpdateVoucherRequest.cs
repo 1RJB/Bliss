@@ -4,32 +4,35 @@ namespace Bliss.Models
 {
     public class UpdateVoucherRequest
     {
-        [MinLength(3), MaxLength(100)]
-        public string? Title { get; set; }
+        [Required, MinLength(3), MaxLength(100)]
+        public string Title { get; set; } = string.Empty;
 
-        [MinLength(3), MaxLength(500)]
-        public string? Description { get; set; }
+        [Required, MinLength(3), MaxLength(500)]
+        public string Description { get; set; } = string.Empty;
 
         [MaxLength(20)]
         public string? ImageFile { get; set; }
 
-        public VoucherStatus? Status { get; set; } // Allow updating the status
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public int? Cost { get; set; } // Allow updating the cost
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public int? ValidDuration { get; set; } // Allow updating the valid duration
+        [Required]
+        public int Cost { get; set; }
 
-        public int? Quantity { get; set; } // Allow updating the quantity
+        [Required]
+        public DateTime ValidTill { get; set; }
 
-        public MemberType? MemberType { get; set; } // Allow updating the member type
+        [Required]
+        public VoucherStatus Status { get; set; } = VoucherStatus.Available;
 
-        public VoucherType? VoucherType { get; set; } // Allow updating the voucher type
+        [Required]
+        public MemberType MemberType { get; set; }
 
-        // Additional properties for specific voucher types
-        public string? ItemName { get; set; }
-        public int? ItemQuantity { get; set; }
-        public double? DiscountPercentage { get; set; }
-        public double? MaxAmount { get; set; }
-        public double? Value { get; set; }
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        public decimal Value { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace Bliss
         public MappingProfile()
         {
             CreateMap<Product, ProductDTO>();
+            CreateMap<Voucher, VoucherDTO>();
             CreateMap<User, UserDTO>();
             CreateMap<User, UserBasicDTO>();
             CreateMap<ActivityLog, ActivityLogDTO>();

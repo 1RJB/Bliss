@@ -8,47 +8,34 @@ namespace Bliss.Models
         [Key]
         public int Id { get; set; }
 
-        // Store key voucher details to prevent data loss
-        [Required]
+        [Required, MinLength(3), MaxLength(100)]
         public string Title { get; set; } = string.Empty;
 
-        [Required]
+        [Required, MinLength(3), MaxLength(500)]
         public string Description { get; set; } = string.Empty;
 
+        [MaxLength(20)]
+        public string? ImageFile { get; set; }
+
+        public string Code { get; set; }
+
+        public DateTime ClaimedAt { get; set; }
+
         [Required]
-        public VoucherType VoucherType { get; set; }
+        public DateTime ValidTill { get; set; }
 
-        // Store additional data from voucher subclasses
-        public string? ItemName { get; set; }
-        public int? ItemQuantity { get; set; }
-        public double? DiscountPercentage { get; set; }
-        public double? MaxAmount { get; set; }
-        public double? Value { get; set; }
+        [Required]
+        public bool IsUsed { get; set; } = false;
 
-        // Foreign key to the original Voucher (nullable if deleted)
-        public int? VoucherId { get; set; }
-        public Voucher? Voucher { get; set; }  // Navigation Property
+        [Required]
+        public decimal Value { get; set; }
 
-        // Foreign key to the User who claimed the voucher
-        public int UserId { get; set; }
+        // Foreign Key to the User who claimed the voucher
+        [Required]
+        public int UserId { get; set; } 
+
+        // Navigation property to the User
         [ForeignKey("UserId")]
-        public User User { get; set; } = null!;
-
-        // Unique Code
-        [Required]
-        [MaxLength(5)] // Increased in case codes get longer in the future
-        public string Code { get; set; } = string.Empty;
-
-        // Date when the voucher was claimed
-        [Required]
-        [Column(TypeName = "datetime")]
-        public DateTime ClaimedAt { get; set; } = DateTime.UtcNow;
-
-        // Determines if the voucher is still valid
-        [Required]
-        public bool isValid { get; set; } = true;
-
-        [Required]
-        public int Duration { get; set; }
+        public User User { get; set; }
     }
 }
