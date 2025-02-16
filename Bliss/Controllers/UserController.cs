@@ -173,17 +173,17 @@ namespace Bliss.Controllers
                     return BadRequest(new { message = $"Invalid credentials. {3 - foundUser.LoginAttempts} attempts remaining." });
                 }
 
-                // Check if 2FA is enabled and if so, require 2FA code
-                if (foundUser.TwoFactorEnabled)
-                {
-                    return Ok(new { requires2FA = true });
-                }
+                //// Check if 2FA is enabled and if so, require 2FA code
+                //if (foundUser.TwoFactorEnabled)
+                //{
+                //    return Ok(new { requires2FA = true });
+                //}
 
-                // Check if this is the first login or 2FA is not setup
-                if (string.IsNullOrEmpty(foundUser.TwoFactorSecret))
-                {
-                    return Ok(new { requires2FASetup = true });
-                }
+                //// Check if this is the first login or 2FA is not setup
+                //if (string.IsNullOrEmpty(foundUser.TwoFactorSecret))
+                //{
+                //    return Ok(new { requires2FASetup = true });
+                //}
 
                 // Reset login attempts on successful login
                 foundUser.LoginAttempts = 0;
@@ -729,7 +729,8 @@ namespace Bliss.Controllers
             }
         }
 
-        [HttpPost("setup-2fa"), Authorize]
+        [HttpPost("setup-2fa")]
+        [Authorize]
         public async Task<IActionResult> Setup2FA()
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
