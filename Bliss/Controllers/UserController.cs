@@ -173,6 +173,7 @@ namespace Bliss.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             var users = await _context.Users.ToListAsync();
@@ -181,6 +182,7 @@ namespace Bliss.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,staff,client")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -242,7 +244,7 @@ namespace Bliss.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "admin,staff,client")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -281,7 +283,7 @@ namespace Bliss.Controllers
         }
 
         [HttpPut("{id}/changePassword")]
-        [Authorize]
+        [Authorize(Roles = "admin,staff,client")]
         public async Task<IActionResult> ChangePassword(int id, ChangePasswordRequest request)
         {
             if (id != request.Id)
@@ -461,7 +463,7 @@ namespace Bliss.Controllers
         }
 
         [HttpGet("{id}/activityLogs")]
-        [Authorize]
+        [Authorize(Roles = "admin,staff,client")]
         public async Task<ActionResult<IEnumerable<ActivityLogDTO>>> GetUserActivityLogs(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -602,7 +604,8 @@ namespace Bliss.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role),
                 }),
                 Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

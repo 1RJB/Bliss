@@ -19,6 +19,8 @@ namespace Bliss.Models
         [MaxLength(100), JsonIgnore]
         public string Password { get; set; } = string.Empty;
 
+        public string Role { get; set; } = "client";
+
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
 
