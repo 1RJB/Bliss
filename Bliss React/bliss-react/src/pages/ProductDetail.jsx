@@ -302,8 +302,8 @@ function ProductDetail() {
                     </Button>
 
                     <Divider sx={{ marginY: '20px' }} />
-
-                    {/* Restored Information */}
+                    
+                    {/* Product Details */}
                     <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         Suited for
                     </Typography>
@@ -322,8 +322,9 @@ function ProductDetail() {
                         Key Ingredients
                     </Typography>
                     <Typography variant="body2" sx={{ color: '#666' }}>
-                        {product.ingredients || 'N/A'}
+                        {product.keyIngredients || 'N/A'}
                     </Typography>
+
                 </Box>
             </Box>
         </Box>

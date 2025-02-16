@@ -30,6 +30,9 @@ function EditProduct() {
             name: "",
             description: "",
             type: "",
+            suitedFor: "",
+            skinFeel: "",
+            keyIngredients: "",
         },
         enableReinitialize: true,
         validationSchema: yup.object({
@@ -115,6 +118,22 @@ function EditProduct() {
                                 <MenuItem value="Toner">Toner</MenuItem>
                                 <MenuItem value="Cleanser">Cleanser</MenuItem>
                             </TextField>
+
+                            <TextField fullWidth margin="dense" label="Suited For" name="suitedFor"
+                                value={formik.values.suitedFor} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.suitedFor && Boolean(formik.errors.suitedFor)}
+                                helperText={formik.touched.suitedFor && formik.errors.suitedFor} />
+
+                            <TextField fullWidth margin="dense" label="Skin Feel" name="skinFeel"
+                                value={formik.values.skinFeel} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.skinFeel && Boolean(formik.errors.skinFeel)}
+                                helperText={formik.touched.skinFeel && formik.errors.skinFeel} />
+
+                            <TextField fullWidth margin="dense" label="Key Ingredients" name="keyIngredients" multiline minRows={2}
+                                value={formik.values.keyIngredients} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                error={formik.touched.keyIngredients && Boolean(formik.errors.keyIngredients)}
+                                helperText={formik.touched.keyIngredients && formik.errors.keyIngredients} />
+
                             <Typography variant="body1" sx={{ mt: 2 }}>Product Sizes</Typography>
                             {sizes.map((sizeOption, index) => (
                                 <Grid container spacing={1} alignItems="center" key={index}>
