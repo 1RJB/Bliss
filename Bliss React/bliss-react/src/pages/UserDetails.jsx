@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function UserDetails() {
     const { id } = useParams();
+    const [userDetails, setUserDetails] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
