@@ -42,6 +42,9 @@ namespace Bliss.Controllers
                 t.ImageFile,
                 t.Price,
                 t.Type,
+                t.SuitedFor, // ✅ New Field
+                t.SkinFeel, // ✅ New Field
+                t.KeyIngredients, // ✅ New Field
                 t.UserId,
                 Sizes = t.Sizes.Select(s => new { s.Size, s.Price }), // ✅ Include Sizes
                 User = new { t.User?.Name }
@@ -70,6 +73,9 @@ namespace Bliss.Controllers
                 product.ImageFile,
                 product.Price,
                 product.Type,
+                product.SuitedFor, // ✅ New Field
+                product.SkinFeel, // ✅ New Field
+                product.KeyIngredients, // ✅ New Field
                 product.UserId,
                 Sizes = product.Sizes.Select(s => new { s.Size, s.Price }),
                 User = new { product.User?.Name }
@@ -92,6 +98,9 @@ namespace Bliss.Controllers
                 ImageFile = product.ImageFile,
                 Type = product.Type,
                 UserId = userId,
+                SuitedFor = product.SuitedFor, // ✅ Capture SuitedFor
+                SkinFeel = product.SkinFeel, // ✅ Capture SkinFeel
+                KeyIngredients = product.KeyIngredients, // ✅ Capture KeyIngredients
                 Sizes = product.Sizes // ✅ Capture Sizes
             };
 
@@ -120,6 +129,9 @@ namespace Bliss.Controllers
             myProduct.ImageFile = product.ImageFile;
             myProduct.Price = product.Price;
             myProduct.Type = product.Type;
+            myProduct.SuitedFor = product.SuitedFor; // ✅ Update SuitedFor
+            myProduct.SkinFeel = product.SkinFeel; // ✅ Update SkinFeel
+            myProduct.KeyIngredients = product.KeyIngredients; // ✅ Update KeyIngredients
 
             // ✅ Remove old sizes and add new sizes
             _context.ProductSizes.RemoveRange(myProduct.Sizes);
