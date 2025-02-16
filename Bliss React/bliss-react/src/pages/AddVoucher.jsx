@@ -10,165 +10,261 @@ import 'react-toastify/dist/ReactToastify.css';
 function AddVoucher() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
-    const [selectedVoucherType, setSelectedVoucherType] = useState(null); // Track selected voucher type
-
-    // 🛠 Validation schema with conditional fields
-    const validationSchema = yup.object({
-        title: yup.string().trim().min(3).max(100).required('Title is required'),
-        description: yup.string().trim().min(3).max(500).required('Description is required'),
-        cost: yup.number().min(0).required('Cost is required'),
-        validDuration: yup.number().min(1).required('Valid duration is required'),
-        memberType: yup.string().required('Member Type is required'),
-        quantity: yup.number().min(1).required('Quantity is required'),
-        voucherType: yup.string().required('Voucher Type is required'),
-
-        // Conditional validation based on voucher type
-        itemName: yup.string().when("voucherType", {
-            is: "0", then: (schema) => schema.required("Item Name is required"),
-            otherwise: (schema) => schema.notRequired(),
-        }),
-        itemQuantity: yup.number().when("voucherType", {
-            is: "0", then: (schema) => schema.min(1).required("Item Quantity is required"),
-            otherwise: (schema) => schema.notRequired(),
-        }),
-        discountPercentage: yup.number().when("voucherType", {
-            is: "1", then: (schema) => schema.min(1).max(100).required(),
-            otherwise: (schema) => schema.notRequired(),
-        }),
-        maxAmount: yup.number().when("voucherType", {
-            is: "1", then: (schema) => schema.min(0).required(),
-            otherwise: (schema) => schema.notRequired(),
-        }),
-        value: yup.number().when("voucherType", {
-            is: "2", then: (schema) => schema.min(1).required(),
-            otherwise: (schema) => schema.notRequired(),
-        }),
-    });
-
-    // 📝 Formik configuration
+  
     const formik = useFormik({
-        initialValues: {
-            title: "",
-            description: "",
-            cost: 0,
-            validDuration: 0,
-            memberType: "",
-            quantity: 0,
-            voucherType: "",
-            itemName: "",
-            itemQuantity: 0,
-            discountPercentage: 0,
-            maxAmount: 0,
-            value: 0
-        },
-        validationSchema: validationSchema,
-        onSubmit: (data) => {
-            console.log("Submitting Data:", data);
-
-            if (imageFile) data.imageFile = imageFile;
-
-            data.title = data.title.trim();
-            data.description = data.description.trim();
-            data.memberType = parseInt(data.memberType, 10);
-            data.voucherType = parseInt(data.voucherType, 10);
-
-            // ✅ Remove unnecessary fields before sending request
-            if (data.voucherType === 0) {
-                delete data.discountPercentage;
-                delete data.maxAmount;
-                delete data.value;
-            } else if (data.voucherType === 1) {
-                delete data.itemName;
-                delete data.itemQuantity;
-                delete data.value;
-            } else if (data.voucherType === 2) {
-                delete data.itemName;
-                delete data.itemQuantity;
-                delete data.discountPercentage;
-                delete data.maxAmount;
-            }
-
-            http.post("/voucher", data)
-                .then(() => {
-                    toast.success("Voucher added successfully!");
-                    navigate("/vouchers");
-                })
-                .catch((err) => {
-                    console.error("Error submitting form:", err);
-                    toast.error('An unexpected error occurred.');
-                });
+      initialValues: {
+        title: "",
+        description: "",
+        cost: 0,
+        validTill: "",
+        status: 0,
+        memberType: 0,
+        quantity: 0,
+        value: 0,
+      },
+      validationSchema: yup.object({
+        title: yup.string()
+          .trim()
+          .min(3, 'Title must be at least 3 characters')
+          .max(100, 'Title must be at most 100 characters')
+          .required('Title is required'),
+  
+        description: yup.string()
+          .trim()
+          .min(3, 'Description must be at least 3 characters')
+          .max(500, 'Description must be at most 500 characters')
+          .required('Description is required'),
+  
+        cost: yup.number()
+          .typeError('Cost must be a number')
+          .positive('Cost must be a positive number')
+          .required('Cost is required'),
+  
+        validTill: yup.date()
+          .typeError('Please enter a valid date')
+          .required('Valid Till date is required'),
+  
+        memberType: yup.number()
+          .typeError('Member type must be a number')
+          .required('Member type is required'),
+  
+        quantity: yup.number()
+          .typeError('Quantity must be a number')
+          .integer('Quantity must be an integer')
+          .min(0, 'Quantity cannot be negative')
+          .required('Quantity is required'),
+  
+        value: yup.number()
+          .typeError('Value must be a decimal number')
+          .min(0, 'Quantity cannot be negative')
+          .required('Value is required'),
+      }),
+      onSubmit: (data) => {
+        // Include the uploaded image if available
+        if (imageFile) {
+          data.imageFile = imageFile;
         }
+  
+        // Trim fields
+        data.title = data.title.trim();
+        data.description = data.description.trim();
+  
+        console.log("Sending Data to API:", data);
+  
+        const token = localStorage.getItem("accessToken");
+  
+        http.post("/voucher", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            console.log("voucher Added:", res.data);
+            navigate("/vouchers");
+          })
+          .catch((error) => {
+            console.error("Error adding voucher:", error);
+            toast.error("Error adding voucher");
+          });
+      }
     });
-
-    // 🖼 Handle file upload
+  
     const onFileChange = (e) => {
-        let file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 1024 * 1024) {
-            toast.error('Maximum file size is 1MB');
-            return;
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 1024 * 1024) { // 1MB limit
+          toast.error('Maximum file size is 1MB');
+          return;
         }
-
-        let formData = new FormData();
+  
+        const formData = new FormData();
         formData.append('file', file);
         http.post('/file/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+          headers: { 'Content-Type': 'multipart/form-data' }
         })
-        .then((res) => setImageFile(res.data.filename))
-        .catch(() => toast.error('File upload error.'));
+          .then((res) => {
+            setImageFile(res.data.filename);
+          })
+          .catch((error) => {
+            console.error(error.response);
+            toast.error('File upload failed');
+          });
+      }
     };
-
+  
     return (
-        <Box>
-            <Typography variant="h5">Add Voucher</Typography>
-            <form onSubmit={formik.handleSubmit}>
-                <Grid container spacing={2}>
-                    {/* Select Voucher Type */}
-                    <Grid item xs={12}>
-                        <FormControl fullWidth margin="dense">
-                            <InputLabel>Select Voucher Type</InputLabel>
-                            <Select
-                                name="voucherType"
-                                value={formik.values.voucherType}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setSelectedVoucherType(value);
-                                    formik.setFieldValue("voucherType", value);
-                                }}
-                            >
-                                <MenuItem value="0">Item Voucher</MenuItem>
-                                <MenuItem value="1">Discount Voucher</MenuItem>
-                                <MenuItem value="2">Gift Card Voucher</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
+      <Box sx={{ maxWidth: 600, margin: '0 auto', p: 2 }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>Add Voucher</Typography>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container spacing={2}>
+            {/* Title */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="title"
+                name="title"
+                label="Title"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.title && Boolean(formik.errors.title)}
+                helperText={formik.touched.title && formik.errors.title}
+              />
+            </Grid>
+  
+            {/* Description */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="description"
+                name="description"
+                label="Description"
+                multiline
+                rows={4}
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.description && Boolean(formik.errors.description)}
+                helperText={formik.touched.description && formik.errors.description}
+              />
+            </Grid>
+  
+            {/* Cost */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="cost"
+                name="cost"
+                label="Cost"
+                type="number"
+                value={formik.values.cost}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.cost && Boolean(formik.errors.cost)}
+                helperText={formik.touched.cost && formik.errors.cost}
+              />
+            </Grid>
+  
+            {/* Value */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="value"
+                name="value"
+                label="Value"
+                type="number"
+                value={formik.values.value}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.value && Boolean(formik.errors.value)}
+                helperText={formik.touched.value && formik.errors.value}
+              />
+            </Grid>
+  
+            {/* Valid Till */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="validTill"
+                name="validTill"
+                label="Valid Till"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.validTill}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.validTill && Boolean(formik.errors.validTill)}
+                helperText={formik.touched.validTill && formik.errors.validTill}
+              />
+            </Grid>
+  
+            {/* Quantity */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="quantity"
+                name="quantity"
+                label="Quantity"
+                type="number"
+                value={formik.values.quantity}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+                helperText={formik.touched.quantity && formik.errors.quantity}
+              />
+            </Grid>
 
-                    {/* Only show fields after selecting a voucher type */}
-                    {selectedVoucherType !== null && (
-                        <>
-                            <Grid item xs={12}>
-                                <TextField fullWidth margin="dense" label="Title" name="title" {...formik.getFieldProps("title")} error={formik.touched.title && Boolean(formik.errors.title)} helperText={formik.touched.title && formik.errors.title} />
-                                <TextField fullWidth margin="dense" label="Description" name="description" {...formik.getFieldProps("description")} error={formik.touched.description && Boolean(formik.errors.description)} helperText={formik.touched.description && formik.errors.description} />
-                                <TextField fullWidth margin="dense" label="Cost" name="cost" type="number" {...formik.getFieldProps("cost")} error={formik.touched.cost && Boolean(formik.errors.cost)} helperText={formik.touched.cost && formik.errors.cost} />
-                                <TextField fullWidth margin="dense" label="Valid Duration" name="validDuration" type="number" {...formik.getFieldProps("validDuration")} error={formik.touched.validDuration && Boolean(formik.errors.validDuration)} helperText={formik.touched.validDuration && formik.errors.validDuration} />
-                                <TextField fullWidth margin="dense" label="Quantity" name="quantity" type="number" {...formik.getFieldProps("quantity")} error={formik.touched.quantity && Boolean(formik.errors.quantity)} helperText={formik.touched.quantity && formik.errors.quantity} />
-                            </Grid>
-
-                            {/* Show additional fields based on selected type */}
-                            {selectedVoucherType === "0" && <><TextField fullWidth margin="dense" label="Item Name" name="itemName" {...formik.getFieldProps("itemName")} /><TextField fullWidth margin="dense" label="Item Quantity" name="itemQuantity" type="number" {...formik.getFieldProps("itemQuantity")} /></>}
-                            {selectedVoucherType === "1" && <><TextField fullWidth margin="dense" label="Discount Percentage" name="discountPercentage" type="number" {...formik.getFieldProps("discountPercentage")} /><TextField fullWidth margin="dense" label="Max Amount" name="maxAmount" type="number" {...formik.getFieldProps("maxAmount")} /></>}
-                            {selectedVoucherType === "2" && <TextField fullWidth margin="dense" label="Value" name="value" type="number" {...formik.getFieldProps("value")} />}
-                        </>
-                    )}
-                </Grid>
-
-                {selectedVoucherType !== null && <Button variant="contained" type="submit" sx={{ mt: 2 }}>Add</Button>}
-            </form>
-
-            <ToastContainer />
-        </Box>
+            {/* Member Type */}
+            <Grid item xs={12}>
+              <FormControl fullWidth error={formik.touched.memberType && Boolean(formik.errors.memberType)}>
+                <InputLabel id="memberType-label">Member Type</InputLabel>
+                <Select
+                  labelId="memberType-label"
+                  id="memberType"
+                  name="memberType"
+                  label="Member Type"
+                  value={formik.values.memberType}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <MenuItem value={0}>Basic</MenuItem>
+                  <MenuItem value={1}>Green</MenuItem>
+                  <MenuItem value={2}>Premium</MenuItem>
+                </Select>
+                {formik.touched.memberType && formik.errors.memberType && (
+                  <Typography variant="caption" color="error">
+                    {formik.errors.memberType}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+  
+            {/* File Upload */}
+           <Grid item xs={12}>
+                                   <Box sx={{ textAlign: 'center', mt: 2 }} >
+                                       <Button variant="contained" component="label">
+                                           Upload Image
+                                           <input hidden accept="image/*" type="file" onChange={onFileChange} />
+                                       </Button>
+                                       {imageFile && (
+                                           <Box sx={{ mt: 2 }}>
+                                               <img alt="voucher" src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} style={{ width: "100%", maxWidth: "300px" }} />
+                                           </Box>
+                                       )}
+                                   </Box>
+                               </Grid>
+  
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Button color="primary" variant="contained" fullWidth type="submit">
+                Add Voucher
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+        <ToastContainer />
+      </Box>
     );
-}
-
-export default AddVoucher;
+  }
+  
+  export default AddVoucher;

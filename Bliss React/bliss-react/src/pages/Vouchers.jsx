@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button, Chip, Divider } from '@mui/material';
-import { AccountCircle, AccessTime, Search, Clear, Edit, Delete, ShoppingCart, MonetizationOn, HourglassBottom } from '@mui/icons-material';
+import { Search, Clear, Edit, Delete, ShoppingCart, MonetizationOn, HourglassBottom } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
@@ -34,7 +34,7 @@ function Vouchers() {
 
     useEffect(() => {
         getVouchers();
-    }, [getVouchers]);  // ✅ Prevent infinite re-fetching
+    }, [getVouchers]);
 
     const onSearchKeyDown = (e) => {
         if (e.key === "Enter") searchVouchers();
@@ -47,7 +47,8 @@ function Vouchers() {
         getVouchers();
     };
 
-    // ✅ Correct API endpoint for redeeming a voucher
+    // Updated redeemVoucher: This calls the backend to create a UserVoucher using the voucher's info.
+    // It is assumed that the backend also decrements the Voucher's quantity by 1 on a successful claim.
     const redeemVoucher = (voucherId) => {
         http.post(`/uservoucher/redeem/${voucherId}`)
             .then(() => {
@@ -60,29 +61,19 @@ function Vouchers() {
             });
     };
 
-    const getVoucherColor = (voucherType) => {
-        switch (voucherType) {
-            case 0: return '#e3f2fd'; // Light Blue (Item Voucher)
-            case 1: return '#fce4ec'; // Light Pink (Discount Voucher)
-            case 2: return '#e8f5e9'; // Light Green (Gift Card Voucher)
-            default: return '#ffffff';
-        }
-    };
-
-    // ✅ Fixed status mapping (Expired = 2)
     const getStatusText = (status) => {
         switch (status) {
             case 0: return "Available";
             case 1: return "Redeemed";
-            case 2: return "Expired";  
+            case 2: return "Expired";
             default: return "Unknown";
         }
     };
 
-    const getTimeRemaining = (createdAt, validDuration) => {
-        const expiryDate = dayjs(createdAt).add(validDuration, 'day');
+    const getTimeRemaining = (validTill) => {
+        const expiryDate = dayjs(validTill);
         const today = dayjs();
-        return expiryDate.diff(today, 'day'); 
+        return expiryDate.diff(today, 'day');
     };
 
     const categorizeVouchers = () => {
@@ -94,6 +85,19 @@ function Vouchers() {
         });
         return categorized;
     };
+
+    // useEffect: Update voucher status to Expired if necessary.
+    useEffect(() => {
+        voucherList.forEach((voucher) => {
+            const daysRemaining = getTimeRemaining(voucher.validTill);
+            const isExpired = daysRemaining <= 0;
+            if (isExpired && voucher.status !== 2) {
+                http.patch(`/voucher/${voucher.id}`, { status: 2 })
+                    .then(() => getVouchers())
+                    .catch((err) => console.error("Error updating voucher to expired:", err));
+            }
+        });
+    }, [voucherList, getVouchers]);
 
     const categorizedVouchers = categorizeVouchers();
     const memberTypeTitles = { 0: "Basic Members", 1: "Green Members", 2: "Premium Members" };
@@ -127,12 +131,12 @@ function Vouchers() {
 
                         <Grid container spacing={3}>
                             {vouchers.map((voucher) => {
-                                const daysRemaining = getTimeRemaining(voucher.createdAt, voucher.validDuration);
+                                const daysRemaining = getTimeRemaining(voucher.validTill);
                                 const isExpired = daysRemaining <= 0;
 
                                 return (
                                     <Grid item xs={12} md={6} lg={4} key={voucher.id}>
-                                        <Card sx={{ backgroundColor: getVoucherColor(voucher.voucherType), borderRadius: '12px', overflow: 'hidden' }}>
+                                        <Card sx={{ borderRadius: '12px', overflow: 'hidden' }}>
                                             {voucher.imageFile && (
                                                 <Box className="aspect-ratio-container">
                                                     <img
@@ -145,7 +149,7 @@ function Vouchers() {
                                             <CardContent>
                                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{voucher.title}</Typography>
-                                                    {user?.role === 'Staff' && (
+                                                    {user?.role === 'admin' && (
                                                         <Box>
                                                             <Link to={`/editvoucher/${voucher.id}`}>
                                                                 <IconButton color="primary"><Edit /></IconButton>
@@ -156,8 +160,17 @@ function Vouchers() {
                                                         </Box>
                                                     )}
                                                 </Box>
-
-                                                <Chip label={getStatusText(voucher.status)} color={voucher.status === 0 ? "success" : "default"} sx={{ mb: 1 }} />
+                                                <Chip
+                                                    label={`$${voucher.value} off your next purchase`}
+                                                    color="primary"
+                                                    sx={{
+                                                        mb: 1,
+                                                        fontSize: '1.25rem',
+                                                        height: '48px',
+                                                        padding: '0 16px',
+                                                        borderRadius: '8px'
+                                                    }}
+                                                />
 
                                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                                                     <MonetizationOn sx={{ mr: 1 }} />
@@ -176,11 +189,11 @@ function Vouchers() {
 
                                                 <Button
                                                     variant="contained"
-                                                    color={(voucher.quantity === 0 || voucher.status === 1) ? "error" : "primary"}
-                                                    disabled={voucher.quantity === 0 || voucher.status === 1}
+                                                    color={voucher.status === 0 ? "success" : "default"}
+                                                    disabled={voucher.status !== 0}
                                                     onClick={() => redeemVoucher(voucher.id)}
                                                 >
-                                                    {voucher.quantity === 0 ? "Expired" : voucher.status === 1 ? "Redeemed" : "Redeem"}
+                                                    {voucher.status !== 0 ? "Not Available" : "Redeem"}
                                                 </Button>
                                             </CardContent>
                                         </Card>

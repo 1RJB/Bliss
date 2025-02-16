@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Bliss.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Bliss.Models;
-using System.Security.Claims;
 
 namespace Bliss.Controllers
 {
@@ -18,183 +21,94 @@ namespace Bliss.Controllers
         }
 
         [HttpPost("redeem/{voucherId}")]
-        public IActionResult RedeemVoucher(int voucherId)
+        [Authorize]
+        public async Task<IActionResult> RedeemVoucher(int voucherId)
         {
+            // Use the helper method to get the user id as an int.
             int userId = GetUserId();
 
-            var voucher = _context.Vouchers.Find(voucherId);
+            // Retrieve the voucher by its id
+            var voucher = await _context.Vouchers.FindAsync(voucherId);
             if (voucher == null)
             {
-                return NotFound(new { message = "Voucher not found." });
+                return NotFound("Voucher not found.");
             }
 
-            if (voucher.Quantity <= 0)
-            {
-                return BadRequest(new { message = "Voucher is out of stock." });
-            }
-
-            // Generate unique voucher code
+            // Generate a unique voucher code in the format LLDDD (2 letters and 3 digits)
             string code;
+            Random random = new Random();
+            bool codeExists;
             do
             {
-                code = GenerateVoucherCode();
-            }
-            while (_context.UserVouchers.Any(uv => uv.Code == code));
+                code = GenerateVoucherCode(random);
+                codeExists = await _context.UserVouchers.AnyAsync(uv => uv.Code == code);
+            } while (codeExists);
 
-            // Create UserVoucher record
+            // Create a new UserVoucher using values from the voucher
             var userVoucher = new UserVoucher
             {
-                UserId = userId,
-                VoucherId = voucher.Id,
                 Title = voucher.Title,
                 Description = voucher.Description,
-                VoucherType = voucher.VoucherType,
-                Code = code,
+                ImageFile = voucher.ImageFile,
+                Value = voucher.Value,
                 ClaimedAt = DateTime.UtcNow,
-                Duration = voucher.ValidDuration,
-                isValid = true
+                ValidTill = voucher.ValidTill,
+                Code = code,
+                IsUsed = false,
+                UserId = userId
             };
 
-            // Copy subclass-specific fields (if applicable)
-            if (voucher is ItemVoucher itemVoucher)
-            {
-                userVoucher.ItemName = itemVoucher.ItemName;
-                userVoucher.ItemQuantity = itemVoucher.ItemQuantity;
-            }
-            else if (voucher is DiscountVoucher discountVoucher)
-            {
-                userVoucher.DiscountPercentage = discountVoucher.DiscountPercentage;
-                userVoucher.MaxAmount = discountVoucher.MaxAmount;
-            }
-            else if (voucher is GiftCardVoucher giftCardVoucher)
-            {
-                userVoucher.Value = giftCardVoucher.Value;
-            }
-
             _context.UserVouchers.Add(userVoucher);
+            await _context.SaveChangesAsync();
 
-            // ✅ Update the Voucher's Quantity & Status
-            voucher.Quantity -= 1; // Reduce quantity by 1
-
-            if (voucher.Quantity == 0)
-            {
-                voucher.Status = VoucherStatus.Redeemed; // Mark as Redeemed if no stock left
-            }
-
-            // ✅ Save both UserVoucher and Voucher changes
-            _context.SaveChanges();
-
-            return Ok(new { message = "Voucher redeemed successfully!", userVoucher });
+            return Ok(userVoucher);
         }
 
-
-
-        [HttpGet]
-        public IActionResult GetUserVouchers()
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUserVoucher(int id)
         {
+            // Get the current user's id
             int userId = GetUserId();
-            var vouchers = _context.UserVouchers
-                .Where(uv => uv.UserId == userId)
-                .Select(uv => new UserVoucherDTO
-                {
-                    VoucherId = uv.VoucherId??0,  // Nullable in case the voucher was deleted
-                    Title = uv.Title,
-                    Description = uv.Description,
-                    VoucherType = uv.VoucherType,
-                    Code = uv.Code,
-                    UserId = uv.UserId,
-                    ClaimedAt = uv.ClaimedAt,
-                    isValid = uv.isValid,
-                    Duration = uv.Duration,
 
-                    // Subclass-Specific Fields
-                    ItemName = uv.ItemName,
-                    ItemQuantity = uv.ItemQuantity,
-                    DiscountPercentage = uv.DiscountPercentage,
-                    MaxAmount = uv.MaxAmount,
-                    Value = uv.Value
-                })
-                .ToList();
-
-            return Ok(vouchers);
-        }
-
-        // Search for a specific voucher
-        [HttpGet("search")]
-        public IActionResult SearchUserVouchers(string query)
-        {
-            int userId = GetUserId();
-            var vouchers = _context.UserVouchers
-                .Where(uv => uv.UserId == userId &&
-                            (uv.Title.Contains(query) || uv.Description.Contains(query) || uv.Code.Contains(query)))
-                .Select(uv => new UserVoucherDTO
-                {
-                    VoucherId = uv.VoucherId ?? 0,  // Nullable in case the voucher was deleted
-                    Title = uv.Title,
-                    Description = uv.Description,
-                    VoucherType = uv.VoucherType,
-                    Code = uv.Code,
-                    UserId = uv.UserId,
-                    ClaimedAt = uv.ClaimedAt,
-                    isValid = uv.isValid,
-                    Duration = uv.Duration,
-
-                    // Subclass-Specific Fields
-                    ItemName = uv.ItemName,
-                    ItemQuantity = uv.ItemQuantity,
-                    DiscountPercentage = uv.DiscountPercentage,
-                    MaxAmount = uv.MaxAmount,
-                    Value = uv.Value
-                })
-                .ToList();
-
-            return Ok(vouchers);
-        }
-
-        // Check and expire vouchers, delete if isValid is false
-        [HttpGet("update-expired")]
-        public async Task<IActionResult> ExpireVouchers()
-        {
-            var userVouchers = await _context.UserVouchers.ToListAsync();
-
-            foreach (var userVoucher in userVouchers)
+            // Retrieve the UserVoucher by its id
+            var userVoucher = await _context.UserVouchers.FindAsync(id);
+            if (userVoucher == null)
             {
-                if (userVoucher.isValid && userVoucher.ClaimedAt.AddDays(userVoucher.Duration) < DateTime.UtcNow)
-                {
-                    userVoucher.isValid = false; // Mark as invalid
-                }
+                return NotFound("User voucher not found.");
             }
 
-            // Remove all invalid vouchers
-            var expiredVouchers = userVouchers.Where(uv => !uv.isValid).ToList();
-            if (expiredVouchers.Any())
+            // Check if the voucher belongs to the current user or if the user is an admin
+            if (userVoucher.UserId != userId && !User.IsInRole("admin"))
             {
-                _context.UserVouchers.RemoveRange(expiredVouchers);
-                await _context.SaveChangesAsync();
+                return Forbid("You are not authorized to delete this voucher.");
             }
 
-            return Ok("Expired vouchers removed.");
+            _context.UserVouchers.Remove(userVoucher);
+            await _context.SaveChangesAsync();
+
+            return Ok("User voucher deleted successfully.");
         }
+
 
         private int GetUserId()
         {
             return Convert.ToInt32(User.Claims
-                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                .Where(c => c.Type == ClaimTypes.NameIdentifier)
+                .Select(c => c.Value)
+                .SingleOrDefault());
         }
 
-        private static string GenerateVoucherCode()
+        private string GenerateVoucherCode(Random random)
         {
-            var random = new Random();
             const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string digits = "0123456789";
-
-            string lettersPart = new string(Enumerable.Repeat(letters, 2)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-            string digitsPart = new string(Enumerable.Repeat(digits, 3)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-            return lettersPart + digitsPart;
+            // Generate two random letters
+            string letterPart = new string(Enumerable.Range(0, 2)
+                .Select(_ => letters[random.Next(letters.Length)])
+                .ToArray());
+            // Generate three random digits (ensuring 3-digit number with possible leading zeros)
+            string digitPart = random.Next(0, 1000).ToString("D3");
+            return letterPart + digitPart;
         }
     }
 }

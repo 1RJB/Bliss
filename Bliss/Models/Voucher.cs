@@ -4,26 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bliss.Models
 {
-    public enum VoucherStatus
-    {
-        Available,
-        Redeemed,
-        Expired
-    }
-
-    public enum MemberType
-    {
-        Basic,
-        Green,
-        Premium
-    }
-
-    public enum VoucherType
-    {
-        ItemVoucher,
-        DiscountVoucher,
-        GiftCardVoucher
-    }
 
     public class Voucher
     {
@@ -39,20 +19,18 @@ namespace Bliss.Models
         [MaxLength(20)]
         public string? ImageFile { get; set; }
 
-        [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         public int Cost { get; set; }
 
         [Required]
-        public int ValidDuration { get; set; } // Number of days voucher is valid
+        public DateTime ValidTill { get; set; }
 
         [Required]
-        public VoucherStatus Status { get; set; }
+        public VoucherStatus Status { get; set; } = VoucherStatus.Available;
 
         [Required]
         public MemberType MemberType { get; set; }
@@ -61,7 +39,6 @@ namespace Bliss.Models
         public int Quantity { get; set; }
 
         [Required]
-        public VoucherType VoucherType { get; set; }
-
+        public decimal Value { get; set; }
     }
 }
