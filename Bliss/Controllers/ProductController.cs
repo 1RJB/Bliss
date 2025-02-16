@@ -108,6 +108,51 @@ namespace Bliss.Controllers
             _context.SaveChanges();
             return Ok(myProduct);
         }
+        [HttpGet("recommended/{id}")]
+        public IActionResult GetRecommendedProducts(int id)
+        {
+            if (_context == null)
+            {
+                Console.WriteLine("❌ _context is NULL! Check dependency injection.");
+                return StatusCode(500, "Database context is not available.");
+            }
+
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                Console.WriteLine($"❌ Product with ID {id} not found.");
+                return NotFound();
+            }
+
+            // Convert nullable fields into lists
+            var suitedForKeywords = (product.SuitedFor ?? "").Split(',').Select(k => k.Trim()).ToList();
+            var skinFeelKeywords = (product.SkinFeel ?? "").Split(',').Select(k => k.Trim()).ToList();
+            var keyIngredients = (product.KeyIngredients ?? "").Split(',').Select(k => k.Trim()).ToList();
+
+            // Fetch all products first (Materialize the query)
+            var allProducts = _context.Products.ToList(); // ✅ Fetch first
+
+            // Perform in-memory filtering
+            var recommendedProducts = allProducts
+    .Where(p => p.Id != id && (
+        (p.SuitedFor != null && p.SuitedFor.Split(',').Any(k => suitedForKeywords.Contains(k.Trim()))) ||
+        (p.SkinFeel != null && p.SkinFeel.Split(',').Any(k => skinFeelKeywords.Contains(k.Trim()))) ||
+        (p.KeyIngredients != null && p.KeyIngredients.Split(',').Any(k => keyIngredients.Contains(k.Trim())))
+    ))
+    .Take(5) // Get top 5 recommended products
+    .Select(p => new
+    {
+        p.Id,
+        p.name,
+        p.Description,
+        p.ImageFile,
+        Price = p.Sizes.Any() ? p.Sizes.Min(s => s.Price) : p.Price // Use smallest size price if available
+    })
+    .ToList();
+
+            return Ok(recommendedProducts);
+        }
+
 
         // ✅ Update Product with Sizes
         [HttpPut("{id}"), Authorize]
