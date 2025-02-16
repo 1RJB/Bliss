@@ -10,7 +10,6 @@ Content-Type: application/json
   "ImageFile": "coffee.jpg",
   "Cost": 30,
   "ValidTill": "2025-12-31T23:59:59Z",
-  "MemberType": 0,
   "Quantity": 1,
   "Value": 12.50
 }
@@ -25,7 +24,6 @@ Content-Type: application/json
   "ImageFile": "updated_coffee.jpg",
   "Cost": 25,
   "ValidTill": "2026-01-31T23:59:59Z",
-  "MemberType": 0,
   "Status": 0,
   "Quantity": 5,
   "Value": 15.00

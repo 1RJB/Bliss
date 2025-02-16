@@ -77,7 +77,6 @@ namespace Bliss.Controllers
                 Cost = voucher.Cost,
                 ValidTill = voucher.ValidTill,
                 Status = VoucherStatus.Available,
-                MemberType = voucher.MemberType,
                 Quantity = voucher.Quantity,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -106,7 +105,6 @@ namespace Bliss.Controllers
             myVoucher.ImageFile = voucher.ImageFile;
             myVoucher.Cost = voucher.Cost;
             myVoucher.ValidTill = voucher.ValidTill;
-            myVoucher.MemberType = voucher.MemberType;
             myVoucher.Status = voucher.Status;
             myVoucher.Quantity = voucher.Quantity;
             myVoucher.Value = voucher.Value;

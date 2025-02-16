@@ -58,7 +58,6 @@ namespace Bliss.Controllers
                     Password = passwordHash,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    MembershipId = 1,
                     RewardPoints = 1000,
                     LastPasswordChangeDate = now,
                     PreviousPasswords = new List<string> { passwordHash }
@@ -99,7 +98,6 @@ namespace Bliss.Controllers
                     Email = payload.Email,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    MembershipId = 1,
                     RewardPoints = 1000,
                 };
                 _context.Users.Add(user);

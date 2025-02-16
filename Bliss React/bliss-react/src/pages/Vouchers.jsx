@@ -59,27 +59,23 @@ function Vouchers() {
       });
   };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0: return "Available";
-      case 1: return "Redeemed";
-      case 2: return "Expired";
-      default: return "Unknown";
-    }
-  };
-
+  // Calculate days remaining for the voucher
   const getTimeRemaining = (validTill) => {
     const expiryDate = dayjs(validTill);
     const today = dayjs();
     return expiryDate.diff(today, 'day');
   };
 
-  const categorizeVouchers = () => {
+  // Categorize vouchers by their status (0: Available, 1: Redeemed, 2: Expired)
+  const categorizeVouchersByStatus = () => {
     const categorized = { 0: [], 1: [], 2: [] };
     voucherList.forEach((voucher) => {
-      if (categorized.hasOwnProperty(voucher.memberType)) {
-        categorized[voucher.memberType].push(voucher);
-      }
+      // If the status is 0, 1, or 2, push it to the correct array
+      if (categorized.hasOwnProperty(voucher.status)) {
+        categorized[voucher.status].push(voucher);
+      } 
+      // If there's another status you haven't accounted for, 
+      // you could handle it here or create a separate bucket.
     });
     return categorized;
   };
@@ -97,18 +93,22 @@ function Vouchers() {
     });
   }, [voucherList, getVouchers]);
 
-  const categorizedVouchers = categorizeVouchers();
-  const memberTypeTitles = { 0: "Basic Members", 1: "Green Members", 2: "Premium Members" };
+  // Titles for status categories
+  const statusTitles = { 
+    0: "Available Vouchers", 
+    1: "Redeemed Vouchers", 
+    2: "Expired Vouchers" 
+  };
+
+  const categorizedVouchers = categorizeVouchersByStatus();
 
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h5" sx={{ my: 2 }}>Vouchers</Typography>
 
-      {/* Display user's reward points if available */}
-
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          Reward Points: {user?.RewardPoints ?? 0}
-        </Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        Reward Points: {user?.RewardPoints ?? 0}
+      </Typography>
 
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Input
@@ -126,11 +126,12 @@ function Vouchers() {
         </IconButton>
       </Box>
 
-      {Object.entries(categorizedVouchers).map(([memberType, vouchers]) => (
+      {/* Render vouchers by status category */}
+      {Object.entries(categorizedVouchers).map(([status, vouchers]) => (
         vouchers.length > 0 && (
-          <Box key={memberType} sx={{ mb: 4 }}>
+          <Box key={status} sx={{ mb: 4 }}>
             <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-              {memberTypeTitles[memberType]}
+              {statusTitles[status]}
             </Typography>
             <Divider sx={{ mb: 2 }} />
 

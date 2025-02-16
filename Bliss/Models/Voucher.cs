@@ -4,7 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bliss.Models
 {
-
+    public enum VoucherStatus
+    {
+        Available,
+        Redeemed,
+        Expired
+    }
     public class Voucher
     {
         [Key]
@@ -31,9 +36,6 @@ namespace Bliss.Models
 
         [Required]
         public VoucherStatus Status { get; set; } = VoucherStatus.Available;
-
-        [Required]
-        public MemberType MemberType { get; set; }
 
         [Required]
         public int Quantity { get; set; }
