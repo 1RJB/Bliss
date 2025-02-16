@@ -14,7 +14,7 @@ function Register() {
 
     const sendOtp = async (email) => {
         try {
-            const response = await axios.post(`https://localhost:7004/user/send-otp?email=${email}`);
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/user/send-otp?email=${email}`);
             console.log(response);
             setOtpSent(true); // Set otpSent to true after successfully sending OTP
             toast.success('OTP sent successfully.');
@@ -26,7 +26,7 @@ function Register() {
 
     const verifyOtp = async (email, otp) => {
         try {
-            const response = await axios.post(`https://localhost:7004/user/verify-otp?email=${email}&otp=${otp}`);
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/user/verify-otp?email=${email}&otp=${otp}`);
             toast.success('OTP verified successfully.');
             setOtpVerified(true);
             setOtpDisabled(false); // Set otpDisabled to false after successfully verifying OTP
@@ -75,11 +75,11 @@ function Register() {
             data.name = data.name.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post("https://localhost:7004/user/register", data)
+            http.post(`${import.meta.env.VITE_API_BASE_URL}/user/register`, data)
                 .then((res) => {
                     toast.success('Registration successful!')
                     console.log(res.data);
-                    navigate("/login");
+                    timeout(() => navigate("/login"), 3000);
                 })
                 .catch(function (err) {
                     toast.error(`${err.response.data.message}`);
