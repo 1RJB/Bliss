@@ -10,7 +10,7 @@ function Payment() {
 
   useEffect(() => {
     if (!userId) return;
-    fetch(`https://localhost:7004/api/cart?userId=${userId}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/cart?userId=${userId}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch cart data");

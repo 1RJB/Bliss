@@ -18,7 +18,7 @@ function Cart() {
 
     useEffect(() => {
         if (!userId) return;
-        fetch(`https://localhost:7004/api/cart?userId=${userId}`)
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/cart?userId=${userId}`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Failed to fetch cart data");
@@ -47,7 +47,7 @@ function Cart() {
 
     const handleUpdateQuantity = async (itemId, newQuantity) => {
         try {
-            const response = await fetch("https://localhost:7004/api/Cart/item/update", {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/Cart/item/update`, {
                 method: "PUT", // Or PATCH if that's your choice
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ cartItemId: itemId, quantity: newQuantity }),
@@ -89,7 +89,7 @@ function Cart() {
 
     const handleRemove = async (itemId) => {
         try {
-            const response = await fetch(`https://localhost:7004/api/Cart/item/${itemId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/Cart/item/${itemId}`, {
                 method: "DELETE",
             });
 
@@ -107,7 +107,7 @@ function Cart() {
 
     const handleCheckout = async () => {
         try {
-          const response = await fetch("https://localhost:7004/api/transaction/init", {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/transaction/init`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
