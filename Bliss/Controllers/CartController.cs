@@ -120,9 +120,23 @@ namespace Bliss.Controllers
                     .ThenInclude(ci => ci.ProductSize)
                  .FirstOrDefaultAsync(c => c.UserId == userId);
 
+            // Add debug logging
+            if (cart != null)
+            {
+                foreach (var item in cart.CartItems)
+                {
+                    _logger.LogInformation(
+                        "CartItem {ItemId}: ProductSize {ProductSizeId} - Size: {Size}, Price: {Price}",
+                        item.Id,
+                        item.ProductSizeId,
+                        item.ProductSize?.Size ?? "null",
+                        item.ProductSize?.Price.ToString() ?? "null"
+                    );
+                }
+            }
 
-            // If no cart exists, create a new, empty cart.
-            if (cart == null)
+                // If no cart exists, create a new, empty cart.
+                if (cart == null)
             {
                 cart = new Cart
                 {

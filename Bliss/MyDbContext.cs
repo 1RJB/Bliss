@@ -169,6 +169,13 @@ namespace Bliss
                 .HasMany(w => w.Products)
                 .WithMany(p => p.Wishlists)
                 .UsingEntity(j => j.ToTable("WishlistProducts"));
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.ProductSize)
+                .WithMany() // or .WithMany(ps => ps.CartItems) if defined in ProductSize
+                .HasForeignKey(ci => ci.ProductSizeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
         // Existing DbSets
