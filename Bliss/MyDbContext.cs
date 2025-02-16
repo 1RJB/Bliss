@@ -180,5 +180,8 @@ namespace Bliss
         public DbSet<TransactionItem> TransactionItems { get; set; }
 
         public DbSet<CartItem> CartItem { get; set; }
+
+        public DbSet<ProductSize> ProductSizes { get; set; }
+
     }
 }

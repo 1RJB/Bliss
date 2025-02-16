@@ -14,34 +14,24 @@ namespace Bliss.Controllers
         private readonly MyDbContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        // GET /Product?search={search}&type={type}&priceMin={priceMin}&priceMax={priceMax}
+        // ✅ Include Sizes in Query
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search, string? type, int? priceMin, int? priceMax)
         {
-            IQueryable<Product> result = _context.Products.Include(t => t.User);
-            
-            // Apply Search Filter
+            IQueryable<Product> result = _context.Products
+                .Include(t => t.User)
+                .Include(t => t.Sizes); // ✅ Include Sizes
+
+            // Apply Filters
             if (!string.IsNullOrEmpty(search))
-            {
                 result = result.Where(t => t.name.Contains(search) || t.Description.Contains(search));
-            }
-
-            // Apply Type Filter
             if (!string.IsNullOrEmpty(type))
-            {
                 result = result.Where(t => t.Type == type);
-            }
-
-            // Apply Price Range Filter
             if (priceMin.HasValue)
-            {
                 result = result.Where(t => t.Price >= priceMin.Value);
-            }
             if (priceMax.HasValue)
-            {
                 result = result.Where(t => t.Price <= priceMax.Value);
-            }
 
             var list = result.OrderByDescending(x => x.Price).ToList();
             var data = list.Select(t => new
@@ -53,50 +43,25 @@ namespace Bliss.Controllers
                 t.Price,
                 t.Type,
                 t.UserId,
-                User = new
-                {
-                    t.User?.Name
-                }
-                // Optionally, if you need to expose associated homepages:
-                // Homepages = t.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
+                Sizes = t.Sizes.Select(s => new { s.Size, s.Price }), // ✅ Include Sizes
+                User = new { t.User?.Name }
             });
 
-            Console.WriteLine($"Filtered Products: {list.Count} items found");
             return Ok(data);
         }
 
-        // POST /Product
-        [HttpPost, Authorize]
-        public IActionResult AddProduct([FromBody] Product product)
-        {
-            int userId = GetUserId();
-            var myProduct = new Product()
-            {
-                name = product.name.Trim(),
-                Description = product.Description.Trim(),
-                Price = product.Price,
-                ImageFile = product.ImageFile,
-                Type = product.Type,
-                UserId = userId,
-            };
-            _context.Products.Add(myProduct);
-            _context.SaveChanges();
-
-            return Ok(myProduct);
-        }
-
-        // GET /Product/{id}
+        // ✅ Include Sizes in Single Product Query
         [HttpGet("{id}")]
         public IActionResult GetProduct(int id)
         {
             Product? product = _context.Products
                 .Include(t => t.User)
-                .Include(t => t.Homepages)  // Optionally include related homepages
+                .Include(t => t.Sizes)  // ✅ Include Sizes
                 .SingleOrDefault(t => t.Id == id);
+
             if (product == null)
-            {
                 return NotFound();
-            }
+
             var data = new
             {
                 product.Id,
@@ -106,31 +71,49 @@ namespace Bliss.Controllers
                 product.Price,
                 product.Type,
                 product.UserId,
-                User = new
-                {
-                    product.User?.Name
-                },
-                // Optionally expose homepages:
-                // Homepages = product.Homepages.Select(h => new { h.HomepageId, h.WelcomeMessage })
+                Sizes = product.Sizes.Select(s => new { s.Size, s.Price }),
+                User = new { product.User?.Name }
             };
 
             return Ok(data);
         }
 
-        // PUT /Product/{id}
+        // ✅ Add Sizes When Adding a Product
+        [HttpPost, Authorize]
+        public IActionResult AddProduct([FromBody] Product product)
+        {
+            int userId = GetUserId();
+
+            var myProduct = new Product()
+            {
+                name = product.name.Trim(),
+                Description = product.Description.Trim(),
+                Price = product.Price,
+                ImageFile = product.ImageFile,
+                Type = product.Type,
+                UserId = userId,
+                Sizes = product.Sizes // ✅ Capture Sizes
+            };
+
+            _context.Products.Add(myProduct);
+            _context.SaveChanges();
+            return Ok(myProduct);
+        }
+
+        // ✅ Update Product with Sizes
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateProduct(int id, [FromBody] Product product)
         {
-            var myProduct = _context.Products.Find(id);
+            var myProduct = _context.Products
+                .Include(p => p.Sizes)  // ✅ Include Sizes
+                .FirstOrDefault(p => p.Id == id);
+
             if (myProduct == null)
-            {
                 return NotFound();
-            }
+
             int userId = GetUserId();
             if (myProduct.UserId != userId)
-            {
                 return Forbid();
-            }
 
             myProduct.name = product.name.Trim();
             myProduct.Description = product.Description.Trim();
@@ -138,20 +121,26 @@ namespace Bliss.Controllers
             myProduct.Price = product.Price;
             myProduct.Type = product.Type;
 
+            // ✅ Remove old sizes and add new sizes
+            _context.ProductSizes.RemoveRange(myProduct.Sizes);
+            myProduct.Sizes = product.Sizes;
+
             _context.SaveChanges();
             return Ok(myProduct);
         }
 
-        // DELETE /Product/{id}
+        // ✅ Ensure Sizes are Deleted When Product is Deleted
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(int id)
         {
-            var myProduct = _context.Products.Find(id);
-            if (myProduct == null)
-            {
-                return NotFound();
-            }
+            var myProduct = _context.Products
+                .Include(p => p.Sizes) // ✅ Include Sizes
+                .FirstOrDefault(p => p.Id == id);
 
+            if (myProduct == null)
+                return NotFound();
+
+            _context.ProductSizes.RemoveRange(myProduct.Sizes); // ✅ Remove Sizes First
             _context.Products.Remove(myProduct);
             _context.SaveChanges();
             return Ok();

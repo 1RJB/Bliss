@@ -22,10 +22,23 @@ function ProductDetail() {
     const [selectedWishlist, setSelectedWishlist] = useState("");
     const [newWishlistName, setNewWishlistName] = useState("");
     const [creatingWishlist, setCreatingWishlist] = useState(false);
+    // ✅ New states for size selection
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedPrice, setSelectedPrice] = useState(null);
 
     useEffect(() => {
         http.get(`/product/${id}`)
-            .then((res) => setProduct(res.data))
+            .then((res) => {
+                setProduct(res.data);
+
+                // ✅ Set default size (first available)
+                if (res.data.sizes && res.data.sizes.length > 0) {
+                    setSelectedSize(res.data.sizes[0].size);
+                    setSelectedPrice(res.data.sizes[0].price);
+                } else {
+                    setSelectedPrice(res.data.price); // Default to single price if no sizes exist
+                }
+            })
             .catch((err) => console.error("Error fetching product:", err));
 
         if (user) {
@@ -121,8 +134,28 @@ function ProductDetail() {
                         {product.description}
                     </Typography>
 
+                    {/* ✅ Size Selection */}
+                    {product.sizes && product.sizes.length > 1 && (
+                        <Box sx={{ display: 'flex', justifyContent: 'start', mt: 1 }}>
+                            {product.sizes.map((sizeOption) => (
+                                <Button
+                                    key={sizeOption.size}
+                                    variant={selectedSize === sizeOption.size ? "contained" : "outlined"}
+                                    onClick={() => {
+                                        setSelectedSize(sizeOption.size);
+                                        setSelectedPrice(sizeOption.price);
+                                    }}
+                                    sx={{ marginX: 1, textTransform: "none" }}
+                                >
+                                    {sizeOption.size}
+                                </Button>
+                            ))}
+                        </Box>
+                    )}
+
+                    {/* ✅ Dynamic Price Display */}
                     <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                        ${product.price}
+                        ${selectedPrice}
                     </Typography>
 
                     <Typography
@@ -136,7 +169,6 @@ function ProductDetail() {
                     >
                         Find in stores →
                     </Typography>
-
                     {/* Wishlist UI */}
                     {user && (
                         <>
