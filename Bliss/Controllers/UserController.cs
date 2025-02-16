@@ -381,7 +381,7 @@ namespace Bliss.Controllers
         }
 
         // Admin can create staff or client users
-        [HttpPost]
+        [HttpPost("add-user")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
