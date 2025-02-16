@@ -1,154 +1,159 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Bliss.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Bliss.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly ILogger<TransactionController> _logger;
 
-        public TransactionController(MyDbContext context)
+        public TransactionController(MyDbContext context, ILogger<TransactionController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        // GET /Transaction?productId={productId}
-        // If productId is provided, we return only transactions containing that product via TransactionItems.
-        [HttpGet]
-        public IActionResult GetAll([FromQuery] int? productId)
+        // POST: api/transaction/init
+        // Re-initializes the transaction from the current cart.
+        // This removes any existing open transaction for the user and creates a new one.
+        // Expects payload: { "userId": 1 }
+        [HttpPost("init")]
+        public async Task<IActionResult> InitTransaction([FromBody] JsonElement data)
         {
-            IQueryable<Transaction> query = _context.Transactions.Include(t => t.TransactionItems);
-            if (productId.HasValue)
-            {
-                query = query.Where(t => t.TransactionItems.Any(item => item.ProductId == productId.Value));
-            }
-            var transactions = query.OrderByDescending(t => t.transactionDate).ToList();
-            return Ok(transactions);
-        }
+            int userId = data.GetProperty("userId").GetInt32();
+            _logger.LogInformation("InitTransaction invoked for UserId: {UserId}", userId);
 
-        // GET /Transaction/{id}
-        [HttpGet("{id}")]
-        public IActionResult GetTransaction(int id)
-        {
-            var transaction = _context.Transactions
-                .Include(t => t.TransactionItems)
-                .ThenInclude(ti => ti.Product)
-                .FirstOrDefault(t => t.transactionID == id);
-            if (transaction == null)
+            // Remove any existing open transaction for the user.
+            var existingTransaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
+            if (existingTransaction != null)
             {
-                return NotFound($"Transaction with ID {id} not found.");
-            }
-            return Ok(transaction);
-        }
-
-        // POST /Transaction
-        // Expects a Transaction with a non-empty list of TransactionItems.
-        [HttpPost]
-        public IActionResult CreateTransaction([FromBody] Transaction transaction)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+                _context.Transactions.Remove(existingTransaction);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Removed existing open transaction for UserId: {UserId}", userId);
             }
 
-            // Validate that there is at least one transaction item
-            if (transaction.TransactionItems == null || !transaction.TransactionItems.Any())
+            // Retrieve the user's cart along with its items and product info.
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
             {
-                return BadRequest("A transaction must include at least one product.");
+                return NotFound("Cart is empty");
             }
 
-            // Validate each transaction item
-            foreach (var item in transaction.TransactionItems)
+            // Create a new transaction from the cart.
+            var transaction = new Transaction
             {
-                var product = _context.Products.Find(item.ProductId);
-                if (product == null)
+                UserId = userId,
+                TransactionDate = DateTime.UtcNow,
+                ShippingAddress = "",
+                PreferredDeliveryDateTime = DateTime.UtcNow, // placeholder; to be updated later
+                PaymentCardNumber = "",
+                PaymentExpirationDate = "",
+                PaymentCVV = "",
+                IsFinalized = false
+            };
+
+            foreach (var cartItem in cart.CartItems)
+            {
+                transaction.TransactionItems.Add(new TransactionItem
                 {
-                    return NotFound($"Product with ID {item.ProductId} not found.");
-                }
-                // Calculate final amount if not provided or invalid
-                if (item.FinalAmount <= 0)
-                {
-                    decimal discount = item.DiscountApplied ?? 0;
-                    item.FinalAmount = (item.Price * item.Quantity) - discount;
-                }
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity,
+                    PriceAtPurchase = cartItem.Product.Price
+                });
             }
 
-            transaction.createdAt = DateTime.Now;
-            transaction.updatedAt = DateTime.Now;
-
+            // Remove the cart (since it's now absorbed into the transaction)
             _context.Transactions.Add(transaction);
-            _context.SaveChanges();
+            //_context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
 
+            _logger.LogInformation("Transaction initialized successfully for UserId: {UserId}, TransactionId: {TransactionId}", userId, transaction.Id);
             return Ok(transaction);
         }
 
-        // PUT /Transaction/{id}
-        // Updates the transaction and replaces its transaction items with the provided list.
-        [HttpPut("{id}")]
-        public IActionResult UpdateTransaction(int id, [FromBody] Transaction updatedTransaction)
+        // PUT: api/transaction/update
+        // Updates the open transaction with shipping and payment info.
+        // Expects payload:
+        // {
+        //    "userId": 1,
+        //    "shippingAddress": "123 Main St",
+        //    "preferredDeliveryDateTime": "2025-03-01T14:30:00Z",
+        //    "paymentCardNumber": "4111111111111111",
+        //    "paymentExpirationDate": "12/25",
+        //    "paymentCVV": "123"
+        // }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateTransaction([FromBody] JsonElement data)
         {
-            var transaction = _context.Transactions
-                .Include(t => t.TransactionItems)
-                .FirstOrDefault(t => t.transactionID == id);
+            int userId = data.GetProperty("userId").GetInt32();
+            string shippingAddress = data.GetProperty("shippingAddress").GetString();
+            string deliveryStr = data.GetProperty("preferredDeliveryDateTime").GetString();
+            DateTime preferredDeliveryDateTime = DateTime.Parse(deliveryStr);
+            string cardNumber = data.GetProperty("paymentCardNumber").GetString();
+            string expirationDate = data.GetProperty("paymentExpirationDate").GetString();
+            string cvv = data.GetProperty("paymentCVV").GetString();
+
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
             if (transaction == null)
             {
-                return NotFound($"Transaction with ID {id} not found.");
+                return NotFound("No current open transaction found to update");
             }
 
-            // Update transaction-level properties
-            transaction.userID = updatedTransaction.userID;
-            transaction.transactionDate = updatedTransaction.transactionDate;
-            transaction.updatedAt = DateTime.Now;
+            transaction.ShippingAddress = shippingAddress;
+            transaction.PreferredDeliveryDateTime = preferredDeliveryDateTime;
+            transaction.PaymentCardNumber = cardNumber;
+            transaction.PaymentExpirationDate = expirationDate;
+            transaction.PaymentCVV = cvv;
 
-            // Remove existing transaction items
-            _context.TransactionItems.RemoveRange(transaction.TransactionItems);
-
-            // Validate and add new transaction items
-            if (updatedTransaction.TransactionItems == null || !updatedTransaction.TransactionItems.Any())
-            {
-                return BadRequest("A transaction must include at least one product.");
-            }
-
-            foreach (var item in updatedTransaction.TransactionItems)
-            {
-                var product = _context.Products.Find(item.ProductId);
-                if (product == null)
-                {
-                    return NotFound($"Product with ID {item.ProductId} not found.");
-                }
-                if (item.FinalAmount <= 0)
-                {
-                    decimal discount = item.DiscountApplied ?? 0;
-                    item.FinalAmount = (item.Price * item.Quantity) - discount;
-                }
-                transaction.TransactionItems.Add(item);
-            }
-
-            _context.Transactions.Update(transaction);
-            _context.SaveChanges();
-
+            await _context.SaveChangesAsync();
             return Ok(transaction);
         }
 
-        // DELETE /Transaction/{id}
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTransaction(int id)
+        // POST: api/transaction/finalize
+        // Finalizes (closes) the current open transaction.
+        // Expects payload: { "userId": 1 }
+        [HttpPost("finalize")]
+        public async Task<IActionResult> FinalizeTransaction([FromBody] JsonElement data)
         {
-            var transaction = _context.Transactions
-                .Include(t => t.TransactionItems)
-                .FirstOrDefault(t => t.transactionID == id);
+
+            int userId = data.GetProperty("userId").GetInt32();
+
+            // Retrieve the current open transaction.
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.UserId == userId && !t.IsFinalized);
             if (transaction == null)
             {
-                return NotFound($"Transaction with ID {id} not found.");
+                return NotFound("No current open transaction found to finalize");
             }
 
-            _context.Transactions.Remove(transaction);
-            _context.SaveChanges();
+            // Retrieve the user's cart (if it exists) and remove it.
+            var cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (cart != null)
+            {
+                _context.Carts.Remove(cart);
+            }
 
-            return Ok($"Transaction with ID {id} deleted successfully.");
+            // Mark the transaction as finalized.
+            transaction.IsFinalized = true;
+            await _context.SaveChangesAsync();
+
+          
+            return Ok(transaction);
         }
     }
 }

@@ -1,23 +1,30 @@
-﻿namespace Bliss.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Bliss.Models
 {
     public class Transaction
     {
-        // Primary Key
-        public int transactionID { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
+        public string ShippingAddress { get; set; } = string.Empty;
 
-        // Foreign Key - User ID (the user who made the transaction)
-        public int userID { get; set; }
+        // Field for capturing the preferred delivery date and time.
+        public DateTime PreferredDeliveryDateTime { get; set; }
 
-        // Date when the transaction occurred
-        public DateTime transactionDate { get; set; }
+        // Payment Information Fields (to be encrypted later using ASP.NET Core Data Protection)
+        public string PaymentCardNumber { get; set; } = string.Empty;      // e.g., "4111111111111111"
+        public string PaymentExpirationDate { get; set; } = string.Empty;    // e.g., "12/25"
+        public string PaymentCVV { get; set; } = string.Empty;               // e.g., "123"
 
-        // Timestamp for when the transaction was created
-        public DateTime createdAt { get; set; } = DateTime.Now;
+        // Indicates if the transaction has been finalized (closed)
+        public bool IsFinalized { get; set; } = false;
 
-        // Timestamp for when the transaction was last updated
-        public DateTime updatedAt { get; set; } = DateTime.Now;
-
-        // Navigation property: a transaction can contain one or more products through TransactionItems
         public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
+
+        // Computed property for total amount
+        public decimal TotalAmount => TransactionItems.Sum(item => item.PriceAtPurchase * item.Quantity);
     }
 }
