@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
@@ -11,6 +12,7 @@ function Register() {
     const [otpSent, setOtpSent] = useState(false);
     const [otpVerified, setOtpVerified] = useState(false);
     const [otpDisabled, setOtpDisabled] = useState(false);
+    const navigate = useNavigate();
 
     const sendOtp = async (email) => {
         try {
@@ -182,7 +184,7 @@ function Register() {
                                 fullWidth
                                 variant="contained"
                                 onClick={() => verifyOtp(formik.values.email, formik.values.otp)}
-                                sx={{ mt: 2 }}
+                                sx={{ mt: 0.5 }}
                             >
                                 Verify OTP
                             </Button>
