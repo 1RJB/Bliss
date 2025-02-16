@@ -138,7 +138,66 @@ namespace Bliss
                 .WithMany(p => p.Wishlists)
                 .UsingEntity(j => j.ToTable("WishlistProducts"));
 
-            
+            // ------------------------------
+            // Many-to-many with extra fields: Transaction <--> Product via TransactionItem
+            // ------------------------------
+            modelBuilder.Entity<TransactionItem>()
+                .HasKey(ti => ti.TransactionItemId);
+
+            modelBuilder.Entity<TransactionItem>()
+                .HasOne(ti => ti.Transaction)
+                .WithMany(t => t.TransactionItems)
+                .HasForeignKey(ti => ti.TransactionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TransactionItem>()
+                .HasOne(ti => ti.Product)
+                .WithMany(p => p.TransactionItems)
+                .HasForeignKey(ti => ti.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed roles
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Name = "Admin User",
+                    Email = "admin@example.com",
+                    Password = BCrypt.Net.BCrypt.HashPassword("Admin123!"), // Set a secure default password
+                    Role = "admin",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    MembershipId = 1,
+                    LastPasswordChangeDate = DateTime.UtcNow,
+                    PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Admin123!") }
+                },
+                new User
+                {
+                    Id = 2,
+                    Name = "Staff User",
+                    Email = "staff@example.com",
+                    Password = BCrypt.Net.BCrypt.HashPassword("Staff123!"),
+                    Role = "staff",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    MembershipId = 1,
+                    LastPasswordChangeDate = DateTime.UtcNow,
+                    PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Staff123!") }
+                },
+                new User
+                {
+                    Id = 3,
+                    Name = "Client User",
+                    Email = "client@example.com",
+                    Password = BCrypt.Net.BCrypt.HashPassword("Client123!"),
+                    Role = "client",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    MembershipId = 1,
+                    LastPasswordChangeDate = DateTime.UtcNow,
+                    PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Client123!") }
+                }
+            );
         }
 
         // Existing DbSets
@@ -162,5 +221,8 @@ namespace Bliss
         public DbSet<TransactionItem> TransactionItems { get; set; }
 
         public DbSet<CartItem> CartItem { get; set; }
+
+        public DbSet<ProductSize> ProductSizes { get; set; }
+
     }
 }

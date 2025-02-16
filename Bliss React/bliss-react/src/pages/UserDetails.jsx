@@ -63,9 +63,6 @@ function UserDetails() {
             <Button variant="contained" component={Link} to={`/edituser/${user.id}`} sx={{ mt: 2 }}>
                 Edit User
             </Button>
-            <Button variant="outlined" color="secondary" component={Link} to="/users" sx={{ mt: 2, ml: 2 }}>
-                Back to Users List
-            </Button>
             <Button variant="outlined" component={Link} to="/change-password" sx={{ mt: 2, ml: 2 }}>
                 Change Password
             </Button>

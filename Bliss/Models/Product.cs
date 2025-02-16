@@ -28,5 +28,8 @@ namespace Bliss.Models
         public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
 
         public List<Wishlist> Wishlists { get; set; } = new();
+
+        // ✅ New field to store different product sizes and their prices
+        public List<ProductSize> Sizes { get; set; } = new();
     }
 }

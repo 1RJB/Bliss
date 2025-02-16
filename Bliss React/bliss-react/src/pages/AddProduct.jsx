@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material'; // ✅ Added Select & MenuItem
+import { Box, Typography, TextField, Button, Grid, Select, MenuItem, IconButton } from '@mui/material';
+import { AddCircle, RemoveCircle } from '@mui/icons-material'; // ✅ Icons for add/remove size
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function AddProduct() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
+    
+    // ✅ State to store multiple sizes
+    const [sizes, setSizes] = useState([{ size: "", price: "" }]);
 
     const formik = useFormik({
         initialValues: {
             name: "",
             description: "",
-            price: "",
-            type: "", // ✅ Add Type Field
+            type: "",
         },
         validationSchema: yup.object({
             name: yup.string().trim()
@@ -28,11 +30,8 @@ function AddProduct() {
                 .min(3, 'Description must be at least 3 characters')
                 .max(500, 'Description must be at most 500 characters')
                 .required('Description is required'),
-            price: yup.number()
-                .required('Price is required')
-                .positive('Price must be a positive number'),
             type: yup.string()
-                .required('Product type is required') // ✅ Make Type Required
+                .required('Product type is required'),
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -40,12 +39,12 @@ function AddProduct() {
             }
             data.name = data.name.trim();
             data.description = data.description.trim();
-            data.price = parseFloat(data.price); // Ensure price is a number
-        
-            console.log("Sending Data to API:", data); // ✅ Debugging step
-        
-            const token = localStorage.getItem("accessToken"); // Get the token from localStorage
-        
+            data.sizes = sizes.filter(s => s.size.trim() !== "" && s.price !== ""); // ✅ Include sizes
+
+            console.log("Sending Data to API:", data);
+
+            const token = localStorage.getItem("accessToken");
+
             http.post("/product", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -73,18 +72,26 @@ function AddProduct() {
             let formData = new FormData();
             formData.append('file', file);
             http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             })
                 .then((res) => {
-                    setImageFile(res.data.filename); // Save the file name for later use
+                    setImageFile(res.data.filename);
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     console.log(error.response);
                     toast.error('File upload failed');
                 });
         }
+    };
+
+    // ✅ Function to add a new size field
+    const addSizeField = () => {
+        setSizes([...sizes, { size: "", price: "" }]);
+    };
+
+    // ✅ Function to remove a size field
+    const removeSizeField = (index) => {
+        setSizes(sizes.filter((_, i) => i !== index));
     };
 
     return (
@@ -94,7 +101,7 @@ function AddProduct() {
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+                    <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth margin="dense" autoComplete="off"
                             label="Product Name"
@@ -116,17 +123,8 @@ function AddProduct() {
                             error={formik.touched.description && Boolean(formik.errors.description)}
                             helperText={formik.touched.description && formik.errors.description}
                         />
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Price"
-                            name="price"
-                            value={formik.values.price}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.price && Boolean(formik.errors.price)}
-                            helperText={formik.touched.price && formik.errors.price}
-                        />
-                        {/* ✅ Add Product Type Dropdown */}
+                        
+                        {/* ✅ Product Type Dropdown */}
                         <Typography variant="body1" sx={{ mt: 2 }}>Product Type</Typography>
                         <TextField
                             select
@@ -144,25 +142,64 @@ function AddProduct() {
                             <MenuItem value="Toner">Toner</MenuItem>
                             <MenuItem value="Cleanser">Cleanser</MenuItem>
                         </TextField>
+
+                        {/* ✅ Dynamic Size Fields */}
+                        <Typography variant="body1" sx={{ mt: 2 }}>Product Sizes</Typography>
+                        {sizes.map((sizeOption, index) => (
+                            <Grid container spacing={1} alignItems="center" key={index}>
+                                <Grid item xs={5}>
+                                    <TextField
+                                        fullWidth margin="dense"
+                                        label="Size (e.g., 100ML)"
+                                        value={sizeOption.size}
+                                        onChange={(e) => {
+                                            const updatedSizes = [...sizes];
+                                            updatedSizes[index].size = e.target.value;
+                                            setSizes(updatedSizes);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <TextField
+                                        fullWidth margin="dense" type="number"
+                                        label="Price"
+                                        value={sizeOption.price}
+                                        onChange={(e) => {
+                                            const updatedSizes = [...sizes];
+                                            updatedSizes[index].price = e.target.value;
+                                            setSizes(updatedSizes);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    {sizes.length > 1 && (
+                                        <IconButton onClick={() => removeSizeField(index)} color="error">
+                                            <RemoveCircle />
+                                        </IconButton>
+                                    )}
+                                </Grid>
+                            </Grid>
+                        ))}
+                        <Button startIcon={<AddCircle />} onClick={addSizeField} sx={{ mt: 1 }}>
+                            Add Size
+                        </Button>
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                    
+                    <Grid item xs={12} md={6}>
                         <Box sx={{ textAlign: 'center', mt: 2 }} >
                             <Button variant="contained" component="label">
                                 Upload Image
-                                <input hidden accept="image/*" multiple type="file"
-                                    onChange={onFileChange} />
+                                <input hidden accept="image/*" type="file" onChange={onFileChange} />
                             </Button>
-                            {
-                                imageFile && (
-                                    <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                        <img alt="product"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} />
-                                    </Box>
-                                )
-                            }
+                            {imageFile && (
+                                <Box sx={{ mt: 2 }}>
+                                    <img alt="product" src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} style={{ width: "100%", maxWidth: "300px" }} />
+                                </Box>
+                            )}
                         </Box>
                     </Grid>
                 </Grid>
+
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">
                         Add Product

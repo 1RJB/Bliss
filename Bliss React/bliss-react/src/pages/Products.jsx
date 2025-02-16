@@ -12,7 +12,7 @@ import {
     Slider,
     Divider
 } from '@mui/material';
-import { Search, Clear } from '@mui/icons-material';
+import { Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import UserContext from '../contexts/UserContext';
 
@@ -23,6 +23,8 @@ function Products() {
     const [currency, setCurrency] = useState("SGD");
     const [convertedPrices, setConvertedPrices] = useState({});
     const { user } = useContext(UserContext);
+    const [selectedSizes, setSelectedSizes] = useState({});
+
 
     useEffect(() => {
         getProducts();
@@ -36,11 +38,21 @@ function Products() {
             .then((res) => {
                 setProductList(res.data);
                 convertPrices(res.data, currency);
+
+                // ✅ Set default size selection
+                let defaultSizes = {};
+                res.data.forEach(product => {
+                    if (product.sizes.length > 0) {
+                        defaultSizes[product.id] = product.sizes[0].size; // Set first size as default
+                    }
+                });
+                setSelectedSizes(defaultSizes);
             })
             .catch((err) => {
                 console.error("Error fetching products:", err);
             });
     };
+
 
     const convertPrices = async (products, toCurrency) => {
         let updatedPrices = {};
@@ -64,6 +76,8 @@ function Products() {
     const onFilterChange = (field, value) => {
         setFilters({ ...filters, [field]: value });
     };
+
+
 
     return (
         <Box sx={{ display: 'flex', backgroundColor: '#FFFFFF', minHeight: '100vh' }}>
@@ -221,6 +235,8 @@ function Products() {
                                     }}
                                 />
 
+
+
                                 {/* Hover Effect (Darken + Learn More Button) */}
                                 <Box
                                     className="hoverOverlay"
@@ -254,24 +270,56 @@ function Products() {
                                     </Button>
                                 </Box>
 
-                                {/* Product Details (Still Intact) */}
+                                {user && user.id === product.userId && (
+                                    <Link to={`/editProduct/${product.id}`} style={{ position: 'absolute', top: 8, right: 8 }}>
+                                        <Edit sx={{ color: '#A3BE8C' }} />
+                                    </Link>
+                                )}
+
+
+                                {/* Product Details with Size Selection */}
                                 <Box sx={{ padding: '15px', textAlign: 'center' }}>
+                                    {/* Product Name */}
                                     <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
                                         {product.name}
                                     </Typography>
+
+                                    {/* Product Description */}
                                     <Typography variant="body2" sx={{ color: '#666', fontSize: '0.9rem', marginBottom: 1 }}>
                                         {product.description}
                                     </Typography>
-                                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-                                        {convertedPrices[product.id] ? `${convertedPrices[product.id]} ${currency}` : `${product.price} SGD`}
+
+                                    {/* Size Selection (if multiple sizes exist) */}
+                                    {product.sizes.length > 0 && (
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                                            {product.sizes.map((sizeOption) => (
+                                                <Button
+                                                    key={sizeOption.size}
+                                                    variant={selectedSizes[product.id] === sizeOption.size ? "contained" : "outlined"}
+                                                    onClick={() => setSelectedSizes({ ...selectedSizes, [product.id]: sizeOption.size })}
+                                                    sx={{ marginX: 1, textTransform: "none" }}
+                                                >
+                                                    {sizeOption.size}
+                                                </Button>
+                                            ))}
+                                        </Box>
+                                    )}
+
+                                    {/* Dynamic Price Based on Selected Size */}
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mt: 1 }}>
+                                        {product.sizes.length > 0
+                                            ? `${product.sizes.find(size => size.size === selectedSizes[product.id])?.price || product.sizes[0].price} ${currency}`
+                                            : `${product.price} SGD`}
                                     </Typography>
 
+                                    {/* Edit Button (Only for Product Owner) */}
                                     {user && user.id === product.userId && (
                                         <Link to={`/editProduct/${product.id}`} style={{ textDecoration: 'none', fontSize: '0.9rem', color: '#666' }}>
                                             Edit
                                         </Link>
                                     )}
                                 </Box>
+
                             </Box>
                         </Grid>
                     ))}
