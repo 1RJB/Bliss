@@ -75,13 +75,16 @@ function App() {
                                 </Link>
                                 {user && (
                                     <>
-                                        <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                            <Typography>Homepages</Typography>
-                                        </Link>
-
-                                        <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                            <Typography>Wishlists</Typography>
-                                        </Link>
+                                        {user.role === 'staff' || user.role === 'admin' && (
+                                            <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                                <Typography>Homepages</Typography>
+                                            </Link>
+                                        )}
+                                        {user.role === 'client' && (
+                                            <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                                <Typography>Wishlists</Typography>
+                                            </Link>
+                                        )}
                                     </>
                                 )}
                                 <Link to="/vouchers" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
@@ -89,15 +92,21 @@ function App() {
                                 </Link>
                                 {user && (
                                     <>
-                                        <Link to="/myvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                            <Typography>My Voucher</Typography>
-                                        </Link>
-                                        <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                            <Typography>Add Voucher</Typography>
-                                        </Link>
-                                        <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                            <Typography>Users</Typography>
-                                        </Link>
+                                        {user.role === 'client' && (
+                                            <Link to="/myvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                                <Typography>My Voucher</Typography>
+                                            </Link>
+                                        )}
+                                        {user.role === 'staff' || user.role === 'admin' && (
+                                            <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                                <Typography>Add Voucher</Typography>
+                                            </Link>
+                                        )}
+                                        {user.role === 'admin' && (
+                                            <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                                <Typography>Users</Typography>
+                                            </Link>
+                                        )}
                                         <Box sx={{ flexGrow: 1 }}></Box>
 
                                         <Button color="inherit" component={Link} to={`/users/${user.id}`}>
