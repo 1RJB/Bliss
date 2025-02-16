@@ -24,6 +24,8 @@ import UsersList from './pages/UsersList';
 import UserDetails from './pages/UserDetails';
 import EditUser from './pages/EditUser';
 import ChangePassword from './pages/ChangePassword';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ActivityLogs from './pages/ActivityLogs';
 import Homepages from './pages/Homepages';
 import AddHomepage from './pages/AddHomepage';
@@ -129,13 +131,15 @@ function App() {
                             <Route path="/wishlists" element={<Wishlists />} />
                             <Route path="/editwishlist/:id" element={<EditWishlist />} />
                             <Route path="/addwishlist" element={<Addwishlist />} />
-                            <Route path="/wishlist/:id" element={<WishlistDetail />} /> 
+                            <Route path="/wishlist/:id" element={<WishlistDetail />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/users" element={<UsersList />} />
                             <Route path="/users/:id" element={<UserDetails />} />
                             <Route path="/edituser/:id" element={<EditUser />} />
                             <Route path="/change-password" element={<ChangePassword />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/reset-password" element={<ResetPassword />} />
                             <Route path="/activity-logs" element={<ActivityLogs />} />
                             <Route path="/homepages" element={<Homepages />} />
                             <Route path="/addhomepage" element={<AddHomepage />} />
