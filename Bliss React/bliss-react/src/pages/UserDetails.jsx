@@ -15,6 +15,11 @@ function UserDetails() {
     const navigate = useNavigate();
 
     const handleDelete = () => {
+        if (user?.id !== parseInt(id)) {
+            setError('You are not authorized to view this user.');
+            setLoading(false);
+            return;
+        }
         if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             http.delete(`/User/${id}`)
                 .then(() => {
@@ -34,16 +39,22 @@ function UserDetails() {
     };
 
     useEffect(() => {
+        if (user?.id !== parseInt(id)) {
+            setError('You are not authorized to view this user.');
+            setLoading(false);
+            return;
+        }
+
         http.get(`/User/${id}`)
             .then(res => {
-                setUser(res.data);
+                setUserDetails(res.data);
                 setLoading(false);
             })
             .catch(() => {
                 setError('Failed to load user details.');
                 setLoading(false);
             });
-    }, [id]);
+    }, [id, user]);
 
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
