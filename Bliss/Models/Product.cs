@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Bliss.Models
 {
@@ -22,6 +23,7 @@ namespace Bliss.Models
         // Navigation property for many-to-many with Homepages
         public List<Homepage> Homepages { get; set; } = new List<Homepage>();
 
+        [JsonIgnore]
         // Navigation property for many-to-many with Transactions via TransactionItems
         public List<TransactionItem> TransactionItems { get; set; } = new List<TransactionItem>();
 

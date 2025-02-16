@@ -138,25 +138,7 @@ namespace Bliss
                 .WithMany(p => p.Wishlists)
                 .UsingEntity(j => j.ToTable("WishlistProducts"));
 
-            // ------------------------------
-            // Many-to-many with extra fields: Transaction <--> Product via TransactionItem
-            // ------------------------------
-            modelBuilder.Entity<TransactionItem>()
-                .HasKey(ti => ti.TransactionItemId);
-
-            modelBuilder.Entity<TransactionItem>()
-                .HasOne(ti => ti.Transaction)
-                .WithMany(t => t.TransactionItems)
-                .HasForeignKey(ti => ti.TransactionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<TransactionItem>()
-                .HasOne(ti => ti.Product)
-                .WithMany(p => p.TransactionItems)
-                .HasForeignKey(ti => ti.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Other configurations as needed...
+            
         }
 
         // Existing DbSets

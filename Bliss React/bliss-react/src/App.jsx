@@ -34,6 +34,7 @@ import HomepageDetail from './pages/HomepageDetail';
 import Cart from './pages/Cart';
 import http from './http';
 import UserContext from './contexts/UserContext';
+import Payment from './pages/Payment';
 
 function App() {
     const [user, setUser] = useState(null);
@@ -146,6 +147,7 @@ function App() {
                             <Route path="/edithomepage/:id" element={<EditHomepage />} />
                             <Route path="/homepagedetail/:id" element={<HomepageDetail />} />
                             <Route path="/cart" element={<Cart />} />
+                            <Route path="/payment" element={<Payment />} />
                         </Routes>
                     </Container>
                 </ThemeProvider>
