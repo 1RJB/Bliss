@@ -73,28 +73,33 @@ function App() {
                                 <Link to="/products" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Products</Typography>
                                 </Link>
-                                <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                    <Typography>Homepages</Typography>
-                                </Link>
+                                {user && (
+                                    <>
+                                        <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                            <Typography>Homepages</Typography>
+                                        </Link>
 
-                                <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                    <Typography>Wishlists</Typography>
-                                </Link>
+                                        <Link to="/wishlists" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                            <Typography>Wishlists</Typography>
+                                        </Link>
+                                    </>
+                                )}
                                 <Link to="/vouchers" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                     <Typography>Vouchers</Typography>
                                 </Link>
-                                <Link to="/myvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                    <Typography>My Voucher</Typography>
-                                </Link>
-                                <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                    <Typography>Add Voucher</Typography>
-                                </Link>
-                                <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
-                                    <Typography>Users</Typography>
-                                </Link>
-                                <Box sx={{ flexGrow: 1 }}></Box>
                                 {user && (
                                     <>
+                                        <Link to="/myvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                            <Typography>My Voucher</Typography>
+                                        </Link>
+                                        <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                            <Typography>Add Voucher</Typography>
+                                        </Link>
+                                        <Link to="/users" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
+                                            <Typography>Users</Typography>
+                                        </Link>
+                                        <Box sx={{ flexGrow: 1 }}></Box>
+
                                         <Button color="inherit" component={Link} to={`/users/${user.id}`}>
                                             {user.name}
                                         </Button>
@@ -105,14 +110,14 @@ function App() {
                                     </>
                                 )}
                                 {!user && (
-                                    <>
+                                    <div style={{ display: 'flex', marginLeft: 'auto' }}>
                                         <Link to="/register" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                             <Typography>Register</Typography>
                                         </Link>
                                         <Link to="/login" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                             <Typography>Login</Typography>
                                         </Link>
-                                    </>
+                                    </div>
                                 )}
                             </Toolbar>
                         </Container>
