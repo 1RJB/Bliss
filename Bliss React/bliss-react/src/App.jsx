@@ -75,7 +75,7 @@ function App() {
                                 </Link>
                                 {user && (
                                     <>
-                                        {user.role === 'staff' || user.role === 'admin' && (
+                                        {(user.role === 'staff' || user.role === 'admin') && (
                                             <Link to="/homepages" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                                 <Typography>Homepages</Typography>
                                             </Link>
@@ -97,7 +97,7 @@ function App() {
                                                 <Typography>My Voucher</Typography>
                                             </Link>
                                         )}
-                                        {user.role === 'staff' || user.role === 'admin' && (
+                                        {(user.role === 'staff' || user.role === 'admin') && (
                                             <Link to="/addvoucher" style={{ textDecoration: 'none', color: 'inherit', marginLeft: '16px' }}>
                                                 <Typography>Add Voucher</Typography>
                                             </Link>
