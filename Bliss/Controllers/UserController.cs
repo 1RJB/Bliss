@@ -10,6 +10,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Google.Apis.Auth;
 
 namespace Bliss.Controllers
 {
@@ -75,6 +76,58 @@ namespace Bliss.Controllers
             {
                 _logger.LogError(ex, "Error when user register");
                 return StatusCode(500);
+            }
+        }
+
+        // Google Sign-In
+        [HttpPost("google-signin")]
+        public async Task<IActionResult> GoogleSignIn(GoogleSignInRequest request)
+        {
+            var payload = await VerifyGoogleToken(request.IdToken);
+            if (payload == null)
+            {
+                return BadRequest(new { message = "Invalid Google token." });
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == payload.Email);
+            if (user == null)
+            {
+                user = new User
+                {
+                    Name = payload.Name,
+                    Email = payload.Email,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    MembershipId = 1
+                };
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            // Log activity
+            await LogActivity(user.Id, "User signed in with Google", HttpContext.Connection.RemoteIpAddress.ToString());
+
+            // Return user info
+            UserDTO userDTO = _mapper.Map<UserDTO>(user);
+            string accessToken = CreateToken(user);
+            LoginResponse response = new() { User = userDTO, AccessToken = accessToken };
+            return Ok(response);
+        }
+
+        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string idToken)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
+                };
+                var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+                return payload;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -153,10 +206,12 @@ namespace Bliss.Controllers
                     .Select(c => c.Value).SingleOrDefault();
                 var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
                     .Select(c => c.Value).SingleOrDefault();
+                var role = User.Claims.Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value).SingleOrDefault();
 
                 if (id != 0 && name != null && email != null)
                 {
-                    UserDTO userDTO = new() { Id = id, Name = name, Email = email };
+                    UserDTO userDTO = new() { Id = id, Name = name, Email = email, Role = role };
                     AuthResponse response = new() { User = userDTO };
                     return Ok(response);
                 }
