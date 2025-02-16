@@ -27,6 +27,11 @@ namespace Bliss.Models
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
 
+        [JsonIgnore]
+        public string? TwoFactorSecret { get; set; }
+
+        public bool TwoFactorEnabled { get; set; } = false;
+
         public RewardPoints? RewardPoints { get; set; }
 
         public int MembershipId { get; set; }
