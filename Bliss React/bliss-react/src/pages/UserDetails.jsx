@@ -40,7 +40,7 @@ function UserDetails() {
     };
 
     useEffect(() => {
-        if (user?.id !== parseInt(id)) {
+        if (user?.id !== parseInt(id) && user?.role !== 'admin') {
             setError('You are not authorized to view this user.');
             setLoading(false);
             return;
