@@ -7,6 +7,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import http from "../http";
 import UserContext from "../contexts/UserContext";
 import stepProgress from "../assets/Group 2.png";
+import "../styles/Payment.css";
 
 function Payment() {
   // Cart and user state
@@ -19,6 +20,11 @@ function Payment() {
   const [cardNumber, setCardNumber] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [cvv, setCvv] = useState("");
+
+  // Error state for validation
+  const [cardNumberError, setCardNumberError] = useState("");
+  const [expirationDateError, setExpirationDateError] = useState("");
+  const [cvvError, setCvvError] = useState("");
 
   // Voucher state
   const [userVouchers, setUserVouchers] = useState([]);
@@ -95,10 +101,59 @@ function Payment() {
     }
   };
 
+  // Validation for credit card info
+  const validatePaymentInfo = () => {
+    let valid = true;
+
+    // Validate card number: remove spaces, must be 16 digits.
+    const cleanedCardNumber = cardNumber.replace(/\s/g, "");
+    if (!/^\d{16}$/.test(cleanedCardNumber)) {
+      setCardNumberError("Card number must be 16 digits.");
+      valid = false;
+    } else {
+      setCardNumberError("");
+    }
+
+    // Validate expiration date: should be in MM/YY format and in the future.
+    const expRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    if (!expRegex.test(expirationDate)) {
+      setExpirationDateError("Expiration date must be in MM/YY format.");
+      valid = false;
+    } else {
+      const [month, year] = expirationDate.split("/");
+      const expMonth = parseInt(month, 10);
+      const expYear = 2000 + parseInt(year, 10); // assumes 20YY format
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
+      if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+        setExpirationDateError("Card is expired.");
+        valid = false;
+      } else {
+        setExpirationDateError("");
+      }
+    }
+
+    // Validate CVV: must be 3 digits.
+    if (!/^\d{3}$/.test(cvv)) {
+      setCvvError("CVV must be 3 digits.");
+      valid = false;
+    } else {
+      setCvvError("");
+    }
+
+    return valid;
+  };
+
   // Handle proceeding to shipping
   const handleProceedToShipping = async () => {
     if (!userId) {
       alert("Please log in first.");
+      return;
+    }
+
+    if (!validatePaymentInfo()) {
+      alert("Please correct the errors in your payment information.");
       return;
     }
 
@@ -139,79 +194,85 @@ function Payment() {
 
   return (
     <>
-      <div style={{ width: "100%", textAlign: "center", padding: "1rem 0" }}>
-        <h2 style={{ marginBottom: "1rem" }}>Step 2 of 3: Payment</h2>
-        <img
-          src={stepProgress}
-          alt="Checkout Steps"
-          style={{ width: "100%", maxWidth: "800px" }}
-        />
+      <div className="payment-header">
+        <Typography variant="h4" gutterBottom>
+          Step 2 of 3: Payment
+        </Typography>
+        <img src={stepProgress} alt="Checkout Steps" className="step-progress" />
       </div>
 
-      <div className="cart-page">
+      <div className="payment-card">
         {/* Payment Information Section */}
-        <div className="cart-main">
-          <div style={{ marginBottom: "2rem" }}>
-            <h3 style={{ marginBottom: "1rem" }}>Payment Information</h3>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 400 }}>
-              <TextField
-                label="Card Number"
-                placeholder="xxxx xxxx xxxx xxxx"
-                variant="outlined"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CreditCardIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <TextField
-                label="Expiration Date"
-                placeholder="MM/YY"
-                variant="outlined"
-                value={expirationDate}
-                onChange={(e) => setExpirationDate(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarTodayIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <TextField
-                label="CVV"
-                placeholder="xxx"
-                variant="outlined"
-                type="password"
-                value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Box>
-          </div>
+        <div className="payment-form">
+          <Typography variant="h5" gutterBottom>
+            Payment Information
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              label="Card Number"
+              placeholder="xxxx xxxx xxxx xxxx"
+              variant="outlined"
+              value={cardNumber}
+              onChange={(e) => setCardNumber(e.target.value)}
+              error={Boolean(cardNumberError)}
+              helperText={cardNumberError}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <CreditCardIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+            <TextField
+              label="Expiration Date"
+              placeholder="MM/YY"
+              variant="outlined"
+              value={expirationDate}
+              onChange={(e) => setExpirationDate(e.target.value)}
+              error={Boolean(expirationDateError)}
+              helperText={expirationDateError}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <CalendarTodayIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+            <TextField
+              label="CVV"
+              placeholder="xxx"
+              variant="outlined"
+              type="password"
+              value={cvv}
+              onChange={(e) => setCvv(e.target.value)}
+              error={Boolean(cvvError)}
+              helperText={cvvError}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </Box>
         </div>
 
         {/* Order Summary Section */}
-        <div className="cart-summary">
-          <h3>Order Summary</h3>
+        <div className="order-summary">
+          <Typography variant="h5" gutterBottom>
+            Order Summary
+          </Typography>
           {cartItems.map((item) => (
-            <div
+            <Box
               key={item.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "1rem",
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 2
               }}
             >
               <img
@@ -221,31 +282,33 @@ function Payment() {
                   width: "60px",
                   height: "60px",
                   objectFit: "cover",
-                  marginRight: "1rem",
+                  marginRight: "1rem"
                 }}
               />
-              <div style={{ flexGrow: 1 }}>
-                <h4>{item.product.name}</h4>
-                <p>{item.product.type}</p>
-                {item.productSize && <p>Size: {item.productSize.size}ml</p>}
-                <p>Quantity: {item.quantity}</p>
-              </div>
-              <div>
-                <p>
-                  ${((Number(item.productSize?.price) || Number(item.product.price)) *
-                    Number(item.quantity)).toFixed(2)}
-                </p>
-              </div>
-            </div>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="subtitle1">{item.product.name}</Typography>
+                <Typography variant="body2">{item.product.type}</Typography>
+                {item.productSize && (
+                  <Typography variant="body2">
+                    Size: {item.productSize.size}ml
+                  </Typography>
+                )}
+                <Typography variant="body2">
+                  Quantity: {item.quantity}
+                </Typography>
+              </Box>
+              <Typography variant="subtitle1">
+                ${((Number(item.productSize?.price) || Number(item.product.price)) * Number(item.quantity)).toFixed(2)}
+              </Typography>
+            </Box>
           ))}
           <hr />
-          <p style={{ margin: "0.5rem 0" }}>
+          <Typography variant="body1" sx={{ mt: 1 }}>
             Cart Subtotal: ${totalPrice.toFixed(2)}
-          </p>
+          </Typography>
 
-          {/* Voucher Section */}
           {userVouchers.length > 0 && (
-            <FormControl fullWidth style={{ marginBottom: "1rem" }}>
+            <FormControl fullWidth sx={{ my: 2 }}>
               <InputLabel id="voucher-select-label">Apply Voucher</InputLabel>
               <Select
                 labelId="voucher-select-label"
@@ -276,16 +339,17 @@ function Payment() {
           </Box>
 
           {selectedVoucherId && (
-            <p style={{ margin: "0.5rem 0" }}>
-              Voucher Discount: $
-              {userVouchers.find((v) => v.id === selectedVoucherId)?.value}
-            </p>
+            <Typography variant="body1" sx={{ my: 1 }}>
+              Voucher Discount: ${userVouchers.find((v) => v.id === selectedVoucherId)?.value}
+            </Typography>
           )}
           <hr />
-          <p className="grand-total">S${finalTotal.toFixed(2)}</p>
-          <button className="checkout-button" onClick={handleProceedToShipping}>
+          <Typography variant="h6" className="grand-total">
+            S${finalTotal.toFixed(2)}
+          </Typography>
+          <Button variant="contained" className="checkout-button" onClick={handleProceedToShipping}>
             Proceed to Shipping
-          </button>
+          </Button>
         </div>
       </div>
     </>

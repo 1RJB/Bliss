@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Bliss.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Bliss.Models
 {
@@ -14,28 +14,39 @@ namespace Bliss.Models
     public class EmailService : IEmailService
     {
         private readonly SmtpSettings _smtpSettings;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<SmtpSettings> smtpSettings)
+        public EmailService(IOptions<SmtpSettings> smtpSettings, ILogger<EmailService> logger)
         {
             _smtpSettings = smtpSettings.Value;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
         {
-            using (var message = new MailMessage())
+            try
             {
-                message.From = new MailAddress(_smtpSettings.SenderEmail);
-                message.To.Add(new MailAddress(toEmail));
-                message.Subject = subject;
-                message.Body = htmlContent;
-                message.IsBodyHtml = true;
-
-                using (var client = new SmtpClient(_smtpSettings.Server, _smtpSettings.Port))
+                using (var message = new MailMessage())
                 {
-                    client.Credentials = new NetworkCredential(_smtpSettings.SenderEmail, _smtpSettings.SenderPassword);
-                    client.EnableSsl = _smtpSettings.EnableSsl;
-                    await client.SendMailAsync(message);
+                    message.From = new MailAddress(_smtpSettings.SenderEmail);
+                    message.To.Add(new MailAddress(toEmail));
+                    message.Subject = subject;
+                    message.Body = htmlContent;
+                    message.IsBodyHtml = true;
+
+                    using (var client = new SmtpClient(_smtpSettings.Server, _smtpSettings.Port))
+                    {
+                        client.Credentials = new NetworkCredential(_smtpSettings.SenderEmail, _smtpSettings.SenderPassword);
+                        client.EnableSsl = _smtpSettings.EnableSsl;
+                        await client.SendMailAsync(message);
+                    }
                 }
+                _logger.LogInformation("Email sent successfully to {toEmail}", toEmail);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send email to {toEmail}", toEmail);
+                throw;
             }
         }
     }
