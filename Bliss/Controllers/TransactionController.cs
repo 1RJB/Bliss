@@ -103,7 +103,9 @@ namespace Bliss.Controllers
         //    "paymentCVV": "123"
         // }
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateAndMaybeFinalizeTransaction([FromBody] JsonElement data)
+        public async Task<IActionResult> UpdateAndMaybeFinalizeTransaction(
+    [FromBody] JsonElement data,
+    [FromServices] IEmailService emailService)
         {
             int userId = data.GetProperty("userId").GetInt32();
 
@@ -167,6 +169,45 @@ namespace Bliss.Controllers
             {
                 transaction.IsFinalized = true;
                 _logger.LogInformation("All required fields present. Finalizing transaction for UserId: {UserId}", userId);
+
+                // Close out the cart when finalizing
+                var cart = await _context.Carts
+                    .Include(c => c.CartItems)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                if (cart != null)
+                {
+                    _logger.LogInformation("Removing cart and items for UserId: {UserId}", userId);
+                    // Remove all cart items
+                    _context.CartItems.RemoveRange(cart.CartItems);
+                    // Remove the cart itself
+                    _context.Carts.Remove(cart);
+                }
+
+                // Calculate total for receipt
+                decimal overallTotal = transaction.TransactionItems
+                    .Sum(item => (decimal)item.PriceAtPurchase * item.Quantity);
+
+                // Send receipt email
+                try
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                    if (user != null && !string.IsNullOrWhiteSpace(user.Email))
+                    {
+                        string receiptHtml = $"<h1>Thank you for your order!</h1>" +
+                                           $"<p>Transaction ID: {transaction.Id}</p>" +
+                                           $"<p>Date: {transaction.TransactionDate.ToLocalTime()}</p>" +
+                                           "<p>We appreciate your business.</p>";
+
+                        await emailService.SendEmailAsync(user.Email, "Your Receipt from Bliss", receiptHtml);
+                        _logger.LogInformation("Receipt email sent to {Email}", user.Email);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send receipt email for UserId: {UserId}", userId);
+                    // Don't throw - we still want to complete the transaction even if email fails
+                }
             }
             else
             {
