@@ -44,12 +44,11 @@ function Login() {
                     setUser(res.data.user);
         
                     if (res.data.requires2FASetup) {
-                        // Store the token before redirecting
                         http.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
                         navigate("/setup-2fa");
                     } else if (res.data.requires2FA) {
-                        // Handle 2FA verification
-                        navigate("/verify-2fa");
+                        // Change from /verify-2fa to /verify-2fa-login
+                        navigate("/verify-2fa-login", { state: { email: data.email } });
                     } else {
                         navigate("/");
                     }
