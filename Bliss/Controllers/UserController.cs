@@ -225,12 +225,22 @@ namespace Bliss.Controllers
         }
 
         [HttpPost("verify-2fa-login")]
-        public async Task<IActionResult> Verify2FALogin(Verify2FARequest request)
+        public async Task<IActionResult> Verify2FALogin([FromBody] Verify2FALoginRequest request)
         {
-            var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+            if (request == null || string.IsNullOrEmpty(request.Code) || string.IsNullOrEmpty(request.Email))
+            {
+                return BadRequest(new { message = "Email and code are required." });
+            }
+
+            var foundUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email.ToLower().Trim());
             if (foundUser == null)
             {
                 return BadRequest(new { message = "Invalid 2FA code." });
+            }
+
+            if (string.IsNullOrEmpty(foundUser.TwoFactorSecret))
+            {
+                return BadRequest(new { message = "2FA is not set up for this user." });
             }
 
             var totp = new Totp(Base32Encoding.ToBytes(foundUser.TwoFactorSecret));
