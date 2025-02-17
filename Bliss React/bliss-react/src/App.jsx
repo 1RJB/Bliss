@@ -29,6 +29,7 @@ import ChangePassword from './pages/ChangePassword';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ActivityLogs from './pages/ActivityLogs';
+import Verify2FALogin from './pages/Verify2FALogin';
 import Homepages from './pages/Homepages';
 import AddHomepage from './pages/AddHomepage';
 import EditHomepage from './pages/EditHomepage';
@@ -162,6 +163,7 @@ function App() {
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/reset-password" element={<ResetPassword />} />
+                            <Route path="/verify-2fa-login" element={<Verify2FALogin />} />
                             <Route path="/activity-logs" element={<ActivityLogs />} />
                             <Route path="/homepages" element={<Homepages />} />
                             <Route path="/addhomepage" element={<AddHomepage />} />
