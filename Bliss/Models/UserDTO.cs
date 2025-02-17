@@ -10,6 +10,6 @@
 
         public string Role { get; set; } = "client";
 
-        public int RewardPoints {get; set;}
+        public int RewardPoints { get; set; } = 1000;
     }
 }
