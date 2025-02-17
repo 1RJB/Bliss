@@ -309,7 +309,8 @@ namespace Bliss.Controllers
         {
             // Authorization: Ensure the user is accessing their own account
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || int.Parse(userIdClaim) != id)
+            var userRoleClaim = User.FindFirstValue(ClaimTypes.Role);
+            if (userIdClaim == null || (int.Parse(userIdClaim) != id && userRoleClaim != "admin"))
             {
                 return Forbid();
             }
@@ -534,7 +535,7 @@ namespace Bliss.Controllers
                 await _context.SaveChangesAsync();
 
                 // Get frontend URL from configuration
-                var frontendUrl = _configuration["Frontend:BaseUrl"] ?? "http://localhost:3000";
+                var frontendUrl = _configuration["Frontend:BaseUrl"] ?? "https://localhost:3000";
                 var resetLink = $"{frontendUrl}/reset-password?token={token}";
 
                 // Send email
