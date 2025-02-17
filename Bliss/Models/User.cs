@@ -29,10 +29,6 @@ namespace Bliss.Models
 
         public int RewardPoints { get; set; } = 1000;
 
-        public int MembershipId { get; set; }
-
-        public Membership? Membership { get; set; }
-
         public int LoginAttempts { get; set; } = 0;
 
         public DateTime? LockoutEnd { get; set; }

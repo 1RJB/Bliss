@@ -79,7 +79,6 @@ namespace Bliss
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     RewardPoints = 1000,
-                    MembershipId = 1,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Admin123!") }
                 },
@@ -93,7 +92,6 @@ namespace Bliss
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     RewardPoints = 1000,
-                    MembershipId = 1,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Staff123!") }
                 },
@@ -107,46 +105,8 @@ namespace Bliss
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     RewardPoints = 1000,
-                    MembershipId = 1,
                     LastPasswordChangeDate = DateTime.UtcNow,
                     PreviousPasswords = new List<string> { BCrypt.Net.BCrypt.HashPassword("Client123!") }
-                }
-            );
-
-            // One-to-many: User & Membership
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Membership)
-                .WithMany()
-                .HasForeignKey(u => u.MembershipId);
-
-            // Seed Membership Data
-            modelBuilder.Entity<Membership>().HasData(
-                new Membership
-                {
-                    Id = 1,
-                    Type = MemberType.Basic,
-                    Benefits = "Access to basic features",
-                    Cost = 0,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
-                },
-                new Membership
-                {
-                    Id = 2,
-                    Type = MemberType.Green,
-                    Benefits = "Access to green features",
-                    Cost = 50,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
-                },
-                new Membership
-                {
-                    Id = 3,
-                    Type = MemberType.Premium,
-                    Benefits = "Access to all features",
-                    Cost = 100,
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1)
                 }
             );
 
@@ -184,7 +144,6 @@ namespace Bliss
         public required DbSet<CartItem> CartItems { get; set; }
         public required DbSet<Wishlist> Wishlists { get; set; }
         public required DbSet<Voucher> Vouchers { get; set; }
-        public required DbSet<Membership> Memberships { get; set; }
         public required DbSet<UserVoucher> UserVouchers { get; set; }
 
         // New DbSets for Homepage, Transaction, and TransactionItem

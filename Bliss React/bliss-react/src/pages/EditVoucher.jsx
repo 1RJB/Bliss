@@ -13,7 +13,6 @@ const validationSchema = yup.object({
     Description: yup.string().trim().min(3, 'Description must be at least 3 characters').max(500, 'Description is too long').required('Description is required'),
     Cost: yup.number().min(0, 'Cost cannot be negative').required('Cost is required'),
     ValidTill: yup.date().required('Valid Till date is required'),
-    MemberType: yup.number().oneOf([0, 1, 2]).required('Member type is required'),
     Quantity: yup.number().min(0, 'Quantity cannot be negative').required('Quantity is required'),
     Value: yup.number().min(0, 'Value cannot be negative').required('Value is required'),
     ImageFile: yup.string(), // This will store the filename
@@ -31,7 +30,6 @@ const validationSchema = yup.object({
         Description: '',
         Cost: 0,
         ValidTill: dayjs().format('YYYY-MM-DD'),
-        MemberType: 0,
         Quantity: 0,
         Value: 0,
         ImageFile: '',
@@ -62,7 +60,6 @@ const validationSchema = yup.object({
             Description: res.data.description,
             Cost: res.data.cost ?? 0,
             ValidTill: dayjs(res.data.validTill).format('YYYY-MM-DD'),
-            MemberType: parseInt(res.data.memberType, 10),
             Quantity: res.data.quantity ?? 0,
             Value: res.data.value ?? 0,
             ImageFile: res.data.imageFile || '',
@@ -158,22 +155,6 @@ const validationSchema = yup.object({
                   error={formik.touched.ValidTill && Boolean(formik.errors.ValidTill)}
                   helperText={formik.touched.ValidTill && formik.errors.ValidTill}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth margin="dense">
-                  <InputLabel>Member Type</InputLabel>
-                  <Select
-                    name="MemberType"
-                    value={formik.values.MemberType}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.MemberType && Boolean(formik.errors.MemberType)}
-                  >
-                    <MenuItem value={0}>Basic</MenuItem>
-                    <MenuItem value={1}>Green</MenuItem>
-                    <MenuItem value={2}>Premium</MenuItem>
-                  </Select>
-                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField

@@ -10,7 +10,6 @@
             public int Cost { get; set; }
             public DateTime ValidTill { get; set; }
             public VoucherStatus Status { get; set; }
-            public MemberType MemberType { get; set; }
             public string ImageFile { get; set; }
             public decimal Value { get; set; }
     }

@@ -18,7 +18,6 @@ function AddVoucher() {
         cost: 0,
         validTill: "",
         status: 0,
-        memberType: 0,
         quantity: 0,
         value: 0,
       },
@@ -43,11 +42,7 @@ function AddVoucher() {
         validTill: yup.date()
           .typeError('Please enter a valid date')
           .required('Valid Till date is required'),
-  
-        memberType: yup.number()
-          .typeError('Member type must be a number')
-          .required('Member type is required'),
-  
+
         quantity: yup.number()
           .typeError('Quantity must be a number')
           .integer('Quantity must be an integer')
@@ -212,31 +207,6 @@ function AddVoucher() {
                 error={formik.touched.quantity && Boolean(formik.errors.quantity)}
                 helperText={formik.touched.quantity && formik.errors.quantity}
               />
-            </Grid>
-
-            {/* Member Type */}
-            <Grid item xs={12}>
-              <FormControl fullWidth error={formik.touched.memberType && Boolean(formik.errors.memberType)}>
-                <InputLabel id="memberType-label">Member Type</InputLabel>
-                <Select
-                  labelId="memberType-label"
-                  id="memberType"
-                  name="memberType"
-                  label="Member Type"
-                  value={formik.values.memberType}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                >
-                  <MenuItem value={0}>Basic</MenuItem>
-                  <MenuItem value={1}>Green</MenuItem>
-                  <MenuItem value={2}>Premium</MenuItem>
-                </Select>
-                {formik.touched.memberType && formik.errors.memberType && (
-                  <Typography variant="caption" color="error">
-                    {formik.errors.memberType}
-                  </Typography>
-                )}
-              </FormControl>
             </Grid>
   
             {/* File Upload */}

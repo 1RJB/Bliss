@@ -9,6 +9,7 @@ import {
     Select,
     MenuItem,
     TextField,
+    Grid,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UserContext from '../contexts/UserContext';
@@ -25,6 +26,7 @@ function ProductDetail() {
     // New states for size selection:
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedPrice, setSelectedPrice] = useState(null);
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
 
     useEffect(() => {
         http.get(`/product/${id}`)
@@ -46,6 +48,13 @@ function ProductDetail() {
                 .then((res) => setWishlists(res.data))
                 .catch((err) => console.error("Error fetching wishlists:", err));
         }
+
+        // Fetch recommended products
+        http.get(`/product/recommended/${id}`)
+            .then((res) => {
+                setRecommendedProducts(res.data);
+            })
+            .catch((err) => console.error("Error fetching recommendations:", err));
     }, [id, user]);
 
     const handleAddToWishlist = () => {
@@ -87,42 +96,42 @@ function ProductDetail() {
     const handleAddToCart = async () => {
         if (!product) return;
         if (!user) {
-          alert("Please log in to add products to your cart.");
-          return;
+            alert("Please log in to add products to your cart.");
+            return;
         }
-      
+
         // Build the payload.
         // We're assuming:
         // - 'selectedSize' is a string (or ID) representing the chosen size.
         // - 'selectedPrice' is the price from the ProductSize model for the chosen size.
         const payload = {
-          userId: user.id,
-          productId: product.id,
-          productSize: selectedSize,  // or "productSizeId" if your backend uses an ID instead of a string
-          quantity: 1,
-          price: selectedPrice        // This is the price from the ProductSize model
+            userId: user.id,
+            productId: product.id,
+            productSize: selectedSize,  // or "productSizeId" if your backend uses an ID instead of a string
+            quantity: 1,
+            price: selectedPrice        // This is the price from the ProductSize model
         };
-      
+
         try {
-          const response = await fetch("https://localhost:7004/api/cart/add", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          if (!response.ok) {
-            console.error("Failed to add product to cart. Status:", response.status);
-            alert("Failed to add product to cart.");
-            return;
-          }
-          const data = await response.json();
-          console.log("Product added to cart:", data);
-          alert("Product added to cart successfully!");
+            const response = await fetch("https://localhost:7004/api/cart/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                console.error("Failed to add product to cart. Status:", response.status);
+                alert("Failed to add product to cart.");
+                return;
+            }
+            const data = await response.json();
+            console.log("Product added to cart:", data);
+            alert("Product added to cart successfully!");
         } catch (error) {
-          console.error("Error adding product to cart:", error);
-          alert("Error adding product to cart");
+            console.error("Error adding product to cart:", error);
+            alert("Error adding product to cart");
         }
-      };
-      
+    };
+
 
     if (!product)
         return <Typography sx={{ textAlign: 'center', marginTop: 5 }}>Loading...</Typography>;
@@ -167,11 +176,11 @@ function ProductDetail() {
 
                 {/* Product Info */}
                 <Box sx={{ flex: '1', paddingLeft: { md: '40px' }, paddingTop: { xs: '20px', md: '0px' } }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '15px' }}>
                         {product.name}
                     </Typography>
 
-                    <Typography variant="body1" sx={{ color: '#666', marginBottom: '15px' }}>
+                    <Typography variant="body1" sx={{ color: '#666', marginBottom: '20px' }}>
                         {product.description}
                     </Typography>
 
@@ -195,21 +204,10 @@ function ProductDetail() {
                     )}
 
                     {/* Dynamic Price Display */}
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop:'15px',marginBottom: '15px' }}>
                         ${selectedPrice}
                     </Typography>
 
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: '#000',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                            marginBottom: '20px'
-                        }}
-                    >
-                        Find in stores →
-                    </Typography>
 
                     {/* Wishlist UI */}
                     {user && (
@@ -302,7 +300,7 @@ function ProductDetail() {
                     </Button>
 
                     <Divider sx={{ marginY: '20px' }} />
-                    
+
                     {/* Product Details */}
                     <Typography variant="body2" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         Suited for
@@ -324,6 +322,37 @@ function ProductDetail() {
                     <Typography variant="body2" sx={{ color: '#666' }}>
                         {product.keyIngredients || 'N/A'}
                     </Typography>
+                    <Typography variant="h6" sx={{ marginTop: '20px', fontWeight: 'bold' }}>
+                        Recommended Products
+                    </Typography>
+                    <Grid container spacing={2} sx={{ marginTop: '10px' }}>
+                        {recommendedProducts.map((recProduct) => (
+                            <Grid item xs={12} sm={6} md={3} key={recProduct.id}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    <img
+                                        src={`${import.meta.env.VITE_FILE_BASE_URL}${recProduct.imageFile}`}
+                                        alt={recProduct.name}
+                                        style={{ width: '100%', maxWidth: '200px', objectFit: 'contain' }}
+                                    />
+                                    <Typography variant="body1">{recProduct.name}</Typography>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        onClick={() => navigate(`/productdetail/${recProduct.id}`)}
+                                    >
+                                        View Product
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        ))}
+                    </Grid>
 
                 </Box>
             </Box>
