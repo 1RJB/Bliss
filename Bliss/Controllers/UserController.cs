@@ -210,10 +210,12 @@ namespace Bliss.Controllers
                     .Select(c => c.Value).SingleOrDefault();
                 var role = User.Claims.Where(c => c.Type == ClaimTypes.Role)
                     .Select(c => c.Value).SingleOrDefault();
+                var points = User.Claims.Where(c => c.Type == "RewardPoints")
+                    .Select(c => c.Value).SingleOrDefault();
 
                 if (id != 0 && name != null && email != null)
                 {
-                    UserDTO userDTO = new() { Id = id, Name = name, Email = email, Role = role };
+                    UserDTO userDTO = new() { Id = id, Name = name, Email = email, Role = role, RewardPoints = points };
                     AuthResponse response = new() { User = userDTO };
                     return Ok(response);
                 }
