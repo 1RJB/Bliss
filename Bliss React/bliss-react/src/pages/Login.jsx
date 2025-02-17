@@ -37,14 +37,25 @@ function Login() {
             }
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
+            
             http.post("/user/login", { ...data, captchaToken })
                 .then((res) => {
                     localStorage.setItem("accessToken", res.data.accessToken);
                     setUser(res.data.user);
-                    navigate("/");
+        
+                    if (res.data.requires2FASetup) {
+                        // Store the token before redirecting
+                        http.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+                        navigate("/setup-2fa");
+                    } else if (res.data.requires2FA) {
+                        // Handle 2FA verification
+                        navigate("/verify-2fa");
+                    } else {
+                        navigate("/");
+                    }
                 })
                 .catch(function (err) {
-                    toast.error(`${err.response.data.message}`);
+                    toast.error(`${err.response?.data?.message}`);
                 });
         }
     });
@@ -124,11 +135,11 @@ function Login() {
                     </Box>
                 </Paper>
                 <Box sx={{ mt: 6, textAlign: 'center', justifyContent: 'center', display: 'flex' }}>
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={handleGoogleFailure}
-                        />
-                    </Box>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleFailure}
+                    />
+                </Box>
                 <ToastContainer />
             </Box>
         </GoogleOAuthProvider>
